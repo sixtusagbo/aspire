@@ -204,8 +204,8 @@ class DailyLog {
 - [x] Copy sign-in/sign-up screens
 - [x] Adapt for Aspire branding
 - [x] Set up Riverpod providers
-- [ ] Create goal and micro-action providers
-- [ ] Run build_runner, verify everything compiles
+- [x] Create goal and micro-action models and providers
+- [x] Run build_runner, verify everything compiles
 
 **Deliverable:** App launches, user can sign in, theme works
 
