@@ -132,10 +132,10 @@ export default function PrivacyPolicy() {
               If you have any questions about this Privacy Policy, please
               contact us at:{" "}
               <a
-                href="mailto:sixtusagbo@gmail.com"
+                href="mailto:miracleagbosixtus@gmail.com"
                 className="text-primary hover:underline"
               >
-                sixtusagbo@gmail.com
+                miracleagbosixtus@gmail.com
               </a>
             </p>
           </section>

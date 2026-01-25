@@ -1,6 +1,6 @@
 "use client";
 
-import { Target, Sparkles, Trophy, Plane } from "lucide-react";
+import { Target, Zap, Trophy, Plane } from "lucide-react";
 
 export default function Hero() {
   return (
@@ -36,7 +36,7 @@ export default function Hero() {
             description="Dream big and break it down"
           />
           <FeatureCard
-            icon={<Sparkles className="w-6 h-6" />}
+            icon={<Zap className="w-6 h-6" />}
             title="Daily Actions"
             description="Small steps, big results"
           />

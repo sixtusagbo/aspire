@@ -59,17 +59,12 @@ export default function TermsOfService() {
             <h2 className="text-xl font-semibold text-foreground mb-3">
               4. Subscription and Payments
             </h2>
-            <p className="leading-relaxed mb-3">
-              Aspire offers both free and premium subscription options:
-            </p>
-            <ul className="list-disc list-inside space-y-1 ml-2">
-              <li>Free tier: 1 active goal with basic features</li>
-              <li>Premium: Unlimited goals with advanced features</li>
-            </ul>
-            <p className="leading-relaxed mt-3">
-              Subscriptions are managed through Google Play and are subject to
-              their terms and conditions. You can cancel your subscription at
-              any time through your device&apos;s subscription settings.
+            <p className="leading-relaxed">
+              Aspire offers free and premium subscription options. Current
+              pricing and features are available within the app. Subscriptions
+              are managed through Google Play and are subject to their terms and
+              conditions. You can cancel your subscription at any time through
+              your device&apos;s subscription settings.
             </p>
           </section>
 
@@ -155,10 +150,10 @@ export default function TermsOfService() {
               If you have any questions about these Terms of Service, please
               contact us at:{" "}
               <a
-                href="mailto:sixtusagbo@gmail.com"
+                href="mailto:miracleagbosixtus@gmail.com"
                 className="text-primary hover:underline"
               >
-                sixtusagbo@gmail.com
+                miracleagbosixtus@gmail.com
               </a>
             </p>
           </section>
