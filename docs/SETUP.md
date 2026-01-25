@@ -24,14 +24,23 @@
    - Add support email
    - Note the Web Client ID (needed for Android)
 
-### Configure Google Sign-In for Android
-1. Go to Project Settings > Your apps > Android app
-2. Add SHA-1 fingerprint:
+### Configure Google Sign-In for Android (REQUIRED)
+
+**Without this, Google Sign-In will fail silently!**
+
+1. Get your SHA-1 fingerprint:
    ```bash
    cd android && ./gradlew signingReport
    ```
-   Copy the SHA-1 from the debug variant
-3. Download updated `google-services.json` and replace the old one
+   Look for `SHA1:` under `Variant: debug`
+
+2. Go to [Firebase Console](https://console.firebase.google.com/) > Project Settings > Your apps > Android app
+
+3. Click "Add fingerprint" and paste the SHA-1
+
+4. Download the updated `google-services.json` and replace `android/app/google-services.json`
+
+5. Rebuild the app: `flutter clean && flutter run`
 
 ### Enable Firestore
 1. Go to Build > Firestore Database

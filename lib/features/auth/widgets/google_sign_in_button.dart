@@ -18,29 +18,48 @@ class GoogleSignInButton extends StatelessWidget {
 
     return SizedBox(
       height: 56,
-      child: ElevatedButton.icon(
+      child: OutlinedButton(
         onPressed: isLoading ? null : onPressed,
-        icon: Icon(
-          Icons.g_mobiledata,
-          size: 24,
-          color: isDark ? Colors.black : Colors.white,
-        ),
-        label: Text(
-          label,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: isDark ? Colors.black : Colors.white,
+        style: OutlinedButton.styleFrom(
+          backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+          side: BorderSide(
+            color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
           ),
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: isDark ? Colors.white : Colors.black,
-          foregroundColor: isDark ? Colors.black : Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
           elevation: 0,
         ),
+        child: isLoading
+            ? SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator.adaptive(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    isDark ? Colors.white : Colors.black,
+                  ),
+                ),
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/google.png',
+                    height: 24,
+                    width: 24,
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: isDark ? Colors.white : Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
       ),
     );
   }

@@ -129,21 +129,20 @@ lib/
 
 ## Design System
 
-### Colors (Warm, Empowering)
+### Theme: Inspired by packslight.com (Gabby's website)
 
 ```dart
-// Primary
-const Color(0xFF8B5CF6)         // Primary purple (same as FoodPilot)
-const Color(0xFFEC4899)         // Accent pink/magenta
-const Color(0xFFF59E0B)         // Gold for achievements
+// Primary (Pink/Magenta)
+const Color(0xFFDB4291)         // Primary pink
+const Color(0xFFFF6D99)         // Secondary hot pink
 
-// Backgrounds (Light)
-Colors.white                    // Card background
-const Color(0xFFF3F4F6)         // gray-100 - Secondary
+// Secondary (Cyan/Teal)
+const Color(0xFF6EC1E4)         // Cyan accent
+const Color(0xFF00C1CF)         // Deeper teal
 
-// Backgrounds (Dark)
-const Color(0xFF1F2937)         // Card background (gray-800)
-const Color(0xFF374151)         // gray-700 - Secondary
+// Achievement
+const Color(0xFFBFA35A)         // Gold for achievements
+const Color(0xFFDDC995)         // Lighter gold
 ```
 
 ### Celebrations

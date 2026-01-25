@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+/// Theme inspired by Gabby Beckford's website (packslight.com)
+/// Colors: Pink/Magenta primary, Cyan/Teal secondary, Gold for achievements
 class AppTheme {
   AppTheme._();
 
-  // Color palette - Warm, empowering theme for ambitious women
-  static const Color primaryPurple = Color(0xFF8B5CF6); // Primary purple
-  static const Color secondaryPurple = Color(0xFF9575CD); // Lighter purple
-  static const Color accentPink = Color(0xFFEC4899); // Pink/magenta accent
-  static const Color goldAchievement = Color(0xFFF59E0B); // Gold for achievements
+  // Primary brand colors from packslight.com
+  static const Color primaryPink = Color(0xFFDB4291); // Main pink/magenta
+  static const Color secondaryPink = Color(0xFFFF6D99); // Lighter hot pink
+  static const Color accentCyan = Color(0xFF6EC1E4); // Cyan/teal accent
+  static const Color accentTeal = Color(0xFF00C1CF); // Deeper teal
+  static const Color goldAchievement = Color(0xFFBFA35A); // Gold for achievements
+  static const Color goldLight = Color(0xFFDDC995); // Lighter gold
+
+  // Semantic colors
   static const Color successGreen = Color(0xFF4CAF50);
   static const Color errorRed = Color(0xFFE53935);
   static const Color warningAmber = Color(0xFFFFA726);
@@ -16,8 +22,8 @@ class AppTheme {
   // Light theme colors
   static const Color lightBackground = Color(0xFFFAFAFA);
   static const Color lightSurface = Colors.white;
-  static const Color lightTextPrimary = Color(0xFF212121);
-  static const Color lightTextSecondary = Color(0xFF757575);
+  static const Color lightTextPrimary = Color(0xFF333333);
+  static const Color lightTextSecondary = Color(0xFF7A7A7A);
 
   // Dark theme colors
   static const Color darkBackground = Color(0xFF121212);
@@ -30,9 +36,9 @@ class AppTheme {
     useMaterial3: true,
     brightness: Brightness.light,
     colorScheme: ColorScheme.light(
-      primary: primaryPurple,
-      secondary: secondaryPurple,
-      tertiary: accentPink,
+      primary: primaryPink,
+      secondary: accentCyan,
+      tertiary: goldAchievement,
       surface: lightSurface,
       error: errorRed,
       onPrimary: Colors.white,
@@ -131,7 +137,7 @@ class AppTheme {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: primaryPurple, width: 2),
+        borderSide: const BorderSide(color: primaryPink, width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -146,9 +152,9 @@ class AppTheme {
     useMaterial3: true,
     brightness: Brightness.dark,
     colorScheme: ColorScheme.dark(
-      primary: primaryPurple,
-      secondary: secondaryPurple,
-      tertiary: accentPink,
+      primary: primaryPink,
+      secondary: accentCyan,
+      tertiary: goldAchievement,
       surface: darkSurface,
       error: errorRed,
       onPrimary: Colors.white,
@@ -247,7 +253,7 @@ class AppTheme {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: primaryPurple, width: 2),
+        borderSide: const BorderSide(color: primaryPink, width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
