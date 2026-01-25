@@ -1,4 +1,4 @@
-package app.aspire
+package dev.sixtusagbo.aspire
 
 import io.flutter.embedding.android.FlutterActivity
 
