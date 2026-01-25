@@ -2,6 +2,7 @@ import 'package:aspire/core/widgets/app_shell.dart';
 import 'package:aspire/features/auth/forgot_password_screen.dart';
 import 'package:aspire/features/auth/sign_in_screen.dart';
 import 'package:aspire/features/auth/sign_up_screen.dart';
+import 'package:aspire/features/goals/goal_detail_screen.dart';
 import 'package:aspire/features/goals/goals_screen.dart';
 import 'package:aspire/features/home/home_screen.dart';
 import 'package:aspire/features/onboarding/onboarding_screen.dart';
@@ -23,8 +24,11 @@ class AppRoutes {
   static const onboarding = '/onboarding';
   static const home = '/home';
   static const goals = '/goals';
+  static const goalDetail = '/goals/:goalId';
   static const progress = '/progress';
   static const settings = '/settings';
+
+  static String goalDetailPath(String goalId) => '/goals/$goalId';
 }
 
 /// Global navigator key - enables navigation from anywhere without BuildContext.
@@ -99,6 +103,13 @@ GoRouter router(Ref ref) {
       GoRoute(
         path: AppRoutes.settings,
         builder: (context, state) => const SettingsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.goalDetail,
+        builder: (context, state) {
+          final goalId = state.pathParameters['goalId']!;
+          return GoalDetailScreen(goalId: goalId);
+        },
       ),
     ],
   );

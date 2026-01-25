@@ -224,10 +224,10 @@ class DailyLog {
 
 **Day 4: Micro-Action Setup**
 
-- [ ] Micro-action list for goal
-- [ ] Add/edit/delete micro-actions
-- [ ] Drag to reorder
-- [ ] Notification permission request
+- [x] Micro-action list for goal
+- [x] Add/edit/delete micro-actions
+- [x] Drag to reorder
+- [x] Notification permission request
 
 **Deliverable:** User can create a goal with micro-actions
 
