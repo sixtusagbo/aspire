@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://aspire-app.vercel.app",
+    url: "https://aspire.sixtusagbo.dev",
     siteName: "Aspire",
     title: "Aspire - From Dreaming to Doing",
     description:
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     { url: "/favicon.ico", sizes: "16x16 32x32", type: "image/x-icon" },
     { url: "/apple-touch-icon.png", rel: "apple-touch-icon" },
   ],
-  metadataBase: new URL("https://aspire-app.vercel.app"),
+  metadataBase: new URL("https://aspire.sixtusagbo.dev"),
 };
 
 export default function RootLayout({
@@ -81,7 +81,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="canonical" href="https://aspire-app.vercel.app" />
+        <link rel="canonical" href="https://aspire.sixtusagbo.dev" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
