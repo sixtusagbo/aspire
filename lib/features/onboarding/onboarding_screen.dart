@@ -1,5 +1,14 @@
+import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/core/utils/app_router.dart';
+import 'package:aspire/features/onboarding/widgets/goal_setup_step.dart';
+import 'package:aspire/features/onboarding/widgets/name_step.dart';
+import 'package:aspire/features/onboarding/widgets/welcome_step.dart';
+import 'package:aspire/models/goal.dart';
+import 'package:aspire/services/auth_service.dart';
+import 'package:aspire/services/goal_service.dart';
+import 'package:aspire/services/user_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -8,67 +17,137 @@ class OnboardingScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final pageController = usePageController();
+    final currentPage = useState(0);
+    final isLoading = useState(false);
+
+    // Form data
+    final name = useState('');
+    final goalTitle = useState('');
+    final goalDescription = useState('');
+    final goalTargetDate = useState<DateTime?>(null);
+    final goalCategory = useState(GoalCategory.personal);
+
+    Future<void> completeOnboarding() async {
+      isLoading.value = true;
+
+      try {
+        final authService = ref.read(authServiceProvider);
+        final userService = ref.read(userServiceProvider);
+        final goalService = ref.read(goalServiceProvider);
+        final user = authService.currentUser;
+
+        if (user == null) {
+          if (context.mounted) {
+            context.go(AppRoutes.signIn);
+          }
+          return;
+        }
+
+        // Update user name and mark onboarding complete
+        await userService.updateUser(user.uid, {
+          'name': name.value,
+          'onboardingComplete': true,
+        });
+
+        // Create first goal if title provided
+        if (goalTitle.value.isNotEmpty) {
+          await goalService.createGoal(
+            userId: user.uid,
+            title: goalTitle.value,
+            description: goalDescription.value.isNotEmpty
+                ? goalDescription.value
+                : null,
+            targetDate: goalTargetDate.value,
+            category: goalCategory.value,
+          );
+        }
+
+        if (context.mounted) {
+          context.go(AppRoutes.home);
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: $e')),
+          );
+        }
+      } finally {
+        isLoading.value = false;
+      }
+    }
+
+    void nextPage() {
+      if (currentPage.value < 2) {
+        pageController.nextPage(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      } else {
+        completeOnboarding();
+      }
+    }
+
+    void previousPage() {
+      if (currentPage.value > 0) {
+        pageController.previousPage(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    }
+
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Spacer(),
-              Icon(
-                Icons.rocket_launch_rounded,
-                size: 100,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              const SizedBox(height: 32),
-              Text(
-                'Welcome to Aspire',
-                style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                      fontWeight: FontWeight.bold,
+        child: Column(
+          children: [
+            // Progress indicator
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Row(
+                children: List.generate(3, (index) {
+                  return Expanded(
+                    child: Container(
+                      margin: EdgeInsets.only(right: index < 2 ? 8 : 0),
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: index <= currentPage.value
+                            ? AppTheme.primaryPink
+                            : AppTheme.primaryPink.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
                     ),
-                textAlign: TextAlign.center,
+                  );
+                }),
               ),
-              const SizedBox(height: 16),
-              Text(
-                'Turn your big dreams into daily micro-actions.\n'
-                'Let\'s get you started on your journey.',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withValues(alpha: 0.7),
-                    ),
-                textAlign: TextAlign.center,
-              ),
-              const Spacer(),
-              SizedBox(
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // TODO: Complete onboarding flow
-                    context.go(AppRoutes.home);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
+            ),
+
+            // Pages
+            Expanded(
+              child: PageView(
+                controller: pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                onPageChanged: (page) => currentPage.value = page,
+                children: [
+                  WelcomeStep(onNext: nextPage),
+                  NameStep(
+                    name: name,
+                    onNext: nextPage,
+                    onBack: previousPage,
                   ),
-                  child: const Text(
-                    'Get Started',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  GoalSetupStep(
+                    title: goalTitle,
+                    description: goalDescription,
+                    targetDate: goalTargetDate,
+                    category: goalCategory,
+                    isLoading: isLoading.value,
+                    onNext: nextPage,
+                    onBack: previousPage,
                   ),
-                ),
+                ],
               ),
-              const SizedBox(height: 32),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
