@@ -43,7 +43,7 @@ Shipyard Hackathon Entry for Gabby Beckford (@PacksLight)
 | State Management | hooks_riverpod v3  | Borrowed from FoodPilot                      |
 | Database         | Firebase Firestore | Real-time sync, auth integration             |
 | Authentication   | Firebase Auth      | Google Sign-In + email/password              |
-| AI               | OpenAI API         | Goal → micro-action breakdown                |
+| AI               | OpenAI via Firebase Functions | Goal → micro-action breakdown (API key protected server-side) |
 | Monetization     | RevenueCat         | Required for hackathon                       |
 | Notifications    | Local              | Daily micro-action reminders                 |
 

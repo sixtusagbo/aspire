@@ -3,50 +3,50 @@
 ## 1. Firebase Project Setup
 
 ### Create Project
-1. Go to [Firebase Console](https://console.firebase.google.com/)
-2. Click "Add project"
-3. Name it `aspire` (or `aspire-app` if taken)
-4. Disable Google Analytics (optional, speeds up setup)
-5. Click "Create project"
+- [ ] Go to [Firebase Console](https://console.firebase.google.com/)
+- [ ] Click "Add project"
+- [ ] Name it `aspire` (or `aspire-app` if taken)
+- [ ] Disable Google Analytics (optional, speeds up setup)
+- [ ] Click "Create project"
 
 ### Add Android App
-1. In project overview, click the Android icon
-2. Package name: `dev.sixtusagbo.aspire`
-3. App nickname: `Aspire`
-4. Download `google-services.json`
-5. Place it in `android/app/google-services.json`
+- [ ] In project overview, click the Android icon
+- [ ] Package name: `dev.sixtusagbo.aspire`
+- [ ] App nickname: `Aspire`
+- [ ] Download `google-services.json`
+- [ ] Place it in `android/app/google-services.json`
 
 ### Enable Authentication
-1. Go to Build > Authentication
-2. Click "Get started"
-3. Enable **Email/Password** provider
-4. Enable **Google** provider:
-   - Add support email
-   - Note the Web Client ID (needed for Android)
+- [ ] Go to Build > Authentication
+- [ ] Click "Get started"
+- [ ] Enable **Email/Password** provider
+- [ ] Enable **Google** provider:
+  - Add support email
+  - Note the Web Client ID (needed for Android)
 
 ### Configure Google Sign-In for Android (REQUIRED)
 
 **Without this, Google Sign-In will fail silently!**
 
-1. Get your SHA-1 fingerprint:
-   ```bash
-   cd android && ./gradlew signingReport
-   ```
-   Look for `SHA1:` under `Variant: debug`
+- [ ] Get your SHA-1 fingerprint:
+  ```bash
+  cd android && ./gradlew signingReport
+  ```
+  Look for `SHA1:` under `Variant: debug`
 
-2. Go to [Firebase Console](https://console.firebase.google.com/) > Project Settings > Your apps > Android app
+- [ ] Go to [Firebase Console](https://console.firebase.google.com/) > Project Settings > Your apps > Android app
 
-3. Click "Add fingerprint" and paste the SHA-1
+- [ ] Click "Add fingerprint" and paste the SHA-1
 
-4. Download the updated `google-services.json` and replace `android/app/google-services.json`
+- [ ] Download the updated `google-services.json` and replace `android/app/google-services.json`
 
-5. Rebuild the app: `flutter clean && flutter run`
+- [ ] Rebuild the app: `flutter clean && flutter run`
 
 ### Enable Firestore
-1. Go to Build > Firestore Database
-2. Click "Create database"
-3. Start in **test mode** (we'll add rules later)
-4. Choose nearest region (e.g., `us-central1`)
+- [ ] Go to Build > Firestore Database
+- [ ] Click "Create database"
+- [ ] Start in **test mode** (we'll add rules later)
+- [ ] Choose nearest region (e.g., `us-central1`)
 
 ### Firestore Security Rules (for development)
 ```
@@ -65,63 +65,79 @@ service cloud.firestore {
 ## 2. RevenueCat Setup
 
 ### Create Account
-1. Go to [RevenueCat Dashboard](https://app.revenuecat.com/)
-2. Sign up / Log in
+- [ ] Go to [RevenueCat Dashboard](https://app.revenuecat.com/)
+- [ ] Sign up / Log in
 
 ### Create Project
-1. Click "Create new project"
-2. Name: `Aspire`
+- [ ] Click "Create new project"
+- [ ] Name: `Aspire`
 
 ### Add Android App
-1. In your project, go to Apps > Add app
-2. Select **Google Play Store**
-3. App name: `Aspire`
-4. Package name: `dev.sixtusagbo.aspire`
+- [ ] In your project, go to Apps > Add app
+- [ ] Select **Google Play Store**
+- [ ] App name: `Aspire`
+- [ ] Package name: `dev.sixtusagbo.aspire`
 
 ### Get API Key
-1. Go to your Android app in RevenueCat
-2. Copy the **Public API Key** (starts with `goog_`)
-3. You'll add this to the app later
+- [ ] Go to your Android app in RevenueCat
+- [ ] Copy the **Public API Key** (starts with `goog_`)
+- [ ] You'll add this to the app later
 
 ### Create Products (Do after Google Play Console setup)
-1. Go to Products > Entitlements
-2. Create entitlement: `premium`
-3. Go to Products > Products
-4. Add products (after creating in Google Play Console):
-   - `aspire_premium_monthly` ($4.99/month)
-   - `aspire_premium_yearly` ($29.99/year)
+- [ ] Go to Products > Entitlements
+- [ ] Create entitlement: `premium`
+- [ ] Go to Products > Products
+- [ ] Add products (after creating in Google Play Console):
+  - `aspire_premium_monthly` ($4.99/month)
+  - `aspire_premium_yearly` ($29.99/year)
 
 ### Create Offering
-1. Go to Products > Offerings
-2. Create offering: `default`
-3. Add packages:
-   - Monthly: attach `aspire_premium_monthly`
-   - Annual: attach `aspire_premium_yearly`
+- [ ] Go to Products > Offerings
+- [ ] Create offering: `default`
+- [ ] Add packages:
+  - Monthly: attach `aspire_premium_monthly`
+  - Annual: attach `aspire_premium_yearly`
 
 ---
 
 ## 3. Google Play Console (for testing)
 
 ### Internal Testing Track
-1. Go to [Google Play Console](https://play.google.com/console/)
-2. Create app or select existing
-3. Go to Testing > Internal testing
-4. Create a new release
-5. Add testers (email addresses)
-6. Upload AAB when ready
+- [ ] Go to [Google Play Console](https://play.google.com/console/)
+- [ ] Create app or select existing
+- [ ] Go to Testing > Internal testing
+- [ ] Create a new release
+- [ ] Add testers (email addresses)
+- [ ] Upload AAB when ready
 
 ### Create In-App Products
-1. Go to Monetize > Products > Subscriptions
-2. Create subscription:
-   - Product ID: `aspire_premium_monthly`
-   - Price: $4.99/month
-3. Create another:
-   - Product ID: `aspire_premium_yearly`
-   - Price: $29.99/year
+- [ ] Go to Monetize > Products > Subscriptions
+- [ ] Create subscription:
+  - Product ID: `aspire_premium_monthly`
+  - Price: $4.99/month
+- [ ] Create another:
+  - Product ID: `aspire_premium_yearly`
+  - Price: $29.99/year
 
 ---
 
-## Checklist
+## 4. Firebase Functions (for AI)
+
+### Setup
+- [ ] Enable Firebase Functions in console
+- [ ] Install Firebase CLI: `npm install -g firebase-tools`
+- [ ] Initialize functions: `firebase init functions`
+- [ ] Set OpenAI API key as secret:
+  ```bash
+  firebase functions:secrets:set OPENAI_API_KEY
+  ```
+
+### Deploy
+- [ ] Deploy functions: `firebase deploy --only functions`
+
+---
+
+## Quick Checklist
 
 - [ ] Firebase project created
 - [ ] `google-services.json` in `android/app/`
@@ -131,3 +147,4 @@ service cloud.firestore {
 - [ ] RevenueCat project created
 - [ ] RevenueCat API key copied
 - [ ] Google Play Console app created (can do later)
+- [ ] Firebase Functions deployed (for AI features)
