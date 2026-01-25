@@ -187,11 +187,16 @@ class DailyLog {
 
 - [x] Flutter project initialized (Android only)
 - [x] Copy folder structure from FoodPilot
-- [ ] Set up Firebase project (new project: aspire)
-- [ ] Configure Firebase Auth
+- [x] Set up Firebase project (new project: aspire)
+- [x] Configure Firebase Auth
 - [x] Copy theme system from FoodPilot
 - [x] Copy app router pattern
 - [ ] Set up RevenueCat account and SDK
+- [ ] Landing page (for Google OAuth branding verification)
+  - [ ] Homepage with app description
+  - [ ] Privacy Policy page
+  - [ ] Terms of Service page
+  - [ ] Deploy to Vercel
 
 **Day 2: Auth & Core Providers**
 

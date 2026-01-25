@@ -8,7 +8,6 @@ export default function Hero() {
       <div className="max-w-4xl mx-auto w-full relative z-10 text-center">
         {/* Badge */}
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8">
-          <Sparkles className="w-4 h-4 text-primary" />
           <span className="text-sm font-medium text-primary">
             For ambitious women who want it all
           </span>
@@ -57,8 +56,7 @@ export default function Hero() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <a
             href="#"
-            className="btn-primary px-8 py-4 rounded-xl text-white font-semibold flex items-center justify-center gap-2 min-w-[200px] shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98] transition-all"
-          >
+            className="btn-primary px-8 py-4 rounded-xl text-white font-semibold flex items-center justify-center gap-2 min-w-[200px] shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98] transition-all">
             Coming Soon to Android
           </a>
         </div>

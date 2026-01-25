@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 class AppTheme {
   AppTheme._();
 
-  // Primary brand colors from packslight.com
+  // Primary brand colors inspired by packslight.com
   static const Color primaryPink = Color(0xFFDB4291); // Main pink/magenta
   static const Color secondaryPink = Color(0xFFFF6D99); // Lighter hot pink
   static const Color accentCyan = Color(0xFF6EC1E4); // Cyan/teal accent
