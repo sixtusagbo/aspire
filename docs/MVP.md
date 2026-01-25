@@ -192,11 +192,12 @@ class DailyLog {
 - [x] Copy theme system from FoodPilot
 - [x] Copy app router pattern
 - [ ] Set up RevenueCat account and SDK
-- [ ] Landing page (for Google OAuth branding verification)
-  - [ ] Homepage with app description
-  - [ ] Privacy Policy page
-  - [ ] Terms of Service page
-  - [ ] Deploy to Vercel
+- [x] Landing page (for Google OAuth branding verification)
+  - [x] Homepage with app description
+  - [x] Privacy Policy page
+  - [x] Terms of Service page
+  - [x] Deploy to Vercel
+  - [x] Google OAuth branding verified
 
 **Day 2: Auth & Core Providers**
 
