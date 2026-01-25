@@ -216,7 +216,7 @@ class DailyLog {
 **Day 3: Onboarding & Goal Creation**
 
 - [x] Welcome screen with value proposition
-- [x] Name collection
+- [x] Name collection (skipped for OAuth users who have displayName)
 - [x] Goal creation screen
 - [x] Title, description, target date inputs
 - [x] Category selection (travel, career, finance, wellness, personal)

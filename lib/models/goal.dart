@@ -5,6 +5,7 @@ import 'user.dart'; // For DateTimeHook, NullableDateTimeHook
 part 'goal.mapper.dart';
 
 /// Goal categories
+@MappableEnum()
 enum GoalCategory {
   travel,
   career,

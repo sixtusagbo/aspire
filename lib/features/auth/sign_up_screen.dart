@@ -76,10 +76,18 @@ class SignUpScreen extends HookConsumerWidget {
         final authService = ref.read(authServiceProvider);
         final userCredential = await authService.signInWithGoogle();
 
-        if (userCredential != null && context.mounted) {
+        if (userCredential == null) {
+          // User cancelled
+          isLoading.value = false;
+          return;
+        }
+
+        if (context.mounted) {
           context.go(AppRoutes.onboarding);
         }
-      } catch (e) {
+      } catch (e, stackTrace) {
+        debugPrint('Google sign-up error: $e');
+        debugPrint('Stack trace: $stackTrace');
         if (context.mounted) {
           ToastHelper.showError('Sign up was interrupted. Please try again.');
         }

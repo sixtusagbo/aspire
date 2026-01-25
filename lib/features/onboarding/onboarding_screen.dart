@@ -1,5 +1,6 @@
 import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/core/utils/app_router.dart';
+import 'package:aspire/core/utils/toast_helper.dart';
 import 'package:aspire/features/onboarding/widgets/goal_setup_step.dart';
 import 'package:aspire/features/onboarding/widgets/name_step.dart';
 import 'package:aspire/features/onboarding/widgets/welcome_step.dart';
@@ -17,12 +18,20 @@ class OnboardingScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final authService = ref.read(authServiceProvider);
+    final user = authService.currentUser;
+
+    // Check if user has a display name (OAuth users have this pre-filled)
+    final hasDisplayName =
+        user?.displayName != null && user!.displayName!.isNotEmpty;
+    final totalPages = hasDisplayName ? 2 : 3;
+
     final pageController = usePageController();
     final currentPage = useState(0);
     final isLoading = useState(false);
 
-    // Form data
-    final name = useState('');
+    // Form data - pre-fill name for OAuth users
+    final name = useState(hasDisplayName ? user.displayName! : '');
     final goalTitle = useState('');
     final goalDescription = useState('');
     final goalTargetDate = useState<DateTime?>(null);
@@ -32,10 +41,8 @@ class OnboardingScreen extends HookConsumerWidget {
       isLoading.value = true;
 
       try {
-        final authService = ref.read(authServiceProvider);
         final userService = ref.read(userServiceProvider);
         final goalService = ref.read(goalServiceProvider);
-        final user = authService.currentUser;
 
         if (user == null) {
           if (context.mounted) {
@@ -66,19 +73,20 @@ class OnboardingScreen extends HookConsumerWidget {
         if (context.mounted) {
           context.go(AppRoutes.home);
         }
-      } catch (e) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: $e')),
-          );
-        }
+      } catch (e, stackTrace) {
+        debugPrint('Error completing onboarding: $e');
+        debugPrint('Stack trace: $stackTrace');
+        ToastHelper.showError(
+          'Something went wrong',
+          details: e.toString(),
+        );
       } finally {
         isLoading.value = false;
       }
     }
 
     void nextPage() {
-      if (currentPage.value < 2) {
+      if (currentPage.value < totalPages - 1) {
         pageController.nextPage(
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
@@ -97,6 +105,26 @@ class OnboardingScreen extends HookConsumerWidget {
       }
     }
 
+    // Build pages based on whether we need the name step
+    final pages = <Widget>[
+      WelcomeStep(onNext: nextPage),
+      if (!hasDisplayName)
+        NameStep(
+          name: name,
+          onNext: nextPage,
+          onBack: previousPage,
+        ),
+      GoalSetupStep(
+        title: goalTitle,
+        description: goalDescription,
+        targetDate: goalTargetDate,
+        category: goalCategory,
+        isLoading: isLoading.value,
+        onNext: nextPage,
+        onBack: previousPage,
+      ),
+    ];
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -105,10 +133,12 @@ class OnboardingScreen extends HookConsumerWidget {
             Padding(
               padding: const EdgeInsets.all(24.0),
               child: Row(
-                children: List.generate(3, (index) {
+                children: List.generate(totalPages, (index) {
                   return Expanded(
                     child: Container(
-                      margin: EdgeInsets.only(right: index < 2 ? 8 : 0),
+                      margin: EdgeInsets.only(
+                        right: index < totalPages - 1 ? 8 : 0,
+                      ),
                       height: 4,
                       decoration: BoxDecoration(
                         color: index <= currentPage.value
@@ -128,23 +158,7 @@ class OnboardingScreen extends HookConsumerWidget {
                 controller: pageController,
                 physics: const NeverScrollableScrollPhysics(),
                 onPageChanged: (page) => currentPage.value = page,
-                children: [
-                  WelcomeStep(onNext: nextPage),
-                  NameStep(
-                    name: name,
-                    onNext: nextPage,
-                    onBack: previousPage,
-                  ),
-                  GoalSetupStep(
-                    title: goalTitle,
-                    description: goalDescription,
-                    targetDate: goalTargetDate,
-                    category: goalCategory,
-                    isLoading: isLoading.value,
-                    onNext: nextPage,
-                    onBack: previousPage,
-                  ),
-                ],
+                children: pages,
               ),
             ),
           ],

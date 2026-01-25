@@ -67,7 +67,13 @@ class SignInScreen extends HookConsumerWidget {
         final authService = ref.read(authServiceProvider);
         final userCredential = await authService.signInWithGoogle();
 
-        if (userCredential != null && context.mounted) {
+        if (userCredential == null) {
+          // User cancelled
+          isLoading.value = false;
+          return;
+        }
+
+        if (context.mounted) {
           final userService = ref.read(userServiceProvider);
           final profile = await userService.getUser(userCredential.user!.uid);
 
@@ -81,7 +87,9 @@ class SignInScreen extends HookConsumerWidget {
             context.go(AppRoutes.onboarding);
           }
         }
-      } catch (e) {
+      } catch (e, stackTrace) {
+        debugPrint('Google sign-in error: $e');
+        debugPrint('Stack trace: $stackTrace');
         if (context.mounted) {
           ToastHelper.showError('Sign in was interrupted. Please try again.');
         }

@@ -7,6 +7,64 @@
 
 part of 'goal.dart';
 
+class GoalCategoryMapper extends EnumMapper<GoalCategory> {
+  GoalCategoryMapper._();
+
+  static GoalCategoryMapper? _instance;
+  static GoalCategoryMapper ensureInitialized() {
+    if (_instance == null) {
+      MapperContainer.globals.use(_instance = GoalCategoryMapper._());
+    }
+    return _instance!;
+  }
+
+  static GoalCategory fromValue(dynamic value) {
+    ensureInitialized();
+    return MapperContainer.globals.fromValue(value);
+  }
+
+  @override
+  GoalCategory decode(dynamic value) {
+    switch (value) {
+      case r'travel':
+        return GoalCategory.travel;
+      case r'career':
+        return GoalCategory.career;
+      case r'finance':
+        return GoalCategory.finance;
+      case r'wellness':
+        return GoalCategory.wellness;
+      case r'personal':
+        return GoalCategory.personal;
+      default:
+        throw MapperException.unknownEnumValue(value);
+    }
+  }
+
+  @override
+  dynamic encode(GoalCategory self) {
+    switch (self) {
+      case GoalCategory.travel:
+        return r'travel';
+      case GoalCategory.career:
+        return r'career';
+      case GoalCategory.finance:
+        return r'finance';
+      case GoalCategory.wellness:
+        return r'wellness';
+      case GoalCategory.personal:
+        return r'personal';
+    }
+  }
+}
+
+extension GoalCategoryMapperExtension on GoalCategory {
+  String toValue() {
+    GoalCategoryMapper.ensureInitialized();
+    return MapperContainer.globals.toValue<GoalCategory>(this) as String;
+  }
+}
+
 class GoalMapper extends ClassMapperBase<Goal> {
   GoalMapper._();
 
@@ -14,6 +72,7 @@ class GoalMapper extends ClassMapperBase<Goal> {
   static GoalMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = GoalMapper._());
+      GoalCategoryMapper.ensureInitialized();
     }
     return _instance!;
   }

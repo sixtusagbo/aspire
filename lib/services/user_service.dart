@@ -15,7 +15,9 @@ class UserService {
       return null;
     }
 
-    return AppUserMapper.fromMap(doc.data()!);
+    // Inject the document ID since Firestore stores it separately
+    final data = {'id': doc.id, ...doc.data()!};
+    return AppUserMapper.fromMap(data);
   }
 
   /// Save user profile to Firestore
@@ -23,12 +25,15 @@ class UserService {
     await _firestore.collection('users').doc(profile.id).set(profile.toMap());
   }
 
-  /// Update user profile
+  /// Update user profile (uses set with merge so it works if doc doesn't exist)
   Future<void> updateUser(
     String userId,
     Map<String, dynamic> updates,
   ) async {
-    await _firestore.collection('users').doc(userId).update(updates);
+    await _firestore
+        .collection('users')
+        .doc(userId)
+        .set(updates, SetOptions(merge: true));
   }
 
   /// Delete user profile
