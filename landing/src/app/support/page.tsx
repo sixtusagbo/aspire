@@ -34,10 +34,10 @@ export default function Support() {
                   get back to you as soon as possible.
                 </p>
                 <a
-                  href="mailto:sixtusagbo@gmail.com"
+                  href="mailto:miracleagbosixtus@gmail.com"
                   className="inline-flex items-center gap-2 text-primary hover:underline font-medium"
                 >
-                  sixtusagbo@gmail.com
+                  miracleagbosixtus@gmail.com
                 </a>
               </div>
             </div>
