@@ -191,7 +191,6 @@ class DailyLog {
 - [x] Configure Firebase Auth
 - [x] Copy theme system from FoodPilot
 - [x] Copy app router pattern
-- [ ] Set up RevenueCat account and SDK
 - [x] Landing page (for Google OAuth branding verification)
   - [x] Homepage with app description
   - [x] Privacy Policy page
@@ -283,7 +282,7 @@ class DailyLog {
 
 **Day 9: RevenueCat & Paywall**
 
-- [ ] RevenueCat SDK setup
+- [ ] Set up RevenueCat account and SDK
 - [ ] Create offerings in RevenueCat dashboard
 - [ ] Premium entitlement check
 - [ ] Restore purchases
