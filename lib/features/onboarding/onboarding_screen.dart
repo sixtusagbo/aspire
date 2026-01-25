@@ -89,6 +89,7 @@ class OnboardingScreen extends HookConsumerWidget {
     }
 
     void nextPage() {
+      FocusScope.of(context).unfocus();
       if (currentPage.value < totalPages - 1) {
         pageController.nextPage(
           duration: const Duration(milliseconds: 300),
