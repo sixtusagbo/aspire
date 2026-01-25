@@ -192,7 +192,7 @@ class _GoalDetailContent extends HookConsumerWidget {
         // Actions list
         Expanded(
           child: StreamBuilder<List<MicroAction>>(
-            stream: goalService.watchGoalActions(goal.id),
+            stream: goalService.watchGoalActions(goal.id, goal.userId),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());

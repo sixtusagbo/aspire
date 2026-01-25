@@ -24,6 +24,32 @@ flutter test                                             # Run tests
 
 **Note:** Don't run `flutter build` or `flutter run` - the user runs the app themselves.
 
+## Firebase Deploy Commands
+
+Use the Makefile for deploying Firebase resources:
+
+```bash
+make deploy-firestore  # Deploy Firestore rules + indexes
+make deploy-rules      # Deploy Firestore rules only
+make deploy-indexes    # Deploy Firestore indexes only
+make deploy-all        # Deploy everything
+```
+
+**Important:** When adding new queries or collections, update `firestore.rules` and `firestore.indexes.json`, then run `make deploy-firestore`.
+
+## MCP Tools (dart-mcp-server)
+
+Use MCP tools for Dart/Flutter operations instead of shell commands:
+
+- `mcp__dart-mcp-server__analyze_files` - Analyze code for errors
+- `mcp__dart-mcp-server__run_tests` - Run tests (use instead of `flutter test`)
+- `mcp__dart-mcp-server__dart_fix` - Apply dart fixes
+- `mcp__dart-mcp-server__dart_format` - Format code
+- `mcp__dart-mcp-server__pub` - Run pub commands (get, add, remove, etc.)
+- `mcp__dart-mcp-server__pub_dev_search` - Search pub.dev for packages
+- `mcp__dart-mcp-server__hover` - Get hover info at cursor position
+- `mcp__dart-mcp-server__resolve_workspace_symbol` - Look up symbols by name
+
 ## Planning & Development
 
 - Development plan is in `docs/MVP.md`

@@ -107,9 +107,10 @@ class GoalService {
   // ============ Micro Actions ============
 
   /// Stream of micro-actions for a goal
-  Stream<List<MicroAction>> watchGoalActions(String goalId) {
+  Stream<List<MicroAction>> watchGoalActions(String goalId, String userId) {
     return _actionsRef
         .where('goalId', isEqualTo: goalId)
+        .where('userId', isEqualTo: userId)
         .orderBy('sortOrder')
         .snapshots()
         .map((snapshot) => snapshot.docs

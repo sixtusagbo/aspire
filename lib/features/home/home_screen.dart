@@ -163,7 +163,7 @@ class _GoalActionsSection extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return StreamBuilder<List<MicroAction>>(
-      stream: goalService.watchGoalActions(goal.id),
+      stream: goalService.watchGoalActions(goal.id, goal.userId),
       builder: (context, snapshot) {
         final allActions = snapshot.data ?? [];
         final pendingActions =
