@@ -3,6 +3,7 @@ import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
 import 'package:aspire/features/onboarding/widgets/goal_setup_step.dart';
 import 'package:aspire/features/onboarding/widgets/name_step.dart';
+import 'package:aspire/features/onboarding/widgets/notification_step.dart';
 import 'package:aspire/features/onboarding/widgets/welcome_step.dart';
 import 'package:aspire/models/goal.dart';
 import 'package:aspire/services/auth_service.dart';
@@ -24,7 +25,7 @@ class OnboardingScreen extends HookConsumerWidget {
     // Check if user has a display name (OAuth users have this pre-filled)
     final hasDisplayName =
         user?.displayName != null && user!.displayName!.isNotEmpty;
-    final totalPages = hasDisplayName ? 2 : 3;
+    final totalPages = hasDisplayName ? 3 : 4;
 
     final pageController = usePageController();
     final currentPage = useState(0);
@@ -93,8 +94,6 @@ class OnboardingScreen extends HookConsumerWidget {
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
         );
-      } else {
-        completeOnboarding();
       }
     }
 
@@ -121,8 +120,12 @@ class OnboardingScreen extends HookConsumerWidget {
         description: goalDescription,
         targetDate: goalTargetDate,
         category: goalCategory,
-        isLoading: isLoading.value,
+        isLoading: false,
         onNext: nextPage,
+        onBack: previousPage,
+      ),
+      NotificationStep(
+        onNext: () => completeOnboarding(),
         onBack: previousPage,
       ),
     ];
