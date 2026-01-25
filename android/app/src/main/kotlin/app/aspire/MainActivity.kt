@@ -1,4 +1,4 @@
-package com.example.goalpilot
+package app.aspire
 
 import io.flutter.embedding.android.FlutterActivity
 

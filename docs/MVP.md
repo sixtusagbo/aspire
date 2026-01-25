@@ -1,4 +1,4 @@
-# GoalPilot MVP Development Plan
+# Aspire MVP Development Plan
 
 **From dreaming to doing - for ambitious women**
 
@@ -75,7 +75,7 @@ If time permits before deadline, add in priority order:
 
 ## Reusable from FoodPilot
 
-| FoodPilot              | GoalPilot Equivalent              |
+| FoodPilot              | Aspire Equivalent              |
 | ---------------------- | --------------------------------- |
 | Auth (Firebase)        | Same - copy directly              |
 | Theme system           | Same - copy directly              |
@@ -180,7 +180,7 @@ class DailyLog {
 
 - [x] Flutter project initialized (Android only)
 - [ ] Copy folder structure from FoodPilot
-- [ ] Set up Firebase project (new project: goalpilot)
+- [ ] Set up Firebase project (new project: aspire)
 - [ ] Configure Firebase Auth
 - [ ] Copy theme system from FoodPilot
 - [ ] Copy app router pattern
@@ -190,7 +190,7 @@ class DailyLog {
 
 - [ ] Copy and adapt auth service
 - [ ] Copy sign-in/sign-up screens
-- [ ] Adapt for GoalPilot branding
+- [ ] Adapt for Aspire branding
 - [ ] Test Google Sign-In on Android
 
 **Day 3: Core Providers**

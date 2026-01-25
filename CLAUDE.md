@@ -4,7 +4,7 @@ Guidance for Claude Code when working with this Flutter/Dart codebase.
 
 ## Project Context
 
-GoalPilot is a hackathon entry for RevenueCat's Shipyard 2026 contest, building for Gabby Beckford (@PacksLight).
+Aspire is a hackathon entry for RevenueCat's Shipyard 2026 contest, building for Gabby Beckford (@PacksLight).
 
 **Deadline:** February 12, 2026
 
