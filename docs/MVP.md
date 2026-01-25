@@ -215,12 +215,12 @@ class DailyLog {
 
 **Day 3: Onboarding & Goal Creation**
 
-- [ ] Welcome screen with value proposition
-- [ ] Name collection
-- [ ] Goal creation screen
-- [ ] Title, description, target date inputs
-- [ ] Category selection (travel, career, finance, wellness, personal)
-- [ ] Save to Firestore
+- [x] Welcome screen with value proposition
+- [x] Name collection
+- [x] Goal creation screen
+- [x] Title, description, target date inputs
+- [x] Category selection (travel, career, finance, wellness, personal)
+- [x] Save to Firestore
 
 **Day 4: Micro-Action Setup**
 
