@@ -30,6 +30,7 @@ flutter test                                             # Run tests
 - Track progress by checking off items in the plan
 - Each phase should be testable before moving on
 - Time is critical - 19 days total
+- **Atomic commits** - commit frequently as we go, not at the end
 
 ## Core Principles
 
@@ -44,13 +45,13 @@ flutter test                                             # Run tests
 
 ### Naming Conventions
 
-| Element | Convention | Example |
-|---------|------------|---------|
-| Classes, enums, typedefs | PascalCase | `GoalService`, `GoalCategory` |
-| Variables, functions, parameters | camelCase | `goalCount`, `fetchUserData()` |
-| Files and directories | snake_case | `goal_detail_screen.dart` |
-| Constants | camelCase | `defaultPadding` |
-| Private members | prefix `_` | `_internalState` |
+| Element                          | Convention | Example                        |
+| -------------------------------- | ---------- | ------------------------------ |
+| Classes, enums, typedefs         | PascalCase | `GoalService`, `GoalCategory`  |
+| Variables, functions, parameters | camelCase  | `goalCount`, `fetchUserData()` |
+| Files and directories            | snake_case | `goal_detail_screen.dart`      |
+| Constants                        | camelCase  | `defaultPadding`               |
+| Private members                  | prefix `_` | `_internalState`               |
 
 ### Formatting
 

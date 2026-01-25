@@ -4,7 +4,12 @@
 
 Shipyard Hackathon Entry for Gabby Beckford (@PacksLight)
 
-**Deadline:** February 12, 2026 (19 days from Jan 25)
+**Deadline:** February 12, 2026, 11:59 PM PST
+
+**Timeline:**
+- Building: Jan 25 - Feb 3 (10 days)
+- Testing: Feb 4 - Feb 5 (2 days)
+- Submission: Feb 6+ (deadline Feb 12)
 
 ---
 
@@ -75,6 +80,8 @@ If time permits before deadline, add in priority order:
 
 ## Reusable from FoodPilot
 
+**Location:** `~/projects/foodpilot`
+
 | FoodPilot              | Aspire Equivalent              |
 | ---------------------- | --------------------------------- |
 | Auth (Firebase)        | Same - copy directly              |
@@ -144,7 +151,7 @@ class MicroAction {
 ```dart
 class DailyLog {
   final String id;
-  final String odayuserId;
+  final String userId;
   final DateTime date;
   final int actionsCompleted;
   final int xpEarned;
@@ -172,116 +179,90 @@ class DailyLog {
 
 ---
 
-## Development Phases
+## Development Phases (10 Days)
 
-### Phase 1: Foundation (Days 1-3)
+### Phase 1: Foundation (Days 1-2)
 
 **Day 1: Project Setup**
 
 - [x] Flutter project initialized (Android only)
-- [ ] Copy folder structure from FoodPilot
+- [x] Copy folder structure from FoodPilot
 - [ ] Set up Firebase project (new project: aspire)
 - [ ] Configure Firebase Auth
-- [ ] Copy theme system from FoodPilot
-- [ ] Copy app router pattern
+- [x] Copy theme system from FoodPilot
+- [x] Copy app router pattern
 - [ ] Set up RevenueCat account and SDK
 
-**Day 2: Auth & Theme**
+**Day 2: Auth & Core Providers**
 
-- [ ] Copy and adapt auth service
-- [ ] Copy sign-in/sign-up screens
-- [ ] Adapt for Aspire branding
-- [ ] Test Google Sign-In on Android
-
-**Day 3: Core Providers**
-
-- [ ] Set up Riverpod providers
-- [ ] Copy gamification stats provider pattern
-- [ ] Create goal provider
-- [ ] Create micro-action provider
+- [x] Copy and adapt auth service
+- [x] Copy sign-in/sign-up screens
+- [x] Adapt for Aspire branding
+- [x] Set up Riverpod providers
+- [ ] Create goal and micro-action providers
 - [ ] Run build_runner, verify everything compiles
 
 **Deliverable:** App launches, user can sign in, theme works
 
 ---
 
-### Phase 2: Onboarding & Goal Creation (Days 4-6)
+### Phase 2: Onboarding & Goal Creation (Days 3-4)
 
-**Day 4: Onboarding Flow**
+**Day 3: Onboarding & Goal Creation**
 
 - [ ] Welcome screen with value proposition
 - [ ] Name collection
-- [ ] First goal creation prompt
-- [ ] Notification permission request
-
-**Day 5: Goal Creation**
-
 - [ ] Goal creation screen
 - [ ] Title, description, target date inputs
 - [ ] Category selection (travel, career, finance, wellness, personal)
 - [ ] Save to Firestore
 
-**Day 6: Micro-Action Setup**
+**Day 4: Micro-Action Setup**
 
 - [ ] Micro-action list for goal
 - [ ] Add/edit/delete micro-actions
 - [ ] Drag to reorder
-- [ ] Schedule actions for specific days (optional)
+- [ ] Notification permission request
 
 **Deliverable:** User can create a goal with micro-actions
 
 ---
 
-### Phase 3: Daily Experience (Days 7-10)
+### Phase 3: Daily Experience (Days 5-6)
 
-**Day 7: Home Screen**
+**Day 5: Home Screen & Gamification**
 
 - [ ] Today's micro-actions list
 - [ ] One-tap completion
 - [ ] Progress indicator for each goal
 - [ ] Quick stats (streak, XP, level)
-
-**Day 8: Check-In & Gamification**
-
 - [ ] XP award on task completion (copy from FoodPilot)
 - [ ] Streak tracking (consecutive days with at least 1 action)
-- [ ] Level-up logic
 
-**Day 9: Confetti & Celebrations**
+**Day 6: Celebrations & Notifications**
 
 - [ ] Confetti animation on task completion
 - [ ] Bigger celebration on streak milestones (7, 30, etc.)
 - [ ] Goal completion celebration
 - [ ] Haptic feedback
-
-**Day 10: Notifications**
-
 - [ ] Daily reminder notification
-- [ ] Copy notification service from FoodPilot
-- [ ] Adapt for "Your micro-actions are waiting!"
 - [ ] Configurable reminder time
 
 **Deliverable:** Core daily loop works - check in, complete tasks, earn XP, see confetti
 
 ---
 
-### Phase 4: Progress & Goals View (Days 11-13)
+### Phase 4: Progress & Goals View (Days 7-8)
 
-**Day 11: Goals List Screen**
+**Day 7: Goals List & Detail**
 
-- [ ] List all goals
-- [ ] Progress bar per goal
+- [ ] List all goals with progress bar
 - [ ] Filter: Active / Completed
-- [ ] Tap to view goal details
-
-**Day 12: Goal Detail Screen**
-
-- [ ] Goal info (title, description, target date)
+- [ ] Goal detail screen
 - [ ] Micro-actions list with completion status
-- [ ] Overall progress percentage
 - [ ] Mark goal as complete button
 
-**Day 13: Stats & Progress Dashboard**
+**Day 8: Stats & Progress Dashboard**
 
 - [ ] Current streak display
 - [ ] Total goals completed
@@ -292,58 +273,45 @@ class DailyLog {
 
 ---
 
-### Phase 5: Monetization & Settings (Days 14-16)
+### Phase 5: Monetization & Settings (Days 9-10)
 
-**Day 14: RevenueCat Integration**
+**Day 9: RevenueCat & Paywall**
 
 - [ ] RevenueCat SDK setup
 - [ ] Create offerings in RevenueCat dashboard
 - [ ] Premium entitlement check
 - [ ] Restore purchases
-
-**Day 15: Paywall & Premium**
-
 - [ ] Paywall screen design
-- [ ] Free tier: 1 active goal, basic features
-- [ ] Premium: Unlimited goals, advanced stats
-- [ ] Purchase flow
-- [ ] Test on Android
+- [ ] Free tier: 1 active goal
+- [ ] Premium: Unlimited goals
 
-**Day 16: Settings Screen**
+**Day 10: Settings & Polish**
 
-- [ ] Account info
-- [ ] Notification preferences
-- [ ] Manage subscription
-- [ ] Sign out
-- [ ] Delete account
+- [ ] Settings screen (account, notifications, subscription)
+- [ ] Sign out / delete account
+- [ ] Empty states with encouraging messages
+- [ ] Loading states and error handling
 
-**Deliverable:** Monetization works, premium unlocks features
+**Deliverable:** Monetization works, app is feature-complete
 
 ---
 
-### Phase 6: Polish & Submit (Days 17-19)
+## Testing & Submission (Days 11-12)
 
-**Day 17: UI Polish**
-
-- [ ] Consistent styling throughout
-- [ ] Empty states with encouraging messages
-- [ ] Loading states
-- [ ] Error handling
-
-**Day 18: Testing & Bug Fixes**
+**Day 11: Testing**
 
 - [ ] Full flow testing
-- [ ] Edge cases
-- [ ] Fix critical bugs
-- [ ] Performance check
+- [ ] Edge cases and bug fixes
+- [ ] Performance optimization
 
-**Day 19: Submission**
+**Day 12: Submission**
 
-- [ ] Record demo video (required)
-- [ ] Write submission description
+- [ ] Record 2-3 minute demo video
+- [ ] Write proposal (problem, solution, monetization, roadmap)
+- [ ] Technical documentation
 - [ ] Screenshots
 - [ ] Upload to Google Play Internal Testing
-- [ ] Submit on Devpost
+- [ ] Submit on DevPost
 
 **Deliverable:** App submitted to hackathon
 
@@ -393,14 +361,27 @@ class DailyLog {
 
 ---
 
-## Success Criteria (Judging)
+## Judging Criteria
 
-Per hackathon rules, judged on:
+| Criteria | Weight | Focus |
+|----------|--------|-------|
+| **Audience Fit** | 30% | Does it solve Gabby's community's problem? |
+| **User Experience** | 25% | Is it delightful and easy to use? |
+| **Monetization Potential** | 20% | Is the business model viable? |
+| **Innovation** | 15% | Is the approach creative and fresh? |
+| **Technical Quality** | 10% | Does it work? Is it polished? |
 
-1. **Technical execution** - Does it work? Is it polished?
-2. **Audience fit** - Does it solve Gabby's community's problem?
-3. **Product quality** - Is it delightful to use?
-4. **Monetization potential** - Is the business model viable?
+**Note:** Gabby herself reviews top submissions for her brief.
+
+---
+
+## Submission Requirements
+
+1. **App Distribution:** Google Play Internal Testing
+2. **Demo Video:** 2-3 minutes showcasing core features and user flow
+3. **Written Proposal:** Problem statement, solution overview, monetization strategy, roadmap
+4. **Technical Documentation:** Architecture and RevenueCat integration details
+5. **Developer Bio:** Background and relevant experience
 
 ---
 
@@ -425,10 +406,11 @@ Per hackathon rules, judged on:
 
 ---
 
-## Next Steps (Tonight)
+## Next Steps (Day 1)
 
-1. [ ] Copy core files from FoodPilot
-2. [ ] Set up Firebase project
-3. [ ] Set up RevenueCat account
-4. [ ] Get basic app shell running
-5. [ ] Register on Devpost
+1. [ ] Copy core files from FoodPilot (theme, router, auth patterns)
+2. [ ] Set up Firebase project (aspire)
+3. [ ] Configure Firebase Auth
+4. [ ] Set up RevenueCat account
+5. [ ] Get basic app shell running with routing
+6. [ ] Register on DevPost
