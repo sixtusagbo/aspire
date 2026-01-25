@@ -20,6 +20,9 @@ class AppUser with AppUserMappable {
   final int currentStreak;
   final int longestStreak;
 
+  @MappableField(hook: NullableDateTimeHook())
+  final DateTime? lastActivityDate;
+
   // Premium status
   final bool isPremium;
 
@@ -37,6 +40,7 @@ class AppUser with AppUserMappable {
     this.level = 1,
     this.currentStreak = 0,
     this.longestStreak = 0,
+    this.lastActivityDate,
     this.isPremium = false,
     this.premiumExpiresAt,
   });

@@ -237,12 +237,12 @@ class DailyLog {
 
 **Day 5: Home Screen & Gamification**
 
-- [ ] Today's micro-actions list
-- [ ] One-tap completion
-- [ ] Progress indicator for each goal
-- [ ] Quick stats (streak, XP, level)
-- [ ] XP award on task completion (copy from FoodPilot)
-- [ ] Streak tracking (consecutive days with at least 1 action)
+- [x] Today's micro-actions list
+- [x] One-tap completion
+- [x] Progress indicator for each goal
+- [x] Quick stats (streak, XP, level)
+- [x] XP award on task completion (copy from FoodPilot)
+- [x] Streak tracking (consecutive days with at least 1 action)
 
 **Day 6: Celebrations & Notifications**
 

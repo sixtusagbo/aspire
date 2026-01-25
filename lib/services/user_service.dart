@@ -40,6 +40,15 @@ class UserService {
   Future<void> deleteUser(String userId) async {
     await _firestore.collection('users').doc(userId).delete();
   }
+
+  /// Stream user profile for real-time updates
+  Stream<AppUser?> watchUser(String userId) {
+    return _firestore.collection('users').doc(userId).snapshots().map((doc) {
+      if (!doc.exists || doc.data() == null) return null;
+      final data = {'id': doc.id, ...doc.data()!};
+      return AppUserMapper.fromMap(data);
+    });
+  }
 }
 
 @riverpod

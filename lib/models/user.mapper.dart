@@ -70,6 +70,13 @@ class AppUserMapper extends ClassMapperBase<AppUser> {
     opt: true,
     def: 0,
   );
+  static DateTime? _$lastActivityDate(AppUser v) => v.lastActivityDate;
+  static const Field<AppUser, DateTime> _f$lastActivityDate = Field(
+    'lastActivityDate',
+    _$lastActivityDate,
+    opt: true,
+    hook: NullableDateTimeHook(),
+  );
   static bool _$isPremium(AppUser v) => v.isPremium;
   static const Field<AppUser, bool> _f$isPremium = Field(
     'isPremium',
@@ -97,6 +104,7 @@ class AppUserMapper extends ClassMapperBase<AppUser> {
     #level: _f$level,
     #currentStreak: _f$currentStreak,
     #longestStreak: _f$longestStreak,
+    #lastActivityDate: _f$lastActivityDate,
     #isPremium: _f$isPremium,
     #premiumExpiresAt: _f$premiumExpiresAt,
   };
@@ -113,6 +121,7 @@ class AppUserMapper extends ClassMapperBase<AppUser> {
       level: data.dec(_f$level),
       currentStreak: data.dec(_f$currentStreak),
       longestStreak: data.dec(_f$longestStreak),
+      lastActivityDate: data.dec(_f$lastActivityDate),
       isPremium: data.dec(_f$isPremium),
       premiumExpiresAt: data.dec(_f$premiumExpiresAt),
     );
@@ -186,6 +195,7 @@ abstract class AppUserCopyWith<$R, $In extends AppUser, $Out>
     int? level,
     int? currentStreak,
     int? longestStreak,
+    DateTime? lastActivityDate,
     bool? isPremium,
     DateTime? premiumExpiresAt,
   });
@@ -212,6 +222,7 @@ class _AppUserCopyWithImpl<$R, $Out>
     int? level,
     int? currentStreak,
     int? longestStreak,
+    Object? lastActivityDate = $none,
     bool? isPremium,
     Object? premiumExpiresAt = $none,
   }) => $apply(
@@ -227,6 +238,7 @@ class _AppUserCopyWithImpl<$R, $Out>
       if (level != null) #level: level,
       if (currentStreak != null) #currentStreak: currentStreak,
       if (longestStreak != null) #longestStreak: longestStreak,
+      if (lastActivityDate != $none) #lastActivityDate: lastActivityDate,
       if (isPremium != null) #isPremium: isPremium,
       if (premiumExpiresAt != $none) #premiumExpiresAt: premiumExpiresAt,
     }),
@@ -249,6 +261,7 @@ class _AppUserCopyWithImpl<$R, $Out>
     level: data.get(#level, or: $value.level),
     currentStreak: data.get(#currentStreak, or: $value.currentStreak),
     longestStreak: data.get(#longestStreak, or: $value.longestStreak),
+    lastActivityDate: data.get(#lastActivityDate, or: $value.lastActivityDate),
     isPremium: data.get(#isPremium, or: $value.isPremium),
     premiumExpiresAt: data.get(#premiumExpiresAt, or: $value.premiumExpiresAt),
   );

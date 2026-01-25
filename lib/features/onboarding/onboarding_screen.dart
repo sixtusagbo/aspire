@@ -51,9 +51,11 @@ class OnboardingScreen extends HookConsumerWidget {
           return;
         }
 
-        // Update user name and mark onboarding complete
+        // Update user profile and mark onboarding complete
         await userService.updateUser(user.uid, {
           'name': name.value,
+          'email': user.email ?? '',
+          'createdAt': DateTime.now(),
           'onboardingComplete': true,
         });
 

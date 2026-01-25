@@ -1,5 +1,15 @@
+import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/core/utils/app_router.dart';
+import 'package:aspire/core/utils/toast_helper.dart';
+import 'package:aspire/features/home/widgets/stats_bar.dart';
+import 'package:aspire/models/goal.dart';
+import 'package:aspire/models/micro_action.dart';
+import 'package:aspire/models/user.dart';
+import 'package:aspire/services/auth_service.dart';
+import 'package:aspire/services/goal_service.dart';
+import 'package:aspire/services/user_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -8,6 +18,17 @@ class HomeScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final authService = ref.read(authServiceProvider);
+    final userService = ref.read(userServiceProvider);
+    final goalService = ref.read(goalServiceProvider);
+    final userId = authService.currentUser?.uid;
+
+    if (userId == null) {
+      return const Scaffold(
+        body: Center(child: Text('Please sign in')),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Today'),
@@ -18,15 +39,429 @@ class HomeScreen extends HookConsumerWidget {
           ),
         ],
       ),
-      body: const Center(
+      body: StreamBuilder<AppUser?>(
+        stream: userService.watchUser(userId),
+        builder: (context, userSnapshot) {
+          final user = userSnapshot.data;
+
+          return RefreshIndicator(
+            onRefresh: () async {
+              // Just trigger rebuild
+            },
+            child: CustomScrollView(
+              slivers: [
+                // Stats bar
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: user != null
+                        ? StatsBar(user: user)
+                        : _buildStatsPlaceholder(),
+                  ),
+                ),
+
+                // Section header
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                    child: Row(
+                      children: [
+                        const Text(
+                          'Your Actions',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const Spacer(),
+                        TextButton(
+                          onPressed: () => context.go(AppRoutes.goals),
+                          child: Text(
+                            'See Goals',
+                            style: TextStyle(color: AppTheme.primaryPink),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Actions list
+                _ActionsList(userId: userId, goalService: goalService),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildStatsPlaceholder() {
+    return Container(
+      height: 160,
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+}
+
+class _ActionsList extends HookConsumerWidget {
+  final String userId;
+  final GoalService goalService;
+
+  const _ActionsList({required this.userId, required this.goalService});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return StreamBuilder<List<Goal>>(
+      stream: goalService.watchActiveGoals(userId),
+      builder: (context, goalsSnapshot) {
+        if (goalsSnapshot.connectionState == ConnectionState.waiting) {
+          return const SliverFillRemaining(
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        final goals = goalsSnapshot.data ?? [];
+
+        if (goals.isEmpty) {
+          return SliverFillRemaining(
+            child: _EmptyState(
+              onCreateGoal: () => context.go(AppRoutes.goals),
+            ),
+          );
+        }
+
+        // Build a combined list of goal headers and actions
+        return SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              return _GoalActionsSection(
+                goal: goals[index],
+                goalService: goalService,
+              );
+            },
+            childCount: goals.length,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _GoalActionsSection extends HookConsumerWidget {
+  final Goal goal;
+  final GoalService goalService;
+
+  const _GoalActionsSection({required this.goal, required this.goalService});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return StreamBuilder<List<MicroAction>>(
+      stream: goalService.watchGoalActions(goal.id),
+      builder: (context, snapshot) {
+        final allActions = snapshot.data ?? [];
+        final pendingActions =
+            allActions.where((a) => !a.isCompleted).toList();
+
+        if (pendingActions.isEmpty && allActions.isNotEmpty) {
+          // All actions completed for this goal
+          return _CompletedGoalCard(goal: goal);
+        }
+
+        if (pendingActions.isEmpty) {
+          // No actions yet
+          return const SizedBox.shrink();
+        }
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Goal header
+              GestureDetector(
+                onTap: () => context.push(AppRoutes.goalDetailPath(goal.id)),
+                child: Row(
+                  children: [
+                    Icon(
+                      _categoryIcon(goal.category),
+                      size: 16,
+                      color: _categoryColor(goal.category),
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        goal.title,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey.shade700,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Text(
+                      '${goal.completedActionsCount}/${goal.totalActionsCount}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
+
+              // Actions
+              ...pendingActions.take(3).map(
+                    (action) => _ActionTile(
+                      action: action,
+                      goal: goal,
+                      goalService: goalService,
+                    ),
+                  ),
+
+              if (pendingActions.length > 3)
+                TextButton(
+                  onPressed: () =>
+                      context.push(AppRoutes.goalDetailPath(goal.id)),
+                  child: Text(
+                    '+${pendingActions.length - 3} more actions',
+                    style: TextStyle(
+                      color: AppTheme.primaryPink,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Color _categoryColor(GoalCategory category) {
+    return switch (category) {
+      GoalCategory.travel => Colors.blue,
+      GoalCategory.career => Colors.orange,
+      GoalCategory.finance => Colors.green,
+      GoalCategory.wellness => Colors.pink,
+      GoalCategory.personal => Colors.purple,
+    };
+  }
+
+  IconData _categoryIcon(GoalCategory category) {
+    return switch (category) {
+      GoalCategory.travel => Icons.flight_rounded,
+      GoalCategory.career => Icons.work_rounded,
+      GoalCategory.finance => Icons.attach_money_rounded,
+      GoalCategory.wellness => Icons.favorite_rounded,
+      GoalCategory.personal => Icons.star_rounded,
+    };
+  }
+}
+
+class _ActionTile extends HookConsumerWidget {
+  final MicroAction action;
+  final Goal goal;
+  final GoalService goalService;
+
+  const _ActionTile({
+    required this.action,
+    required this.goal,
+    required this.goalService,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: Colors.grey.shade200),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () => _completeAction(context),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+          child: Row(
+            children: [
+              Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppTheme.primaryPink,
+                    width: 2,
+                  ),
+                ),
+                child: const Icon(
+                  Icons.check,
+                  size: 14,
+                  color: Colors.transparent,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  action.title,
+                  style: const TextStyle(fontSize: 15),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryPink.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  '+10 XP',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.primaryPink,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _completeAction(BuildContext context) async {
+    // Haptic feedback
+    HapticFeedback.mediumImpact();
+
+    try {
+      await goalService.completeMicroAction(
+        actionId: action.id,
+        goalId: goal.id,
+        userId: action.userId,
+      );
+
+      ToastHelper.showSuccess('+10 XP earned!');
+    } catch (e) {
+      ToastHelper.showError('Failed to complete action');
+    }
+  }
+}
+
+class _CompletedGoalCard extends StatelessWidget {
+  final Goal goal;
+
+  const _CompletedGoalCard({required this.goal});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: Card(
+        elevation: 0,
+        color: Colors.green.shade50,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Icon(Icons.check_circle, color: Colors.green.shade600),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      goal.title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: Colors.green.shade700,
+                      ),
+                    ),
+                    Text(
+                      'All actions completed!',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.green.shade600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  final VoidCallback onCreateGoal;
+
+  const _EmptyState({required this.onCreateGoal});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.rocket_launch_rounded, size: 64),
-            SizedBox(height: 16),
-            Text('Home Screen'),
-            SizedBox(height: 8),
-            Text('Your daily micro-actions will appear here'),
+            Icon(
+              Icons.rocket_launch_rounded,
+              size: 80,
+              color: Colors.grey.shade300,
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'Ready to start achieving?',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Create your first goal and break it down\ninto small, achievable actions.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.grey.shade600,
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: onCreateGoal,
+              icon: const Icon(Icons.add),
+              label: const Text('Create a Goal'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primaryPink,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
+              ),
+            ),
           ],
         ),
       ),

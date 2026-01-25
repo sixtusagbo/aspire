@@ -177,6 +177,7 @@ class GoalService {
     required String userId,
   }) async {
     final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
     const xpReward = 10;
 
     final batch = _firestore.batch();
@@ -206,10 +207,50 @@ class GoalService {
     } else {
       batch.set(logRef, {
         'userId': userId,
-        'date': Timestamp.fromDate(DateTime(now.year, now.month, now.day)),
+        'date': Timestamp.fromDate(today),
         'actionsCompleted': 1,
         'xpEarned': xpReward,
         'completedActionIds': [actionId],
+      });
+    }
+
+    // Update user XP and streak
+    final userRef = _firestore.collection('users').doc(userId);
+    final userDoc = await userRef.get();
+
+    if (userDoc.exists) {
+      final userData = userDoc.data()!;
+      final lastActivity = userData['lastActivityDate'] as Timestamp?;
+      final currentStreak = userData['currentStreak'] as int? ?? 0;
+      final longestStreak = userData['longestStreak'] as int? ?? 0;
+
+      int newStreak = currentStreak;
+      if (lastActivity != null) {
+        final lastDate = lastActivity.toDate();
+        final lastDay = DateTime(lastDate.year, lastDate.month, lastDate.day);
+        final yesterday = today.subtract(const Duration(days: 1));
+
+        if (lastDay.isBefore(yesterday)) {
+          // Streak broken - reset to 1
+          newStreak = 1;
+        } else if (lastDay == yesterday) {
+          // Consecutive day - increment streak
+          newStreak = currentStreak + 1;
+        }
+        // If lastDay == today, streak stays the same (already counted today)
+      } else {
+        // First activity ever
+        newStreak = 1;
+      }
+
+      final newLongest =
+          newStreak > longestStreak ? newStreak : longestStreak;
+
+      batch.update(userRef, {
+        'xp': FieldValue.increment(xpReward),
+        'lastActivityDate': Timestamp.fromDate(today),
+        'currentStreak': newStreak,
+        'longestStreak': newLongest,
       });
     }
 
