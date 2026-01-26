@@ -7,9 +7,7 @@ class ProgressScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Progress'),
-      ),
+      appBar: AppBar(title: const Text('Progress')),
       body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

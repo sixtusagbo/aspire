@@ -92,10 +92,7 @@ class _LevelBadge extends StatelessWidget {
             ),
             Text(
               _title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -151,10 +148,7 @@ class _StreakBadge extends StatelessWidget {
           padding: const EdgeInsets.only(right: 4),
           child: Text(
             'Best: $longestStreak',
-            style: TextStyle(
-              fontSize: 11,
-              color: Colors.grey.shade500,
-            ),
+            style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
           ),
         ),
       ],
@@ -192,14 +186,14 @@ class _XpProgressSection extends StatelessWidget {
           children: [
             const Text(
               'XP Progress',
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
             ),
             RichText(
               text: TextSpan(
-                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
                 children: [
                   TextSpan(
                     text: '$_xpProgress',
@@ -232,10 +226,7 @@ class _XpProgressSection extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Text(
             '$xpRemaining XP to Level ${level + 1}',
-            style: TextStyle(
-              fontSize: 11,
-              color: Colors.grey.shade500,
-            ),
+            style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
           ),
         ),
       ],

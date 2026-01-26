@@ -71,18 +71,15 @@ class SplashScreen extends HookConsumerWidget {
                 color: Theme.of(context).colorScheme.primary,
               ),
               const SizedBox(height: 24),
-              Text(
-                'Aspire',
-                style: Theme.of(context).textTheme.displaySmall,
-              ),
+              Text('Aspire', style: Theme.of(context).textTheme.displaySmall),
               const SizedBox(height: 8),
               Text(
                 'From dreaming to doing',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withValues(
-                            alpha: 0.6,
-                          ),
-                    ),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.6),
+                ),
               ),
               const SizedBox(height: 32),
               CircularProgressIndicator.adaptive(

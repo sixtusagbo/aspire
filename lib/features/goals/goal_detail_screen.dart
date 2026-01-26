@@ -1,10 +1,12 @@
 import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
+import 'package:aspire/core/widgets/celebration_overlay.dart';
 import 'package:aspire/models/goal.dart';
 import 'package:aspire/models/micro_action.dart';
 import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/goal_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class GoalDetailScreen extends HookConsumerWidget {
@@ -19,46 +21,46 @@ class GoalDetailScreen extends HookConsumerWidget {
     final userId = authService.currentUser?.uid;
 
     if (userId == null) {
-      return const Scaffold(
-        body: Center(child: Text('Please sign in')),
-      );
+      return const Scaffold(body: Center(child: Text('Please sign in')));
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Goal Details'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit_outlined),
-            onPressed: () => _showEditGoalDialog(context, ref, userId),
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete_outline),
-            onPressed: () => _showDeleteDialog(context, goalService, userId),
-          ),
-        ],
-      ),
-      body: StreamBuilder<List<Goal>>(
-        stream: goalService.watchUserGoals(userId),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+    return CelebrationOverlay(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Goal Details'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.edit_outlined),
+              onPressed: () => _showEditGoalDialog(context, ref, userId),
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete_outline),
+              onPressed: () => _showDeleteDialog(context, goalService, userId),
+            ),
+          ],
+        ),
+        body: StreamBuilder<List<Goal>>(
+          stream: goalService.watchUserGoals(userId),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          final goals = snapshot.data ?? [];
-          final goal = goals.where((g) => g.id == goalId).firstOrNull;
+            final goals = snapshot.data ?? [];
+            final goal = goals.where((g) => g.id == goalId).firstOrNull;
 
-          if (goal == null) {
-            return const Center(child: Text('Goal not found'));
-          }
+            if (goal == null) {
+              return const Center(child: Text('Goal not found'));
+            }
 
-          return _GoalDetailContent(goal: goal);
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showAddActionDialog(context, ref),
-        icon: const Icon(Icons.add),
-        label: const Text('Add Action'),
+            return _GoalDetailContent(goal: goal);
+          },
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => _showAddActionDialog(context, ref),
+          icon: const Icon(Icons.add),
+          label: const Text('Add Action'),
+        ),
       ),
     );
   }
@@ -137,8 +139,8 @@ class GoalDetailScreen extends HookConsumerWidget {
                     Text(
                       'Edit Goal',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     IconButton(
                       onPressed: () => Navigator.pop(context, false),
@@ -177,10 +179,7 @@ class GoalDetailScreen extends HookConsumerWidget {
                 const SizedBox(height: 20),
 
                 // Category
-                Text(
-                  'Category',
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
+                Text('Category', style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 8),
                 Wrap(
                   spacing: 8,
@@ -204,8 +203,9 @@ class GoalDetailScreen extends HookConsumerWidget {
                           cat.name[0].toUpperCase() + cat.name.substring(1),
                           style: TextStyle(
                             color: isSelected ? Colors.white : Colors.black87,
-                            fontWeight:
-                                isSelected ? FontWeight.w600 : FontWeight.normal,
+                            fontWeight: isSelected
+                                ? FontWeight.w600
+                                : FontWeight.normal,
                           ),
                         ),
                       ),
@@ -233,9 +233,12 @@ class GoalDetailScreen extends HookConsumerWidget {
                     final picked = await showDatePicker(
                       context: context,
                       initialDate:
-                          targetDate ?? DateTime.now().add(const Duration(days: 30)),
+                          targetDate ??
+                          DateTime.now().add(const Duration(days: 30)),
                       firstDate: DateTime.now(),
-                      lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+                      lastDate: DateTime.now().add(
+                        const Duration(days: 365 * 5),
+                      ),
                     );
                     if (picked != null) {
                       setState(() => targetDate = picked);
@@ -354,9 +357,9 @@ class _GoalDetailContent extends HookConsumerWidget {
             children: [
               Text(
                 'Micro-Actions',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(width: 8),
               Container(
@@ -393,10 +396,7 @@ class _GoalDetailContent extends HookConsumerWidget {
                 return _EmptyActionsState(goalId: goal.id, userId: goal.userId);
               }
 
-              return _ActionsList(
-                actions: actions,
-                goalId: goal.id,
-              );
+              return _ActionsList(actions: actions, goalId: goal.id);
             },
           ),
         ),
@@ -450,18 +450,18 @@ class _GoalHeader extends StatelessWidget {
           // Title
           Text(
             goal.title,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
 
           if (goal.description != null && goal.description!.isNotEmpty) ...[
             const SizedBox(height: 8),
             Text(
               goal.description!,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey.shade600,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade600),
             ),
           ],
 
@@ -476,10 +476,7 @@ class _GoalHeader extends StatelessWidget {
                 children: [
                   Text(
                     '${(goal.progress * 100).toInt()}% complete',
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 13,
-                    ),
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                   ),
                   if (goal.daysRemaining != null)
                     Text(
@@ -613,17 +610,21 @@ class _ActionTile extends HookConsumerWidget {
               ? null
               : (value) async {
                   if (value == true) {
+                    HapticFeedback.mediumImpact();
                     await goalService.completeMicroAction(
                       actionId: action.id,
                       goalId: goalId,
                       userId: action.userId,
                     );
+                    if (context.mounted) {
+                      CelebrationOverlay.of(
+                        context,
+                      )?.celebrate(CelebrationType.actionComplete);
+                    }
                     ToastHelper.showSuccess('+10 XP!');
                   }
                 },
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
           activeColor: AppTheme.primaryPink,
         ),
         title: Text(
@@ -656,9 +657,7 @@ class _ActionTile extends HookConsumerWidget {
           controller: controller,
           autofocus: true,
           textCapitalization: TextCapitalization.sentences,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-          ),
+          decoration: const InputDecoration(border: OutlineInputBorder()),
           onSubmitted: (value) => Navigator.pop(context, value),
         ),
         actions: [
@@ -705,9 +704,9 @@ class _EmptyActionsState extends HookConsumerWidget {
             const SizedBox(height: 16),
             Text(
               'No micro-actions yet',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Colors.grey.shade600,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(color: Colors.grey.shade600),
             ),
             const SizedBox(height: 8),
             Text(

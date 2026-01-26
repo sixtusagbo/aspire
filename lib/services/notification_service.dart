@@ -14,7 +14,9 @@ class NotificationService {
   Future<void> initialize() async {
     if (_initialized) return;
 
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
@@ -35,9 +37,10 @@ class NotificationService {
     await initialize();
 
     // Android 13+ requires runtime permission
-    final androidPlugin =
-        _notifications.resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+    final androidPlugin = _notifications
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
 
     if (androidPlugin != null) {
       final granted = await androidPlugin.requestNotificationsPermission();
@@ -45,8 +48,10 @@ class NotificationService {
     }
 
     // iOS permission request
-    final iosPlugin = _notifications.resolvePlatformSpecificImplementation<
-        IOSFlutterLocalNotificationsPlugin>();
+    final iosPlugin = _notifications
+        .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin
+        >();
 
     if (iosPlugin != null) {
       final granted = await iosPlugin.requestPermissions(
@@ -64,9 +69,10 @@ class NotificationService {
   Future<bool> areNotificationsEnabled() async {
     await initialize();
 
-    final androidPlugin =
-        _notifications.resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+    final androidPlugin = _notifications
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
 
     if (androidPlugin != null) {
       return await androidPlugin.areNotificationsEnabled() ?? false;
@@ -110,8 +116,14 @@ class NotificationService {
 
   tz.TZDateTime _nextInstanceOfTime(int hour, int minute) {
     final now = tz.TZDateTime.now(tz.local);
-    var scheduled =
-        tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
+    var scheduled = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      hour,
+      minute,
+    );
 
     if (scheduled.isBefore(now)) {
       scheduled = scheduled.add(const Duration(days: 1));

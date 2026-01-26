@@ -35,9 +35,9 @@ class WelcomeStep extends StatelessWidget {
           Text(
             'From Dreaming\nto Doing',
             style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  height: 1.2,
-                ),
+              fontWeight: FontWeight.bold,
+              height: 1.2,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 20),
@@ -48,12 +48,11 @@ class WelcomeStep extends StatelessWidget {
             'Whether it\'s traveling the world, landing that\n'
             'six-figure salary, or achieving financial freedom.',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurface
-                      .withValues(alpha: 0.7),
-                  height: 1.5,
-                ),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.7),
+              height: 1.5,
+            ),
             textAlign: TextAlign.center,
           ),
 
@@ -75,10 +74,7 @@ class WelcomeStep extends StatelessWidget {
               ),
               child: const Text(
                 'Let\'s Go',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
           ),

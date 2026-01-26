@@ -79,10 +79,7 @@ class OnboardingScreen extends HookConsumerWidget {
       } catch (e, stackTrace) {
         debugPrint('Error completing onboarding: $e');
         debugPrint('Stack trace: $stackTrace');
-        ToastHelper.showError(
-          'Something went wrong',
-          details: e.toString(),
-        );
+        ToastHelper.showError('Something went wrong', details: e.toString());
       } finally {
         isLoading.value = false;
       }
@@ -111,11 +108,7 @@ class OnboardingScreen extends HookConsumerWidget {
     final pages = <Widget>[
       WelcomeStep(onNext: nextPage),
       if (!hasDisplayName)
-        NameStep(
-          name: name,
-          onNext: nextPage,
-          onBack: previousPage,
-        ),
+        NameStep(name: name, onNext: nextPage, onBack: previousPage),
       GoalSetupStep(
         title: goalTitle,
         description: goalDescription,

@@ -54,8 +54,9 @@ class ForgotPasswordScreen extends HookConsumerWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF151022) : const Color(0xFFF6F5F8),
+      backgroundColor: isDark
+          ? const Color(0xFF151022)
+          : const Color(0xFFF6F5F8),
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -82,8 +83,8 @@ class ForgotPasswordScreen extends HookConsumerWidget {
                 Text(
                   'Forgot Password?',
                   style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                    fontWeight: FontWeight.bold,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 12),
@@ -91,10 +92,10 @@ class ForgotPasswordScreen extends HookConsumerWidget {
                   'Don\'t worry! Enter your email address and we\'ll send you '
                   'instructions to reset your password.',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: isDark
-                            ? const Color(0xFF9CA3AF)
-                            : const Color(0xFF6B7280),
-                      ),
+                    color: isDark
+                        ? const Color(0xFF9CA3AF)
+                        : const Color(0xFF6B7280),
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 48),
@@ -132,8 +133,9 @@ class ForgotPasswordScreen extends HookConsumerWidget {
                             width: 20,
                             child: CircularProgressIndicator.adaptive(
                               strokeWidth: 2,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
                             ),
                           )
                         : Text(

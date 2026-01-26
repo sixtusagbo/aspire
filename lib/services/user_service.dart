@@ -26,10 +26,7 @@ class UserService {
   }
 
   /// Update user profile (uses set with merge so it works if doc doesn't exist)
-  Future<void> updateUser(
-    String userId,
-    Map<String, dynamic> updates,
-  ) async {
+  Future<void> updateUser(String userId, Map<String, dynamic> updates) async {
     await _firestore
         .collection('users')
         .doc(userId)

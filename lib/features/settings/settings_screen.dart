@@ -53,9 +53,7 @@ class SettingsScreen extends HookConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-      ),
+      appBar: AppBar(title: const Text('Settings')),
       body: ListView(
         children: [
           const ListTile(
@@ -71,8 +69,8 @@ class SettingsScreen extends HookConsumerWidget {
               notificationsEnabled.value == null
                   ? 'Checking...'
                   : notificationsEnabled.value!
-                      ? 'Enabled'
-                      : 'Tap to enable daily reminders',
+                  ? 'Enabled'
+                  : 'Tap to enable daily reminders',
             ),
             trailing: notificationsEnabled.value == null
                 ? const SizedBox(

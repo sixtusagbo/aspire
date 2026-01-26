@@ -35,8 +35,9 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.title.value);
-    _descriptionController =
-        TextEditingController(text: widget.description.value);
+    _descriptionController = TextEditingController(
+      text: widget.description.value,
+    );
   }
 
   @override
@@ -58,15 +59,16 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
     final picked = await showDatePicker(
       context: context,
       initialDate:
-          widget.targetDate.value ?? DateTime.now().add(const Duration(days: 30)),
+          widget.targetDate.value ??
+          DateTime.now().add(const Duration(days: 30)),
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: Theme.of(context).colorScheme.copyWith(
-                  primary: AppTheme.primaryPink,
-                ),
+            colorScheme: Theme.of(
+              context,
+            ).colorScheme.copyWith(primary: AppTheme.primaryPink),
           ),
           child: child!,
         );
@@ -92,9 +94,7 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
           IconButton(
             onPressed: widget.onBack,
             icon: const Icon(Icons.arrow_back_rounded),
-            style: IconButton.styleFrom(
-              backgroundColor: Colors.grey.shade100,
-            ),
+            style: IconButton.styleFrom(backgroundColor: Colors.grey.shade100),
           ),
           const SizedBox(height: 32),
 
@@ -102,20 +102,19 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
           Text(
             'What\'s your first\nbig dream?',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  height: 1.2,
-                ),
+              fontWeight: FontWeight.bold,
+              height: 1.2,
+            ),
           ),
           const SizedBox(height: 12),
 
           Text(
             'Don\'t hold back. Dream big, we\'ll help you break it down.',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurface
-                      .withValues(alpha: 0.6),
-                ),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
           ),
           const SizedBox(height: 32),
 
@@ -181,9 +180,9 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
           // Category selection
           Text(
             'Category',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 12),
           Wrap(
@@ -216,10 +215,12 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
                       Text(
                         _categoryLabel(cat),
                         style: TextStyle(
-                          color:
-                              isSelected ? Colors.white : Colors.grey.shade700,
-                          fontWeight:
-                              isSelected ? FontWeight.w600 : FontWeight.normal,
+                          color: isSelected
+                              ? Colors.white
+                              : Colors.grey.shade700,
+                          fontWeight: isSelected
+                              ? FontWeight.w600
+                              : FontWeight.normal,
                         ),
                       ),
                     ],
@@ -233,9 +234,9 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
           // Target date
           Text(
             'Target Date (optional)',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 12),
           GestureDetector(
@@ -255,8 +256,9 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
                   const SizedBox(width: 12),
                   Text(
                     widget.targetDate.value != null
-                        ? DateFormat('MMMM d, yyyy')
-                            .format(widget.targetDate.value!)
+                        ? DateFormat(
+                            'MMMM d, yyyy',
+                          ).format(widget.targetDate.value!)
                         : 'Select a target date',
                     style: TextStyle(
                       fontSize: 16,
@@ -268,7 +270,8 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
                   const Spacer(),
                   if (widget.targetDate.value != null)
                     GestureDetector(
-                      onTap: () => setState(() => widget.targetDate.value = null),
+                      onTap: () =>
+                          setState(() => widget.targetDate.value = null),
                       child: Icon(
                         Icons.close_rounded,
                         color: Colors.grey.shade500,
@@ -326,9 +329,7 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
                     },
               child: Text(
                 'Skip for now',
-                style: TextStyle(
-                  color: Colors.grey.shade600,
-                ),
+                style: TextStyle(color: Colors.grey.shade600),
               ),
             ),
           ),

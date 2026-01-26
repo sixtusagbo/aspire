@@ -1,6 +1,7 @@
 import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
+import 'package:aspire/core/widgets/celebration_overlay.dart';
 import 'package:aspire/features/home/widgets/stats_bar.dart';
 import 'package:aspire/models/goal.dart';
 import 'package:aspire/models/micro_action.dart';
@@ -24,9 +25,7 @@ class HomeScreen extends HookConsumerWidget {
     final userId = authService.currentUser?.uid;
 
     if (userId == null) {
-      return const Scaffold(
-        body: Center(child: Text('Please sign in')),
-      );
+      return const Scaffold(body: Center(child: Text('Please sign in')));
     }
 
     return Scaffold(
@@ -103,9 +102,7 @@ class HomeScreen extends HookConsumerWidget {
         color: Colors.grey.shade100,
         borderRadius: BorderRadius.circular(16),
       ),
-      child: const Center(
-        child: CircularProgressIndicator(),
-      ),
+      child: const Center(child: CircularProgressIndicator()),
     );
   }
 }
@@ -131,23 +128,18 @@ class _ActionsList extends HookConsumerWidget {
 
         if (goals.isEmpty) {
           return SliverFillRemaining(
-            child: _EmptyState(
-              onCreateGoal: () => context.go(AppRoutes.goals),
-            ),
+            child: _EmptyState(onCreateGoal: () => context.go(AppRoutes.goals)),
           );
         }
 
         // Build a combined list of goal headers and actions
         return SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              return _GoalActionsSection(
-                goal: goals[index],
-                goalService: goalService,
-              );
-            },
-            childCount: goals.length,
-          ),
+          delegate: SliverChildBuilderDelegate((context, index) {
+            return _GoalActionsSection(
+              goal: goals[index],
+              goalService: goalService,
+            );
+          }, childCount: goals.length),
         );
       },
     );
@@ -166,8 +158,7 @@ class _GoalActionsSection extends HookConsumerWidget {
       stream: goalService.watchGoalActions(goal.id, goal.userId),
       builder: (context, snapshot) {
         final allActions = snapshot.data ?? [];
-        final pendingActions =
-            allActions.where((a) => !a.isCompleted).toList();
+        final pendingActions = allActions.where((a) => !a.isCompleted).toList();
 
         if (pendingActions.isEmpty && allActions.isNotEmpty) {
           // All actions completed for this goal
@@ -220,7 +211,9 @@ class _GoalActionsSection extends HookConsumerWidget {
               const SizedBox(height: 8),
 
               // Actions
-              ...pendingActions.take(3).map(
+              ...pendingActions
+                  .take(3)
+                  .map(
                     (action) => _ActionTile(
                       action: action,
                       goal: goal,
@@ -234,10 +227,7 @@ class _GoalActionsSection extends HookConsumerWidget {
                       context.push(AppRoutes.goalDetailPath(goal.id)),
                   child: Text(
                     '+${pendingActions.length - 3} more actions',
-                    style: TextStyle(
-                      color: AppTheme.primaryPink,
-                      fontSize: 13,
-                    ),
+                    style: TextStyle(color: AppTheme.primaryPink, fontSize: 13),
                   ),
                 ),
 
@@ -302,10 +292,7 @@ class _ActionTile extends HookConsumerWidget {
                 height: 24,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppTheme.primaryPink,
-                    width: 2,
-                  ),
+                  border: Border.all(color: AppTheme.primaryPink, width: 2),
                 ),
                 child: const Icon(
                   Icons.check,
@@ -315,16 +302,10 @@ class _ActionTile extends HookConsumerWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(
-                  action.title,
-                  style: const TextStyle(fontSize: 15),
-                ),
+                child: Text(action.title, style: const TextStyle(fontSize: 15)),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppTheme.primaryPink.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
@@ -356,6 +337,13 @@ class _ActionTile extends HookConsumerWidget {
         userId: action.userId,
       );
 
+      // Trigger confetti celebration
+      if (context.mounted) {
+        CelebrationOverlay.of(
+          context,
+        )?.celebrate(CelebrationType.actionComplete);
+      }
+
       ToastHelper.showSuccess('+10 XP earned!');
     } catch (e) {
       ToastHelper.showError('Failed to complete action');
@@ -375,9 +363,7 @@ class _CompletedGoalCard extends StatelessWidget {
       child: Card(
         elevation: 0,
         color: Colors.green.shade50,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
@@ -434,19 +420,13 @@ class _EmptyState extends StatelessWidget {
             const SizedBox(height: 24),
             const Text(
               'Ready to start achieving?',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
               'Create your first goal and break it down\ninto small, achievable actions.',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.grey.shade600,
-                height: 1.4,
-              ),
+              style: TextStyle(color: Colors.grey.shade600, height: 1.4),
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(

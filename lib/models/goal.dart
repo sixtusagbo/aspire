@@ -6,13 +6,7 @@ part 'goal.mapper.dart';
 
 /// Goal categories
 @MappableEnum()
-enum GoalCategory {
-  travel,
-  career,
-  finance,
-  wellness,
-  personal,
-}
+enum GoalCategory { travel, career, finance, wellness, personal }
 
 @MappableClass()
 class Goal with GoalMappable {

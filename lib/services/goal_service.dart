@@ -27,9 +27,11 @@ class GoalService {
         .where('userId', isEqualTo: userId)
         .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => GoalMapper.fromMap({...doc.data(), 'id': doc.id}))
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => GoalMapper.fromMap({...doc.data(), 'id': doc.id}))
+              .toList(),
+        );
   }
 
   /// Stream of active (not completed) goals for a user
@@ -39,9 +41,11 @@ class GoalService {
         .where('isCompleted', isEqualTo: false)
         .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => GoalMapper.fromMap({...doc.data(), 'id': doc.id}))
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => GoalMapper.fromMap({...doc.data(), 'id': doc.id}))
+              .toList(),
+        );
   }
 
   /// Get a single goal by ID
@@ -115,10 +119,14 @@ class GoalService {
         .where('userId', isEqualTo: userId)
         .orderBy('sortOrder')
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) =>
-                MicroActionMapper.fromMap({...doc.data(), 'id': doc.id}))
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map(
+                (doc) =>
+                    MicroActionMapper.fromMap({...doc.data(), 'id': doc.id}),
+              )
+              .toList(),
+        );
   }
 
   /// Stream of today's micro-actions for a user
@@ -134,10 +142,14 @@ class GoalService {
         .orderBy('scheduledFor')
         .orderBy('sortOrder')
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) =>
-                MicroActionMapper.fromMap({...doc.data(), 'id': doc.id}))
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map(
+                (doc) =>
+                    MicroActionMapper.fromMap({...doc.data(), 'id': doc.id}),
+              )
+              .toList(),
+        );
   }
 
   /// Create a micro-action
@@ -199,17 +211,13 @@ class GoalService {
     // Update or create daily log using set with merge to avoid permission issues
     final logId = DailyLog.generateId(now, userId);
     final logRef = _logsRef.doc(logId);
-    batch.set(
-      logRef,
-      {
-        'userId': userId,
-        'date': Timestamp.fromDate(today),
-        'actionsCompleted': FieldValue.increment(1),
-        'xpEarned': FieldValue.increment(xpReward),
-        'completedActionIds': FieldValue.arrayUnion([actionId]),
-      },
-      SetOptions(merge: true),
-    );
+    batch.set(logRef, {
+      'userId': userId,
+      'date': Timestamp.fromDate(today),
+      'actionsCompleted': FieldValue.increment(1),
+      'xpEarned': FieldValue.increment(xpReward),
+      'completedActionIds': FieldValue.arrayUnion([actionId]),
+    }, SetOptions(merge: true));
 
     // Update user XP and streak
     final userRef = _firestore.collection('users').doc(userId);
@@ -240,8 +248,7 @@ class GoalService {
         newStreak = 1;
       }
 
-      final newLongest =
-          newStreak > longestStreak ? newStreak : longestStreak;
+      final newLongest = newStreak > longestStreak ? newStreak : longestStreak;
 
       batch.update(userRef, {
         'xp': FieldValue.increment(xpReward),
@@ -304,13 +311,19 @@ class GoalService {
 
     return _logsRef
         .where('userId', isEqualTo: userId)
-        .where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(thirtyDaysAgo))
+        .where(
+          'date',
+          isGreaterThanOrEqualTo: Timestamp.fromDate(thirtyDaysAgo),
+        )
         .orderBy('date', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) =>
-                DailyLogMapper.fromMap({...doc.data(), 'id': doc.id}))
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map(
+                (doc) => DailyLogMapper.fromMap({...doc.data(), 'id': doc.id}),
+              )
+              .toList(),
+        );
   }
 
   /// Count goals for a user (for free tier limit check)

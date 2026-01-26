@@ -1,3 +1,4 @@
+import 'package:aspire/core/widgets/celebration_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -19,48 +20,48 @@ class AppShell extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return Scaffold(
-      body: navigationShell,
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: isDark ? _darkBg : _lightBg,
-          border: Border(
-            top: BorderSide(
-              color: isDark ? _darkBorder : _lightBorder,
+    return CelebrationOverlay(
+      child: Scaffold(
+        body: navigationShell,
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            color: isDark ? _darkBg : _lightBg,
+            border: Border(
+              top: BorderSide(color: isDark ? _darkBorder : _lightBorder),
             ),
           ),
-        ),
-        child: SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
-            child: SizedBox(
-              height: 72,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _NavItem(
-                    icon: Icons.home_rounded,
-                    label: 'Home',
-                    isSelected: navigationShell.currentIndex == 0,
-                    isDark: isDark,
-                    onTap: () => navigationShell.goBranch(0),
-                  ),
-                  _NavItem(
-                    icon: Icons.flag_rounded,
-                    label: 'Goals',
-                    isSelected: navigationShell.currentIndex == 1,
-                    isDark: isDark,
-                    onTap: () => navigationShell.goBranch(1),
-                  ),
-                  _NavItem(
-                    icon: Icons.emoji_events_rounded,
-                    label: 'Progress',
-                    isSelected: navigationShell.currentIndex == 2,
-                    isDark: isDark,
-                    onTap: () => navigationShell.goBranch(2),
-                  ),
-                ],
+          child: SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+              child: SizedBox(
+                height: 72,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _NavItem(
+                      icon: Icons.home_rounded,
+                      label: 'Home',
+                      isSelected: navigationShell.currentIndex == 0,
+                      isDark: isDark,
+                      onTap: () => navigationShell.goBranch(0),
+                    ),
+                    _NavItem(
+                      icon: Icons.flag_rounded,
+                      label: 'Goals',
+                      isSelected: navigationShell.currentIndex == 1,
+                      isDark: isDark,
+                      onTap: () => navigationShell.goBranch(1),
+                    ),
+                    _NavItem(
+                      icon: Icons.emoji_events_rounded,
+                      label: 'Progress',
+                      isSelected: navigationShell.currentIndex == 2,
+                      isDark: isDark,
+                      onTap: () => navigationShell.goBranch(2),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -112,11 +113,7 @@ class _NavItem extends StatelessWidget {
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(9999),
               ),
-              child: Icon(
-                icon,
-                size: 24,
-                color: color,
-              ),
+              child: Icon(icon, size: 24, color: color),
             ),
             const SizedBox(height: 4),
             Text(

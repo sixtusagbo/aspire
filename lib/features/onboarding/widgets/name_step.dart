@@ -54,9 +54,7 @@ class _NameStepState extends State<NameStep> {
           IconButton(
             onPressed: widget.onBack,
             icon: const Icon(Icons.arrow_back_rounded),
-            style: IconButton.styleFrom(
-              backgroundColor: Colors.grey.shade100,
-            ),
+            style: IconButton.styleFrom(backgroundColor: Colors.grey.shade100),
           ),
           const SizedBox(height: 32),
 
@@ -64,20 +62,19 @@ class _NameStepState extends State<NameStep> {
           Text(
             'What should we\ncall you?',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  height: 1.2,
-                ),
+              fontWeight: FontWeight.bold,
+              height: 1.2,
+            ),
           ),
           const SizedBox(height: 12),
 
           Text(
             'We\'ll use this to personalize your experience.',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurface
-                      .withValues(alpha: 0.6),
-                ),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
           ),
           const SizedBox(height: 32),
 
@@ -130,10 +127,7 @@ class _NameStepState extends State<NameStep> {
               ),
               child: const Text(
                 'Continue',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
           ),

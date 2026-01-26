@@ -43,9 +43,7 @@ class _NotificationStepState extends ConsumerState<NotificationStep> {
           IconButton(
             onPressed: widget.onBack,
             icon: const Icon(Icons.arrow_back_rounded),
-            style: IconButton.styleFrom(
-              backgroundColor: Colors.grey.shade100,
-            ),
+            style: IconButton.styleFrom(backgroundColor: Colors.grey.shade100),
           ),
           const SizedBox(height: 32),
 
@@ -71,18 +69,18 @@ class _NotificationStepState extends ConsumerState<NotificationStep> {
           Text(
             'Stay on track with\nreminders',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  height: 1.2,
-                ),
+              fontWeight: FontWeight.bold,
+              height: 1.2,
+            ),
           ),
           const SizedBox(height: 16),
 
           Text(
             'Get gentle nudges to complete your daily micro-actions and keep your streak going.',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Colors.grey.shade600,
-                  height: 1.5,
-                ),
+              color: Colors.grey.shade600,
+              height: 1.5,
+            ),
           ),
 
           const Spacer(),
@@ -127,9 +125,7 @@ class _NotificationStepState extends ConsumerState<NotificationStep> {
               onPressed: _isRequesting ? null : widget.onNext,
               child: Text(
                 'Maybe later',
-                style: TextStyle(
-                  color: Colors.grey.shade600,
-                ),
+                style: TextStyle(color: Colors.grey.shade600),
               ),
             ),
           ),

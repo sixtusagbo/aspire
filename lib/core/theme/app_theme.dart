@@ -11,7 +11,9 @@ class AppTheme {
   static const Color secondaryPink = Color(0xFFFF6D99); // Lighter hot pink
   static const Color accentCyan = Color(0xFF6EC1E4); // Cyan/teal accent
   static const Color accentTeal = Color(0xFF00C1CF); // Deeper teal
-  static const Color goldAchievement = Color(0xFFBFA35A); // Gold for achievements
+  static const Color goldAchievement = Color(
+    0xFFBFA35A,
+  ); // Gold for achievements
   static const Color goldLight = Color(0xFFDDC995); // Lighter gold
 
   // Semantic colors
@@ -67,16 +69,12 @@ class AppTheme {
     cardTheme: CardThemeData(
       color: lightSurface,
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 2,
       ),
     ),
@@ -111,18 +109,9 @@ class AppTheme {
         fontWeight: FontWeight.w500,
         color: lightTextPrimary,
       ),
-      bodyLarge: TextStyle(
-        fontSize: 16,
-        color: lightTextPrimary,
-      ),
-      bodyMedium: TextStyle(
-        fontSize: 14,
-        color: lightTextPrimary,
-      ),
-      bodySmall: TextStyle(
-        fontSize: 12,
-        color: lightTextSecondary,
-      ),
+      bodyLarge: TextStyle(fontSize: 16, color: lightTextPrimary),
+      bodyMedium: TextStyle(fontSize: 14, color: lightTextPrimary),
+      bodySmall: TextStyle(fontSize: 12, color: lightTextSecondary),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
@@ -183,16 +172,12 @@ class AppTheme {
     cardTheme: CardThemeData(
       color: darkSurface,
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 2,
       ),
     ),
@@ -227,18 +212,9 @@ class AppTheme {
         fontWeight: FontWeight.w500,
         color: darkTextPrimary,
       ),
-      bodyLarge: TextStyle(
-        fontSize: 16,
-        color: darkTextPrimary,
-      ),
-      bodyMedium: TextStyle(
-        fontSize: 14,
-        color: darkTextPrimary,
-      ),
-      bodySmall: TextStyle(
-        fontSize: 12,
-        color: darkTextSecondary,
-      ),
+      bodyLarge: TextStyle(fontSize: 16, color: darkTextPrimary),
+      bodyMedium: TextStyle(fontSize: 14, color: darkTextPrimary),
+      bodySmall: TextStyle(fontSize: 12, color: darkTextSecondary),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,

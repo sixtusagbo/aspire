@@ -19,9 +19,7 @@ class GoalsScreen extends HookConsumerWidget {
     final showCompleted = useState(false);
 
     if (user == null) {
-      return const Scaffold(
-        body: Center(child: Text('Please sign in')),
-      );
+      return const Scaffold(body: Center(child: Text('Please sign in')));
     }
 
     return Scaffold(
@@ -104,8 +102,8 @@ class GoalsScreen extends HookConsumerWidget {
                     Text(
                       'Create New Goal',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     IconButton(
                       onPressed: () => Navigator.pop(context),
@@ -145,10 +143,7 @@ class GoalsScreen extends HookConsumerWidget {
                 const SizedBox(height: 20),
 
                 // Category
-                Text(
-                  'Category',
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
+                Text('Category', style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 8),
                 Wrap(
                   spacing: 8,
@@ -172,8 +167,9 @@ class GoalsScreen extends HookConsumerWidget {
                           cat.name[0].toUpperCase() + cat.name.substring(1),
                           style: TextStyle(
                             color: isSelected ? Colors.white : Colors.black87,
-                            fontWeight:
-                                isSelected ? FontWeight.w600 : FontWeight.normal,
+                            fontWeight: isSelected
+                                ? FontWeight.w600
+                                : FontWeight.normal,
                           ),
                         ),
                       ),
@@ -201,9 +197,12 @@ class GoalsScreen extends HookConsumerWidget {
                     final picked = await showDatePicker(
                       context: context,
                       initialDate:
-                          targetDate ?? DateTime.now().add(const Duration(days: 30)),
+                          targetDate ??
+                          DateTime.now().add(const Duration(days: 30)),
                       firstDate: DateTime.now(),
-                      lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+                      lastDate: DateTime.now().add(
+                        const Duration(days: 365 * 5),
+                      ),
                     );
                     if (picked != null) {
                       setState(() => targetDate = picked);
@@ -283,7 +282,9 @@ class _GoalCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: _categoryColor(goal.category).withValues(alpha: 0.1),
+                      color: _categoryColor(
+                        goal.category,
+                      ).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
@@ -301,7 +302,8 @@ class _GoalCard extends StatelessWidget {
                       children: [
                         Text(
                           goal.title,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
                                 fontWeight: FontWeight.w600,
                                 decoration: goal.isCompleted
                                     ? TextDecoration.lineThrough
@@ -419,9 +421,9 @@ class _EmptyGoalsState extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             showCompleted ? 'No goals yet' : 'No active goals',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Colors.grey.shade600,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(color: Colors.grey.shade600),
           ),
           const SizedBox(height: 8),
           Text(
