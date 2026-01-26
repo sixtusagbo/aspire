@@ -57,6 +57,12 @@ Use MCP tools for Dart/Flutter operations instead of shell commands:
 - Each phase should be testable before moving on
 - Time is critical - 19 days total
 - **Atomic commits** - commit frequently as we go, not at the end
+- **IMPORTANT: Test before moving on** - Every feature must be tested by the user before starting the next feature. Provide a testing checklist when completing a day's work.
+
+## Package Management
+
+- **Always use latest versions** - When adding packages, use the latest stable version
+- **Check docs when needed** - Use dart-mcp-server, check pub cache, or `dart pub unpack <package>` to read package docs locally
 
 ## Core Principles
 
