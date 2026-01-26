@@ -247,11 +247,11 @@ class DailyLog {
 **Day 6: Celebrations & Notifications**
 
 - [x] Confetti animation on task completion
-- [ ] Bigger celebration on streak milestones (7, 30, etc.)
+- [x] Bigger celebration on streak milestones (7, 30, etc.)
 - [ ] Goal completion celebration
 - [x] Haptic feedback
-- [ ] Daily reminder notification
-- [ ] Configurable reminder time
+- [x] Daily reminder notification
+- [x] Configurable reminder time
 
 **Deliverable:** Core daily loop works - check in, complete tasks, earn XP, see confetti
 
