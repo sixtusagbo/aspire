@@ -2,6 +2,7 @@ import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
 import 'package:aspire/models/goal.dart';
 import 'package:aspire/models/micro_action.dart';
+import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/goal_service.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -14,6 +15,14 @@ class GoalDetailScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final goalService = ref.read(goalServiceProvider);
+    final authService = ref.read(authServiceProvider);
+    final userId = authService.currentUser?.uid;
+
+    if (userId == null) {
+      return const Scaffold(
+        body: Center(child: Text('Please sign in')),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -21,37 +30,29 @@ class GoalDetailScreen extends HookConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.edit_outlined),
-            onPressed: () {
-              // TODO: Edit goal
-            },
+            onPressed: () => _showEditGoalDialog(context, ref, userId),
           ),
           IconButton(
             icon: const Icon(Icons.delete_outline),
-            onPressed: () => _showDeleteDialog(context, goalService),
+            onPressed: () => _showDeleteDialog(context, goalService, userId),
           ),
         ],
       ),
-      body: StreamBuilder<Goal?>(
-        stream: goalService.watchUserGoals('').map(
-              (goals) => goals.where((g) => g.id == goalId).firstOrNull,
-            ),
+      body: StreamBuilder<List<Goal>>(
+        stream: goalService.watchUserGoals(userId),
         builder: (context, snapshot) {
-          // Use FutureBuilder for initial load
-          return FutureBuilder<Goal?>(
-            future: goalService.getGoal(goalId),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-              final goal = snapshot.data;
-              if (goal == null) {
-                return const Center(child: Text('Goal not found'));
-              }
+          final goals = snapshot.data ?? [];
+          final goal = goals.where((g) => g.id == goalId).firstOrNull;
 
-              return _GoalDetailContent(goal: goal);
-            },
-          );
+          if (goal == null) {
+            return const Center(child: Text('Goal not found'));
+          }
+
+          return _GoalDetailContent(goal: goal);
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -65,6 +66,7 @@ class GoalDetailScreen extends HookConsumerWidget {
   Future<void> _showDeleteDialog(
     BuildContext context,
     GoalService goalService,
+    String userId,
   ) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -88,11 +90,199 @@ class GoalDetailScreen extends HookConsumerWidget {
     );
 
     if (confirmed == true && context.mounted) {
-      await goalService.deleteGoal(goalId);
-      if (context.mounted) {
-        Navigator.pop(context);
-        ToastHelper.showSuccess('Goal deleted');
+      try {
+        await goalService.deleteGoal(goalId, userId);
+        if (context.mounted) {
+          Navigator.pop(context);
+          ToastHelper.showSuccess('Goal deleted');
+        }
+      } catch (e) {
+        ToastHelper.showError('Failed to delete goal');
       }
+    }
+  }
+
+  Future<void> _showEditGoalDialog(
+    BuildContext context,
+    WidgetRef ref,
+    String userId,
+  ) async {
+    final goalService = ref.read(goalServiceProvider);
+    final goal = await goalService.getGoal(goalId);
+
+    if (goal == null || !context.mounted) return;
+
+    final titleController = TextEditingController(text: goal.title);
+    final descController = TextEditingController(text: goal.description ?? '');
+    GoalCategory selectedCategory = goal.category;
+    DateTime? targetDate = goal.targetDate;
+
+    final result = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Edit Goal',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      icon: const Icon(Icons.close),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+
+                // Title
+                TextField(
+                  controller: titleController,
+                  autofocus: true,
+                  textCapitalization: TextCapitalization.sentences,
+                  decoration: InputDecoration(
+                    labelText: 'Goal title',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Description
+                TextField(
+                  controller: descController,
+                  textCapitalization: TextCapitalization.sentences,
+                  maxLines: 2,
+                  decoration: InputDecoration(
+                    labelText: 'Description (optional)',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Category
+                Text(
+                  'Category',
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: GoalCategory.values.map((cat) {
+                    final isSelected = selectedCategory == cat;
+                    return GestureDetector(
+                      onTap: () => setState(() => selectedCategory = cat),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? AppTheme.primaryPink
+                              : Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          cat.name[0].toUpperCase() + cat.name.substring(1),
+                          style: TextStyle(
+                            color: isSelected ? Colors.white : Colors.black87,
+                            fontWeight:
+                                isSelected ? FontWeight.w600 : FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 20),
+
+                // Target date
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.calendar_today_outlined),
+                  title: Text(
+                    targetDate != null
+                        ? '${targetDate!.day}/${targetDate!.month}/${targetDate!.year}'
+                        : 'Set target date (optional)',
+                  ),
+                  trailing: targetDate != null
+                      ? IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () => setState(() => targetDate = null),
+                        )
+                      : null,
+                  onTap: () async {
+                    final picked = await showDatePicker(
+                      context: context,
+                      initialDate:
+                          targetDate ?? DateTime.now().add(const Duration(days: 30)),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+                    );
+                    if (picked != null) {
+                      setState(() => targetDate = picked);
+                    }
+                  },
+                ),
+                const SizedBox(height: 24),
+
+                // Save button
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.primaryPink,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      'Save Changes',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    if (result == true && titleController.text.trim().isNotEmpty) {
+      final updatedGoal = goal.copyWith(
+        title: titleController.text.trim(),
+        description: descController.text.trim().isNotEmpty
+            ? descController.text.trim()
+            : null,
+        category: selectedCategory,
+        targetDate: targetDate,
+      );
+      await goalService.updateGoal(updatedGoal);
+      ToastHelper.showSuccess('Goal updated');
     }
   }
 

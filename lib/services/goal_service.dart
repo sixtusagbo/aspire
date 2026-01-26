@@ -88,12 +88,14 @@ class GoalService {
   }
 
   /// Delete a goal and all its micro-actions
-  Future<void> deleteGoal(String goalId) async {
+  Future<void> deleteGoal(String goalId, String userId) async {
     final batch = _firestore.batch();
 
-    // Delete all micro-actions for this goal
-    final actions =
-        await _actionsRef.where('goalId', isEqualTo: goalId).get();
+    // Delete all micro-actions for this goal (must include userId for security rules)
+    final actions = await _actionsRef
+        .where('goalId', isEqualTo: goalId)
+        .where('userId', isEqualTo: userId)
+        .get();
     for (final doc in actions.docs) {
       batch.delete(doc.reference);
     }
