@@ -90,12 +90,11 @@ class GoalDetailScreen extends HookConsumerWidget {
     );
 
     if (confirmed == true && context.mounted) {
+      // Pop first to avoid showing "Goal not found" during delete
+      Navigator.pop(context);
       try {
         await goalService.deleteGoal(goalId, userId);
-        if (context.mounted) {
-          Navigator.pop(context);
-          ToastHelper.showSuccess('Goal deleted');
-        }
+        ToastHelper.showSuccess('Goal deleted');
       } catch (e) {
         ToastHelper.showError('Failed to delete goal');
       }

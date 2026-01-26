@@ -196,26 +196,20 @@ class GoalService {
       'completedActionsCount': FieldValue.increment(1),
     });
 
-    // Update or create daily log
+    // Update or create daily log using set with merge to avoid permission issues
     final logId = DailyLog.generateId(now, userId);
     final logRef = _logsRef.doc(logId);
-    final logDoc = await logRef.get();
-
-    if (logDoc.exists) {
-      batch.update(logRef, {
+    batch.set(
+      logRef,
+      {
+        'userId': userId,
+        'date': Timestamp.fromDate(today),
         'actionsCompleted': FieldValue.increment(1),
         'xpEarned': FieldValue.increment(xpReward),
         'completedActionIds': FieldValue.arrayUnion([actionId]),
-      });
-    } else {
-      batch.set(logRef, {
-        'userId': userId,
-        'date': Timestamp.fromDate(today),
-        'actionsCompleted': 1,
-        'xpEarned': xpReward,
-        'completedActionIds': [actionId],
-      });
-    }
+      },
+      SetOptions(merge: true),
+    );
 
     // Update user XP and streak
     final userRef = _firestore.collection('users').doc(userId);
