@@ -246,10 +246,10 @@ class DailyLog {
 
 **Day 6: Celebrations & Notifications**
 
-- [ ] Confetti animation on task completion
+- [x] Confetti animation on task completion
 - [ ] Bigger celebration on streak milestones (7, 30, etc.)
 - [ ] Goal completion celebration
-- [ ] Haptic feedback
+- [x] Haptic feedback
 - [ ] Daily reminder notification
 - [ ] Configurable reminder time
 
@@ -257,24 +257,31 @@ class DailyLog {
 
 ---
 
-### Phase 4: Progress & Goals View (Days 7-8)
+### Phase 4: AI Micro-Actions & Goals (Days 7-8)
 
-**Day 7: Goals List & Detail**
+**Day 7: AI Micro-Action Generation**
 
-- [ ] List all goals with progress bar
-- [ ] Filter: Active / Completed
-- [ ] Goal detail screen
-- [ ] Micro-actions list with completion status
+- [ ] Set up Firebase Functions project
+- [ ] Create OpenAI integration function (secure API key server-side)
+- [ ] AI generates micro-actions from goal title/description
+- [ ] "Generate Actions" button on goal detail screen
+- [ ] Loading state while AI generates
+- [ ] Display generated actions for user review
+- [ ] User can edit/delete suggestions before saving
+- [ ] "Save All" to confirm AI-generated actions
+
+**Day 8: Goals Polish & Progress**
+
+- [x] List all goals with progress bar
+- [x] Filter: Active / Completed
+- [x] Goal detail screen
+- [x] Micro-actions list with completion status
+- [x] Edit goal functionality
+- [x] Delete goal functionality
 - [ ] Mark goal as complete button
+- [ ] Progress screen content (stats dashboard)
 
-**Day 8: Stats & Progress Dashboard**
-
-- [ ] Current streak display
-- [ ] Total goals completed
-- [ ] Total micro-actions completed
-- [ ] This week/month activity
-
-**Deliverable:** User can see all goals and track progress
+**Deliverable:** AI helps break down goals, user can see all goals and track progress
 
 ---
 
