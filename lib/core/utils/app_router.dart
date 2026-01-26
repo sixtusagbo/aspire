@@ -6,6 +6,7 @@ import 'package:aspire/features/goals/goal_detail_screen.dart';
 import 'package:aspire/features/goals/goals_screen.dart';
 import 'package:aspire/features/home/home_screen.dart';
 import 'package:aspire/features/onboarding/onboarding_screen.dart';
+import 'package:aspire/features/paywall/paywall_screen.dart';
 import 'package:aspire/features/progress/progress_screen.dart';
 import 'package:aspire/features/settings/settings_screen.dart';
 import 'package:aspire/features/splash_screen.dart';
@@ -27,6 +28,7 @@ class AppRoutes {
   static const goalDetail = '/goals/:goalId';
   static const progress = '/progress';
   static const settings = '/settings';
+  static const paywall = '/paywall';
 
   static String goalDetailPath(String goalId) => '/goals/$goalId';
 }
@@ -110,6 +112,10 @@ GoRouter router(Ref ref) {
           final goalId = state.pathParameters['goalId']!;
           return GoalDetailScreen(goalId: goalId);
         },
+      ),
+      GoRoute(
+        path: AppRoutes.paywall,
+        builder: (context, state) => const PaywallScreen(),
       ),
     ],
   );

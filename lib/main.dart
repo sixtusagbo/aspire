@@ -1,6 +1,7 @@
 import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/core/theme/theme_provider.dart';
 import 'package:aspire/core/utils/app_router.dart';
+import 'package:aspire/services/revenue_cat_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -16,6 +17,9 @@ void main() async {
 
   // Initialize timezone for scheduled notifications
   tz.initializeTimeZones();
+
+  // Initialize RevenueCat
+  await RevenueCatService().initialize();
 
   runApp(const ProviderScope(child: AspireApp()));
 }

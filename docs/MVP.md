@@ -294,19 +294,19 @@ class DailyLog {
 
 **Day 9: RevenueCat & Paywall**
 
-- [ ] Set up RevenueCat account and SDK
+- [x] Set up RevenueCat account and SDK
 - [ ] Create offerings in RevenueCat dashboard
-- [ ] Premium entitlement check
-- [ ] Restore purchases
-- [ ] Paywall screen design
-- [ ] Free tier: 1 active goal
-- [ ] Premium: Unlimited goals
+- [x] Premium entitlement check
+- [x] Restore purchases
+- [x] Paywall screen design
+- [x] Free tier: 3 active goals
+- [x] Premium: Unlimited goals
 
 **Day 10: Settings & Polish**
 
-- [ ] Settings screen (account, notifications, subscription)
-  - [ ] AI behavior setting (append vs replace existing actions)
-- [ ] Sign out / delete account
+- [x] Settings screen (account, notifications, subscription)
+  - [x] AI behavior setting (append vs replace existing actions)
+- [x] Sign out / delete account
 - [ ] Empty states with encouraging messages
 - [ ] Loading states and error handling
 - [ ] UI/UX improvements

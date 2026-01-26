@@ -3,6 +3,7 @@ import 'package:aspire/core/utils/toast_helper.dart';
 import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/log_service.dart';
 import 'package:aspire/services/notification_service.dart';
+import 'package:aspire/services/revenue_cat_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -43,6 +44,8 @@ class SettingsScreen extends HookConsumerWidget {
     Future<void> handleSignOut() async {
       try {
         final authService = ref.read(authServiceProvider);
+        final revenueCatService = ref.read(revenueCatServiceProvider);
+        await revenueCatService.logout();
         await authService.signOut();
         if (context.mounted) {
           context.go(AppRoutes.signIn);
@@ -191,10 +194,12 @@ class SettingsScreen extends HookConsumerWidget {
             ),
 
           const Divider(),
-          const ListTile(
-            leading: Icon(Icons.workspace_premium_outlined),
-            title: Text('Premium'),
-            subtitle: Text('Upgrade to unlock unlimited goals'),
+          ListTile(
+            leading: const Icon(Icons.workspace_premium_outlined),
+            title: const Text('Premium'),
+            subtitle: const Text('Upgrade to unlock unlimited goals'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(AppRoutes.paywall),
           ),
           const Divider(),
 

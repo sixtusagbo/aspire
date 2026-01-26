@@ -111,16 +111,46 @@
 ## 4. Firebase Functions (for AI)
 
 ### Setup
-- [ ] Enable Firebase Functions in console
-- [ ] Install Firebase CLI: `npm install -g firebase-tools`
-- [ ] Initialize functions: `firebase init functions`
-- [ ] Set OpenAI API key as secret:
+- [x] Enable Firebase Functions in console
+- [x] Install Firebase CLI: `npm install -g firebase-tools`
+- [x] Initialize functions: `firebase init functions`
+- [x] Set OpenAI API key as secret:
   ```bash
-  firebase functions:secrets:set OPENAI_API_KEY
+  make set-openai-key
+  # Or directly: firebase functions:secrets:set OPENAI_API_KEY
   ```
 
 ### Deploy
-- [ ] Deploy functions: `firebase deploy --only functions`
+- [x] Deploy functions: `make deploy-functions`
+
+---
+
+## 5. Connect RevenueCat to Google Play
+
+### Service Account Setup (Required for RevenueCat)
+- [ ] Go to [Google Cloud Console](https://console.cloud.google.com/)
+- [ ] Select your Firebase project (same as Google Cloud project)
+- [ ] Go to IAM & Admin > Service Accounts
+- [ ] Create a service account:
+  - Name: `revenuecat-service-account`
+  - Role: None (we'll set permissions in Play Console)
+- [ ] Click on the created service account > Keys > Add Key > Create new key > JSON
+- [ ] Download the JSON file (keep it secure!)
+
+### Link Service Account to Play Console
+- [ ] Go to [Google Play Console](https://play.google.com/console/)
+- [ ] Settings > API access
+- [ ] Link your Google Cloud project if not already linked
+- [ ] Under Service accounts, find your new service account
+- [ ] Grant access > Add app > Select Aspire > Apply
+- [ ] Set permissions: "View financial data" and "Manage orders and subscriptions"
+
+### Add Service Account to RevenueCat
+- [ ] Go to [RevenueCat Dashboard](https://app.revenuecat.com/)
+- [ ] Select your Aspire project > Android app
+- [ ] Go to "Service credentials"
+- [ ] Upload the JSON key file from Google Cloud
+- [ ] Click "Connect to Google"
 
 ---
 
@@ -131,7 +161,8 @@
 - [x] Firebase Auth enabled (Email + Google)
 - [x] SHA-1 added to Firebase
 - [x] Firestore created
-- [ ] RevenueCat project created
-- [ ] RevenueCat API key copied
-- [ ] Google Play Console app created (can do later)
-- [ ] Firebase Functions deployed (for AI features)
+- [x] RevenueCat project created
+- [x] RevenueCat API key copied
+- [ ] Google Play Console app created
+- [ ] Service account created and linked to RevenueCat
+- [x] Firebase Functions deployed (for AI features)

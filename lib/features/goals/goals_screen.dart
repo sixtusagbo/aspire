@@ -3,10 +3,14 @@ import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/models/goal.dart';
 import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/goal_service.dart';
+import 'package:aspire/services/revenue_cat_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+/// Free tier limit for active goals
+const int freeGoalLimit = 3;
 
 class GoalsScreen extends HookConsumerWidget {
   const GoalsScreen({super.key});
@@ -76,10 +80,28 @@ class GoalsScreen extends HookConsumerWidget {
     WidgetRef ref,
     String userId,
   ) async {
+    // Check if user can create more goals
+    final revenueCatService = ref.read(revenueCatServiceProvider);
+    final goalService = ref.read(goalServiceProvider);
+    final isPremium = await revenueCatService.isPremium();
+
+    if (!isPremium) {
+      // Check active goal count
+      final activeGoals = await goalService.watchActiveGoals(userId).first;
+      if (activeGoals.length >= freeGoalLimit) {
+        if (context.mounted) {
+          _showUpgradeDialog(context);
+        }
+        return;
+      }
+    }
+
     final titleController = TextEditingController();
     final descController = TextEditingController();
     GoalCategory selectedCategory = GoalCategory.personal;
     DateTime? targetDate;
+
+    if (!context.mounted) return;
 
     await showModalBottomSheet(
       context: context,
@@ -253,6 +275,36 @@ class GoalsScreen extends HookConsumerWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  void _showUpgradeDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Goal Limit Reached'),
+        content: const Text(
+          'You\'ve reached the limit of $freeGoalLimit active goals on the free plan.\n\n'
+          'Upgrade to Premium for unlimited goals!',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Maybe Later'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              context.push(AppRoutes.paywall);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryPink,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Upgrade'),
+          ),
+        ],
       ),
     );
   }

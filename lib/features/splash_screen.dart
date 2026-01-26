@@ -1,5 +1,6 @@
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/services/auth_service.dart';
+import 'package:aspire/services/revenue_cat_service.dart';
 import 'package:aspire/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,6 +28,10 @@ class SplashScreen extends HookConsumerWidget {
         final user = authService.currentUser;
 
         if (user != null) {
+          // Login to RevenueCat with user ID
+          final revenueCatService = ref.read(revenueCatServiceProvider);
+          await revenueCatService.login(user.uid);
+
           // User is logged in, check if they have completed onboarding
           try {
             final userService = ref.read(userServiceProvider);
