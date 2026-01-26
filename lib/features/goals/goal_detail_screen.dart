@@ -358,13 +358,13 @@ class _GoalDetailContent extends HookConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: SizedBox(
               width: double.infinity,
-              child: OutlinedButton.icon(
+              child: ElevatedButton.icon(
                 onPressed: () => _showMarkCompleteDialog(context, goalService),
                 icon: const Icon(Icons.check_circle_outline),
                 label: const Text('Mark Goal as Complete'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppTheme.goldAchievement,
-                  side: BorderSide(color: AppTheme.goldAchievement),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.goldAchievement,
+                  foregroundColor: Colors.white,
                 ),
               ),
             ),
@@ -476,7 +476,7 @@ class _GoalDetailContent extends HookConsumerWidget {
         title: const Text('Complete Goal'),
         content: Text(
           'Mark "${goal.title}" as complete?\n\n'
-          'This will celebrate your achievement!',
+          'This will mark all micro-actions as done and celebrate your achievement!',
         ),
         actions: [
           TextButton(
@@ -496,6 +496,20 @@ class _GoalDetailContent extends HookConsumerWidget {
     );
 
     if (confirmed == true && context.mounted) {
+      // Mark all incomplete actions as complete first
+      final actions =
+          await goalService.watchGoalActions(goal.id, goal.userId).first;
+      for (final action in actions) {
+        if (!action.isCompleted) {
+          await goalService.completeMicroAction(
+            actionId: action.id,
+            goalId: goal.id,
+            userId: goal.userId,
+          );
+        }
+      }
+
+      // Then complete the goal
       final overlay = CelebrationOverlay.of(context);
       await goalService.completeGoal(goal.id);
       overlay?.celebrate(CelebrationType.goalComplete);
@@ -524,11 +538,13 @@ class _GoalDetailContent extends HookConsumerWidget {
 
       if (!context.mounted) return;
 
-      // Show review bottom sheet
+      // Show review bottom sheet (prevent accidental dismissal)
       final result = await showModalBottomSheet<List<GeneratedAction>>(
         context: context,
         isScrollControlled: true,
         useSafeArea: true,
+        isDismissible: false,
+        enableDrag: false,
         builder: (context) => _AIActionsReviewSheet(
           actions: actions,
           goalTitle: goal.title,
@@ -868,10 +884,11 @@ class _EmptyActionsState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               Icons.auto_awesome,

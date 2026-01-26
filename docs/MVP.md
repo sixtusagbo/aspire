@@ -59,7 +59,7 @@ Turn big dreams into daily micro-actions with gamified tracking and celebration.
 
 1. **Onboarding** - Name, goals setup, notification preferences
 2. **Goal Creation** - Create a dream/goal with deadline
-3. **AI Micro-Action Breakdown** - OpenAI API generates actionable daily tasks from goal
+3. **AI Micro-Action Breakdown** - OpenAI generates actionable daily tasks (5 suggestions free, 10 premium)
 4. **Daily Check-In** - One-tap task completion
 5. **Streaks & XP** - Gamification borrowed from FoodPilot
 6. **Confetti Celebrations** - On task completion, streak milestones, goal completion
@@ -307,7 +307,9 @@ class DailyLog {
 - [ ] Sign out / delete account
 - [ ] Empty states with encouraging messages
 - [ ] Loading states and error handling
-- [ ] Dark mode polish (improve colors and contrast)
+- [ ] Accessibility improvements
+- [ ] UI/UX improvements
+  - [ ] Dark mode polish (improve colors and contrast)
 
 **Deliverable:** Monetization works, app is feature-complete
 
