@@ -8,7 +8,7 @@ Aspire is a hackathon entry for RevenueCat's Shipyard 2026 contest, building for
 
 **Deadline:** February 12, 2026
 
-**Target:** Android only (for now)
+**Target:** Android and iOS
 
 **Related Project:** FoodPilot (~/projects/foodpilot) - we borrow patterns and code from there.
 

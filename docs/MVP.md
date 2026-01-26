@@ -39,7 +39,7 @@ Shipyard Hackathon Entry for Gabby Beckford (@PacksLight)
 
 | Component        | Technology         | Rationale                                    |
 | ---------------- | ------------------ | -------------------------------------------- |
-| Framework        | Flutter            | Android (required), can add iOS later        |
+| Framework        | Flutter            | Android and iOS                              |
 | State Management | hooks_riverpod v3  | Borrowed from FoodPilot                      |
 | Database         | Firebase Firestore | Real-time sync, auth integration             |
 | Authentication   | Firebase Auth      | Google Sign-In + email/password              |
@@ -188,7 +188,7 @@ class DailyLog {
 
 **Day 1: Project Setup**
 
-- [x] Flutter project initialized (Android only)
+- [x] Flutter project initialized (Android and iOS)
 - [x] Copy folder structure from FoodPilot
 - [x] Set up Firebase project (new project: aspire)
 - [x] Configure Firebase Auth
@@ -409,7 +409,7 @@ class DailyLog {
 | Time crunch               | Borrow heavily from FoodPilot                 |
 | RevenueCat issues         | Set up early, test on Day 14                  |
 | Scope creep               | Strict MVP, no AI features                    |
-| Android-only limitation   | Focus on polish, not platform breadth         |
+| Platform issues           | Test on both Android and iOS                  |
 
 ---
 
