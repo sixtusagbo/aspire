@@ -12,7 +12,7 @@ FIREBASE_PROJECT_ID := aspire-bc5d7
 
 .PHONY: help assets watch reset \
 	build-appbundle build-apk extract-symbols \
-	deploy-all deploy-firestore deploy-rules deploy-indexes \
+	deploy-all deploy-firestore deploy-rules deploy-indexes deploy-functions \
 	signing-report clean analyze test
 
 # ============================================================================
@@ -42,6 +42,7 @@ help:
 	@echo "  make deploy-firestore - Deploy Firestore rules + indexes"
 	@echo "  make deploy-rules     - Deploy Firestore rules only"
 	@echo "  make deploy-indexes   - Deploy Firestore indexes only"
+	@echo "  make deploy-functions - Deploy Firebase Functions only"
 	@echo ""
 	@echo "Utilities:"
 	@echo "  make signing-report   - Get Android SHA-1 signing report"
@@ -123,6 +124,11 @@ deploy-indexes:
 	@echo "Deploying Firestore indexes..."
 	firebase deploy --only firestore:indexes --project $(FIREBASE_PROJECT_ID)
 	@echo "Indexes deployed."
+
+deploy-functions:
+	@echo "Deploying Firebase Functions..."
+	firebase deploy --only functions --project $(FIREBASE_PROJECT_ID)
+	@echo "Functions deployed."
 
 # ============================================================================
 # UTILITY COMMANDS

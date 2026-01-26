@@ -401,8 +401,8 @@ class _GoalDetailContent extends HookConsumerWidget {
                 ),
               ),
               const Spacer(),
-              // AI Generate button
-              if (!goal.isCompleted)
+              // AI Generate button (only show if there are already actions)
+              if (!goal.isCompleted && goal.totalActionsCount > 0)
                 TextButton.icon(
                   onPressed: isGenerating.value
                       ? null

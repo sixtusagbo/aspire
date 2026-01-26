@@ -23,6 +23,8 @@ interface MicroAction {
 export const generateMicroActions = onCall(
   { secrets: [openaiApiKey] },
   async (request) => {
+    console.log("generateMicroActions called");
+
     // Check if user is authenticated
     if (!request.auth) {
       throw new HttpsError(
@@ -30,15 +32,25 @@ export const generateMicroActions = onCall(
         "You must be signed in to generate actions"
       );
     }
+    console.log("User authenticated:", request.auth.uid);
 
     const data = request.data as GenerateActionsRequest;
+    console.log("Request data:", JSON.stringify(data));
 
     if (!data.goalTitle) {
       throw new HttpsError("invalid-argument", "Goal title is required");
     }
 
+    // Check if API key is available
+    const apiKey = openaiApiKey.value();
+    if (!apiKey) {
+      console.error("OpenAI API key is not set");
+      throw new HttpsError("internal", "OpenAI API key is not configured");
+    }
+    console.log("API key length:", apiKey.length);
+
     const openai = new OpenAI({
-      apiKey: openaiApiKey.value(),
+      apiKey: apiKey,
     });
 
     // Build the prompt
@@ -70,21 +82,44 @@ Return ONLY a JSON array of objects with "title" field. No markdown, no explanat
 Example: [{"title": "Research flight prices to destination"},{"title": "Set up automatic savings transfer of $50"}]`;
 
     try {
-      const completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: [
-          {
-            role: "system",
-            content:
-              "You are a helpful assistant that generates actionable micro-tasks. Always respond with valid JSON only.",
-          },
-          { role: "user", content: prompt },
-        ],
-        temperature: 0.7,
-        max_tokens: 500,
-      });
+      console.log("Calling OpenAI API...");
+
+      // Retry logic for transient connection errors
+      let completion;
+      let lastError;
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+          completion = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [
+              {
+                role: "system",
+                content:
+                  "You are a helpful assistant that generates actionable micro-tasks. Always respond with valid JSON only.",
+              },
+              { role: "user", content: prompt },
+            ],
+            temperature: 0.7,
+            max_tokens: 500,
+          });
+          break; // Success, exit retry loop
+        } catch (e) {
+          lastError = e;
+          console.log(`OpenAI API attempt ${attempt} failed:`, (e as Error).message);
+          if (attempt < 3) {
+            // Wait before retrying (exponential backoff)
+            await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
+          }
+        }
+      }
+
+      if (!completion) {
+        throw lastError;
+      }
+      console.log("OpenAI API response received");
 
       const content = completion.choices[0]?.message?.content;
+      console.log("Response content:", content);
       if (!content) {
         throw new HttpsError("internal", "No response from AI");
       }
@@ -120,8 +155,17 @@ Example: [{"title": "Research flight prices to destination"},{"title": "Set up a
       if (error instanceof HttpsError) {
         throw error;
       }
-      console.error("OpenAI API error:", error);
-      throw new HttpsError("internal", "Failed to generate actions");
+      // Log full error details
+      const err = error as Error;
+      console.error("OpenAI API error:", {
+        name: err.name,
+        message: err.message,
+        stack: err.stack,
+      });
+      throw new HttpsError(
+        "internal",
+        `Failed to generate actions: ${err.message}`
+      );
     }
   }
 );
