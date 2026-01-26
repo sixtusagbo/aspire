@@ -307,6 +307,7 @@ class DailyLog {
 - [ ] Sign out / delete account
 - [ ] Empty states with encouraging messages
 - [ ] Loading states and error handling
+- [ ] Dark mode polish (improve colors and contrast)
 
 **Deliverable:** Monetization works, app is feature-complete
 
@@ -362,16 +363,16 @@ class DailyLog {
 
 ### Free Tier
 
-- 1 active goal
+- 3 active goals
 - 5 micro-actions per goal
-- Basic progress tracking
+- Basic progress tracking?
 - Daily reminders
 
 ### Premium ($4.99/month or $29.99/year)
 
 - Unlimited goals
 - Unlimited micro-actions
-- Detailed analytics
+- Detailed analytics?
 - Priority support
 - Custom reminder times
 

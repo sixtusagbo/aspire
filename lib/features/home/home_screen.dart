@@ -473,17 +473,22 @@ class _NotificationBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.amber.shade50,
+        color: isDark ? Colors.grey.shade800 : Colors.grey.shade100,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.amber.shade200),
       ),
       child: Row(
         children: [
-          Icon(Icons.notifications_outlined, color: Colors.amber.shade700),
+          Icon(
+            Icons.notifications_outlined,
+            color: theme.colorScheme.primary,
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -492,23 +497,34 @@ class _NotificationBanner extends StatelessWidget {
                 Text(
                   'Stay on track!',
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.amber.shade900,
+                    fontWeight: FontWeight.w600,
+                    color: isDark ? Colors.white : Colors.grey.shade900,
                   ),
                 ),
+                const SizedBox(height: 2),
                 Text(
                   'Enable notifications for daily reminders',
-                  style: TextStyle(fontSize: 12, color: Colors.amber.shade800),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                  ),
                 ),
               ],
             ),
           ),
           TextButton(
             onPressed: onEnable,
+            style: TextButton.styleFrom(
+              foregroundColor: theme.colorScheme.primary,
+            ),
             child: const Text('Enable'),
           ),
           IconButton(
-            icon: const Icon(Icons.close, size: 18),
+            icon: Icon(
+              Icons.close,
+              size: 18,
+              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+            ),
             onPressed: onDismiss,
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
