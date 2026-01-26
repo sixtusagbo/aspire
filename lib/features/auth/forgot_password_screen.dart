@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aspire/core/utils/toast_helper.dart';
 import 'package:aspire/services/auth_service.dart';
 import 'package:flutter/material.dart';
@@ -13,9 +15,21 @@ class ForgotPasswordScreen extends HookConsumerWidget {
     final emailController = useTextEditingController();
     final isLoading = useState(false);
     final emailSent = useState(false);
+    final countdown = useState(0);
+
+    // Countdown timer effect
+    useEffect(() {
+      if (countdown.value > 0) {
+        final timer = Timer(const Duration(seconds: 1), () {
+          countdown.value--;
+        });
+        return timer.cancel;
+      }
+      return null;
+    }, [countdown.value]);
 
     Future<void> handleResetPassword() async {
-      if (isLoading.value) return;
+      if (isLoading.value || countdown.value > 0) return;
 
       final email = emailController.text.trim();
 
@@ -30,6 +44,7 @@ class ForgotPasswordScreen extends HookConsumerWidget {
         await authService.resetPassword(email);
 
         emailSent.value = true;
+        countdown.value = 60; // 60 second countdown
         isLoading.value = false;
 
         if (context.mounted) {
@@ -52,11 +67,11 @@ class ForgotPasswordScreen extends HookConsumerWidget {
     }
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final canResend = countdown.value == 0;
 
     return Scaffold(
-      backgroundColor: isDark
-          ? const Color(0xFF151022)
-          : const Color(0xFFF6F5F8),
+      backgroundColor:
+          isDark ? const Color(0xFF151022) : const Color(0xFFF6F5F8),
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -83,8 +98,8 @@ class ForgotPasswordScreen extends HookConsumerWidget {
                 Text(
                   'Forgot Password?',
                   style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 12),
@@ -92,10 +107,10 @@ class ForgotPasswordScreen extends HookConsumerWidget {
                   'Don\'t worry! Enter your email address and we\'ll send you '
                   'instructions to reset your password.',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: isDark
-                        ? const Color(0xFF9CA3AF)
-                        : const Color(0xFF6B7280),
-                  ),
+                        color: isDark
+                            ? const Color(0xFF9CA3AF)
+                            : const Color(0xFF6B7280),
+                      ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 48),
@@ -116,9 +131,8 @@ class ForgotPasswordScreen extends HookConsumerWidget {
                 SizedBox(
                   height: 56,
                   child: ElevatedButton(
-                    onPressed: isLoading.value || emailSent.value
-                        ? null
-                        : handleResetPassword,
+                    onPressed:
+                        isLoading.value || !canResend ? null : handleResetPassword,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       foregroundColor: Colors.white,
@@ -139,7 +153,11 @@ class ForgotPasswordScreen extends HookConsumerWidget {
                             ),
                           )
                         : Text(
-                            emailSent.value ? 'Email Sent' : 'Send Reset Link',
+                            !canResend
+                                ? 'Resend in ${countdown.value}s'
+                                : emailSent.value
+                                    ? 'Resend Reset Link'
+                                    : 'Send Reset Link',
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
