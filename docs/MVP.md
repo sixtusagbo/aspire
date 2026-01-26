@@ -265,14 +265,14 @@ class DailyLog {
 
 **Day 7: AI Micro-Action Generation**
 
-- [ ] Set up Firebase Functions project
-- [ ] Create OpenAI integration function (secure API key server-side)
-- [ ] AI generates micro-actions from goal title/description
-- [ ] "Generate Actions" button on goal detail screen
-- [ ] Loading state while AI generates
-- [ ] Display generated actions for user review
-- [ ] User can edit/delete suggestions before saving
-- [ ] "Save All" to confirm AI-generated actions
+- [x] Set up Firebase Functions project
+- [x] Create OpenAI integration function (secure API key server-side)
+- [x] AI generates micro-actions from goal title/description
+- [x] "Generate Actions" button on goal detail screen
+- [x] Loading state while AI generates
+- [x] Display generated actions for user review
+- [x] User can edit/delete suggestions before saving
+- [x] "Save All" to confirm AI-generated actions
 
 **Day 8: Goals Polish & Progress**
 
@@ -282,8 +282,8 @@ class DailyLog {
 - [x] Micro-actions list with completion status
 - [x] Edit goal functionality
 - [x] Delete goal functionality
-- [ ] Mark goal as complete button
-- [ ] Progress screen content (stats dashboard)
+- [x] Mark goal as complete button
+- [x] Progress screen content (stats dashboard)
 
 **Deliverable:** AI helps break down goals, user can see all goals and track progress
 
