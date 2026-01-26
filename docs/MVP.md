@@ -7,6 +7,7 @@ Shipyard Hackathon Entry for Gabby Beckford (@PacksLight)
 **Deadline:** February 12, 2026, 11:59 PM PST
 
 **Timeline:**
+
 - Building: Jan 25 - Feb 3 (10 days)
 - Testing: Feb 4 - Feb 5 (2 days)
 - Submission: Feb 6+ (deadline Feb 12)
@@ -37,15 +38,15 @@ Shipyard Hackathon Entry for Gabby Beckford (@PacksLight)
 
 ## Tech Stack
 
-| Component        | Technology         | Rationale                                    |
-| ---------------- | ------------------ | -------------------------------------------- |
-| Framework        | Flutter            | Android and iOS                              |
-| State Management | hooks_riverpod v3  | Borrowed from FoodPilot                      |
-| Database         | Firebase Firestore | Real-time sync, auth integration             |
-| Authentication   | Firebase Auth      | Google Sign-In + email/password              |
+| Component        | Technology                    | Rationale                                                     |
+| ---------------- | ----------------------------- | ------------------------------------------------------------- |
+| Framework        | Flutter                       | Android and iOS                                               |
+| State Management | hooks_riverpod v3             | Borrowed from FoodPilot                                       |
+| Database         | Firebase Firestore            | Real-time sync, auth integration                              |
+| Authentication   | Firebase Auth                 | Google Sign-In + email/password                               |
 | AI               | OpenAI via Firebase Functions | Goal → micro-action breakdown (API key protected server-side) |
-| Monetization     | RevenueCat         | Required for hackathon                       |
-| Notifications    | Local              | Daily micro-action reminders                 |
+| Monetization     | RevenueCat                    | Required for hackathon                                        |
+| Notifications    | Local                         | Daily micro-action reminders                                  |
 
 ---
 
@@ -71,7 +72,7 @@ Turn big dreams into daily micro-actions with gamified tracking and celebration.
 If time permits before deadline, add in priority order:
 
 1. **Celebration Sound Effects** - Audio feedback for confetti and streak increases
-2. **Goal-Specific Reminders** - Set different reminder times for each goal
+2. **Goal-Specific Reminders** - Set different reminder times for each goal, only if the user decides to be remided differently about this goal, it should be shown in goal creation and by default turned off.
 3. **Goal Templates** - Pre-made goals for common dreams (travel, career, finance)
 4. **Challenges** - Weekly community challenges
 5. **Joint Goals** - Partner with a friend on shared goals
@@ -85,17 +86,17 @@ If time permits before deadline, add in priority order:
 
 **Location:** `~/projects/foodpilot`
 
-| FoodPilot              | Aspire Equivalent              |
-| ---------------------- | --------------------------------- |
-| Auth (Firebase)        | Same - copy directly              |
-| Theme system           | Same - copy directly              |
-| Gamification stats     | Adapt for goals                   |
-| XP/Level system        | Same concept                      |
-| Streak tracking        | Same concept                      |
-| Notification service   | Adapt for micro-actions           |
-| App router structure   | Same pattern                      |
-| Settings screen        | Adapt                             |
-| Onboarding flow        | Adapt for goal setup              |
+| FoodPilot            | Aspire Equivalent       |
+| -------------------- | ----------------------- |
+| Auth (Firebase)      | Same - copy directly    |
+| Theme system         | Same - copy directly    |
+| Gamification stats   | Adapt for goals         |
+| XP/Level system      | Same concept            |
+| Streak tracking      | Same concept            |
+| Notification service | Adapt for micro-actions |
+| App router structure | Same pattern            |
+| Settings screen      | Adapt                   |
+| Onboarding flow      | Adapt for goal setup    |
 
 ---
 
@@ -304,12 +305,14 @@ class DailyLog {
 **Day 10: Settings & Polish**
 
 - [ ] Settings screen (account, notifications, subscription)
+  - [ ] AI behavior setting (append vs replace existing actions)
 - [ ] Sign out / delete account
 - [ ] Empty states with encouraging messages
 - [ ] Loading states and error handling
-- [ ] Accessibility improvements
 - [ ] UI/UX improvements
+  - [ ] App UI/UX redesign
   - [ ] Dark mode polish (improve colors and contrast)
+- [ ] Accessibility improvements
 
 **Deliverable:** Monetization works, app is feature-complete
 
@@ -382,13 +385,13 @@ class DailyLog {
 
 ## Judging Criteria
 
-| Criteria | Weight | Focus |
-|----------|--------|-------|
-| **Audience Fit** | 30% | Does it solve Gabby's community's problem? |
-| **User Experience** | 25% | Is it delightful and easy to use? |
-| **Monetization Potential** | 20% | Is the business model viable? |
-| **Innovation** | 15% | Is the approach creative and fresh? |
-| **Technical Quality** | 10% | Does it work? Is it polished? |
+| Criteria                   | Weight | Focus                                      |
+| -------------------------- | ------ | ------------------------------------------ |
+| **Audience Fit**           | 30%    | Does it solve Gabby's community's problem? |
+| **User Experience**        | 25%    | Is it delightful and easy to use?          |
+| **Monetization Potential** | 20%    | Is the business model viable?              |
+| **Innovation**             | 15%    | Is the approach creative and fresh?        |
+| **Technical Quality**      | 10%    | Does it work? Is it polished?              |
 
 **Note:** Gabby herself reviews top submissions for her brief.
 
@@ -406,22 +409,22 @@ class DailyLog {
 
 ## Risk Mitigation
 
-| Risk                      | Mitigation                                    |
-| ------------------------- | --------------------------------------------- |
-| Time crunch               | Borrow heavily from FoodPilot                 |
-| RevenueCat issues         | Set up early, test on Day 14                  |
-| Scope creep               | Strict MVP, no AI features                    |
-| Platform issues           | Test on both Android and iOS                  |
+| Risk              | Mitigation                    |
+| ----------------- | ----------------------------- |
+| Time crunch       | Borrow heavily from FoodPilot |
+| RevenueCat issues | Set up early, test on Day 14  |
+| Scope creep       | Strict MVP, no AI features    |
+| Platform issues   | Test on both Android and iOS  |
 
 ---
 
 ## Daily Schedule Template
 
-| Time        | Activity                      |
-| ----------- | ----------------------------- |
-| Morning     | Code core feature             |
-| Afternoon   | Continue + test               |
-| Evening     | Review, plan tomorrow         |
+| Time      | Activity              |
+| --------- | --------------------- |
+| Morning   | Code core feature     |
+| Afternoon | Continue + test       |
+| Evening   | Review, plan tomorrow |
 
 ---
 

@@ -16,13 +16,17 @@ class SettingsScreen extends HookConsumerWidget {
   static const _reminderHourKey = 'reminder_hour';
   static const _reminderMinuteKey = 'reminder_minute';
   static const _reminderEnabledKey = 'reminder_enabled';
+  static const aiAppendModeKey = 'ai_append_mode';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notificationService = ref.read(notificationServiceProvider);
     final notificationsEnabled = useState<bool?>(null);
     final reminderEnabled = useState<bool>(false);
-    final reminderTime = useState<TimeOfDay>(const TimeOfDay(hour: 9, minute: 0));
+    final reminderTime = useState<TimeOfDay>(
+      const TimeOfDay(hour: 9, minute: 0),
+    );
+    final aiAppendMode = useState<bool>(true); // true = append, false = replace
 
     // Load settings on mount
     useEffect(() {
@@ -31,6 +35,7 @@ class SettingsScreen extends HookConsumerWidget {
         notificationsEnabled,
         reminderEnabled,
         reminderTime,
+        aiAppendMode,
       );
       return null;
     }, []);
@@ -123,6 +128,12 @@ class SettingsScreen extends HookConsumerWidget {
       return '$hour:$minute $period';
     }
 
+    Future<void> handleAiModeChange(bool value) async {
+      aiAppendMode.value = value;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(aiAppendModeKey, value);
+    }
+
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
@@ -142,8 +153,8 @@ class SettingsScreen extends HookConsumerWidget {
               notificationsEnabled.value == null
                   ? 'Checking...'
                   : notificationsEnabled.value!
-                      ? 'Enabled'
-                      : 'Tap to enable',
+                  ? 'Enabled'
+                  : 'Tap to enable',
             ),
             trailing: notificationsEnabled.value == null
                 ? const SizedBox(
@@ -186,6 +197,35 @@ class SettingsScreen extends HookConsumerWidget {
             subtitle: Text('Upgrade to unlock unlimited goals'),
           ),
           const Divider(),
+
+          // AI section header
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Text(
+              'AI MICRO-ACTIONS',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade600,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ),
+          ListTile(
+            leading: const SizedBox(width: 24),
+            title: const Text('Add to existing actions'),
+            subtitle: Text(
+              aiAppendMode.value
+                  ? 'New suggestions will be appended'
+                  : 'Existing actions will be replaced',
+            ),
+            trailing: Switch(
+              value: aiAppendMode.value,
+              onChanged: handleAiModeChange,
+            ),
+          ),
+          const Divider(),
+
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.red),
             title: const Text('Sign Out', style: TextStyle(color: Colors.red)),
@@ -207,6 +247,7 @@ class SettingsScreen extends HookConsumerWidget {
     ValueNotifier<bool?> notificationsEnabled,
     ValueNotifier<bool> reminderEnabled,
     ValueNotifier<TimeOfDay> reminderTime,
+    ValueNotifier<bool> aiAppendMode,
   ) async {
     // Check notification permission
     final enabled = await notificationService.areNotificationsEnabled();
@@ -218,6 +259,7 @@ class SettingsScreen extends HookConsumerWidget {
     final hour = prefs.getInt(_reminderHourKey) ?? 9;
     final minute = prefs.getInt(_reminderMinuteKey) ?? 0;
     reminderTime.value = TimeOfDay(hour: hour, minute: minute);
+    aiAppendMode.value = prefs.getBool(aiAppendModeKey) ?? true;
   }
 }
 

@@ -1,6 +1,7 @@
 import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
 import 'package:aspire/core/widgets/celebration_overlay.dart';
+import 'package:aspire/features/settings/settings_screen.dart';
 import 'package:aspire/models/goal.dart';
 import 'package:aspire/models/micro_action.dart';
 import 'package:aspire/services/ai_service.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GoalDetailScreen extends HookConsumerWidget {
   final String goalId;
@@ -407,13 +409,13 @@ class _GoalDetailContent extends HookConsumerWidget {
                   onPressed: isGenerating.value
                       ? null
                       : () => _generateAIActions(
-                            context,
-                            ref,
-                            goal,
-                            aiService,
-                            goalService,
-                            isGenerating,
-                          ),
+                          context,
+                          ref,
+                          goal,
+                          aiService,
+                          goalService,
+                          isGenerating,
+                        ),
                   icon: isGenerating.value
                       ? const SizedBox(
                           width: 16,
@@ -421,7 +423,9 @@ class _GoalDetailContent extends HookConsumerWidget {
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : const Icon(Icons.auto_awesome, size: 18),
-                  label: Text(isGenerating.value ? 'Generating...' : 'AI Generate'),
+                  label: Text(
+                    isGenerating.value ? 'Generating...' : 'AI Generate',
+                  ),
                   style: TextButton.styleFrom(
                     foregroundColor: AppTheme.accentCyan,
                   ),
@@ -447,13 +451,13 @@ class _GoalDetailContent extends HookConsumerWidget {
                   onGenerateAI: isGenerating.value
                       ? null
                       : () => _generateAIActions(
-                            context,
-                            ref,
-                            goal,
-                            aiService,
-                            goalService,
-                            isGenerating,
-                          ),
+                          context,
+                          ref,
+                          goal,
+                          aiService,
+                          goalService,
+                          isGenerating,
+                        ),
                   isGenerating: isGenerating.value,
                 );
               }
@@ -496,25 +500,55 @@ class _GoalDetailContent extends HookConsumerWidget {
     );
 
     if (confirmed == true && context.mounted) {
-      // Mark all incomplete actions as complete first
-      final actions =
-          await goalService.watchGoalActions(goal.id, goal.userId).first;
-      for (final action in actions) {
-        if (!action.isCompleted) {
-          await goalService.completeMicroAction(
-            actionId: action.id,
-            goalId: goal.id,
-            userId: goal.userId,
-          );
+      // Show loading dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const AlertDialog(
+          content: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 20),
+              Text('Completing goal...'),
+            ],
+          ),
+        ),
+      );
+
+      try {
+        // Mark all incomplete actions as complete first
+        final actions = await goalService
+            .watchGoalActions(goal.id, goal.userId)
+            .first;
+        for (final action in actions) {
+          if (!action.isCompleted) {
+            await goalService.completeMicroAction(
+              actionId: action.id,
+              goalId: goal.id,
+              userId: goal.userId,
+            );
+          }
+        }
+
+        // Then complete the goal
+        await goalService.completeGoal(goal.id);
+
+        if (context.mounted) {
+          // Dismiss loading dialog
+          Navigator.pop(context);
+
+          // Celebrate
+          final overlay = CelebrationOverlay.of(context);
+          overlay?.celebrate(CelebrationType.goalComplete);
+          HapticFeedback.heavyImpact();
+          ToastHelper.showSuccess('Congratulations! Goal completed!');
+        }
+      } catch (e) {
+        if (context.mounted) {
+          Navigator.pop(context); // Dismiss loading
+          ToastHelper.showError('Failed to complete goal');
         }
       }
-
-      // Then complete the goal
-      final overlay = CelebrationOverlay.of(context);
-      await goalService.completeGoal(goal.id);
-      overlay?.celebrate(CelebrationType.goalComplete);
-      HapticFeedback.heavyImpact();
-      ToastHelper.showSuccess('Congratulations! Goal completed!');
     }
   }
 
@@ -545,14 +579,27 @@ class _GoalDetailContent extends HookConsumerWidget {
         useSafeArea: true,
         isDismissible: false,
         enableDrag: false,
-        builder: (context) => _AIActionsReviewSheet(
-          actions: actions,
-          goalTitle: goal.title,
-        ),
+        builder: (context) =>
+            _AIActionsReviewSheet(actions: actions, goalTitle: goal.title),
       );
 
       // Save the approved actions
       if (result != null && result.isNotEmpty && context.mounted) {
+        // Check AI append mode setting
+        final prefs = await SharedPreferences.getInstance();
+        final appendMode =
+            prefs.getBool(SettingsScreen.aiAppendModeKey) ?? true;
+
+        // If replace mode, delete existing actions first
+        if (!appendMode) {
+          final existingActions = await goalService
+              .watchGoalActions(goal.id, goal.userId)
+              .first;
+          for (final action in existingActions) {
+            await goalService.deleteMicroAction(action.id, goal.id);
+          }
+        }
+
         for (final action in result) {
           await goalService.createMicroAction(
             goalId: goal.id,
@@ -561,7 +608,11 @@ class _GoalDetailContent extends HookConsumerWidget {
             sortOrder: action.sortOrder,
           );
         }
-        ToastHelper.showSuccess('${result.length} actions added!');
+        ToastHelper.showSuccess(
+          appendMode
+              ? '${result.length} actions added!'
+              : '${result.length} actions replaced!',
+        );
       }
     } catch (e) {
       if (context.mounted) {
@@ -948,10 +999,7 @@ class _AIActionsReviewSheet extends StatefulWidget {
   final List<GeneratedAction> actions;
   final String goalTitle;
 
-  const _AIActionsReviewSheet({
-    required this.actions,
-    required this.goalTitle,
-  });
+  const _AIActionsReviewSheet({required this.actions, required this.goalTitle});
 
   @override
   State<_AIActionsReviewSheet> createState() => _AIActionsReviewSheetState();
@@ -964,17 +1012,13 @@ class _AIActionsReviewSheetState extends State<_AIActionsReviewSheet> {
   void initState() {
     super.initState();
     _editableActions = widget.actions
-        .map((a) => _EditableAction(
-              title: a.title,
-              sortOrder: a.sortOrder,
-              isSelected: true,
-            ))
+        .map((a) => _EditableAction(title: a.title, sortOrder: a.sortOrder))
         .toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    final selectedCount = _editableActions.where((a) => a.isSelected).length;
+    final actionCount = _editableActions.length;
 
     return DraggableScrollableSheet(
       initialChildSize: 0.75,
@@ -1009,8 +1053,8 @@ class _AIActionsReviewSheetState extends State<_AIActionsReviewSheet> {
                     Text(
                       'AI Suggestions',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -1035,11 +1079,7 @@ class _AIActionsReviewSheetState extends State<_AIActionsReviewSheet> {
                 final action = _editableActions[index];
                 return _AIActionTile(
                   action: action,
-                  onToggle: () {
-                    setState(() {
-                      action.isSelected = !action.isSelected;
-                    });
-                  },
+                  index: index,
                   onEdit: () => _editAction(index),
                   onDelete: () {
                     setState(() {
@@ -1081,20 +1121,21 @@ class _AIActionsReviewSheetState extends State<_AIActionsReviewSheet> {
                 Expanded(
                   flex: 2,
                   child: ElevatedButton.icon(
-                    onPressed: selectedCount > 0
+                    onPressed: actionCount > 0
                         ? () {
-                            final selected = _editableActions
-                                .where((a) => a.isSelected)
-                                .map((a) => GeneratedAction(
-                                      title: a.title,
-                                      sortOrder: a.sortOrder,
-                                    ))
+                            final actions = _editableActions
+                                .map(
+                                  (a) => GeneratedAction(
+                                    title: a.title,
+                                    sortOrder: a.sortOrder,
+                                  ),
+                                )
                                 .toList();
-                            Navigator.pop(context, selected);
+                            Navigator.pop(context, actions);
                           }
                         : null,
                     icon: const Icon(Icons.check),
-                    label: Text('Add $selectedCount Actions'),
+                    label: Text('Add $actionCount Actions'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.primaryPink,
                       foregroundColor: Colors.white,
@@ -1151,24 +1192,19 @@ class _AIActionsReviewSheetState extends State<_AIActionsReviewSheet> {
 class _EditableAction {
   String title;
   int sortOrder;
-  bool isSelected;
 
-  _EditableAction({
-    required this.title,
-    required this.sortOrder,
-    required this.isSelected,
-  });
+  _EditableAction({required this.title, required this.sortOrder});
 }
 
 class _AIActionTile extends StatelessWidget {
   final _EditableAction action;
-  final VoidCallback onToggle;
+  final int index;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
   const _AIActionTile({
     required this.action,
-    required this.onToggle,
+    required this.index,
     required this.onEdit,
     required this.onDelete,
   });
@@ -1176,19 +1212,24 @@ class _AIActionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Checkbox(
-        value: action.isSelected,
-        onChanged: (_) => onToggle(),
-        activeColor: AppTheme.primaryPink,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-      ),
-      title: Text(
-        action.title,
-        style: TextStyle(
-          color: action.isSelected ? null : Colors.grey,
-          decoration: action.isSelected ? null : TextDecoration.lineThrough,
+      leading: Container(
+        width: 28,
+        height: 28,
+        decoration: BoxDecoration(
+          color: AppTheme.accentCyan.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          '${index + 1}',
+          style: TextStyle(
+            color: AppTheme.accentCyan,
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
         ),
       ),
+      title: Text(action.title),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
