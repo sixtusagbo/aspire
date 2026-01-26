@@ -8,6 +8,7 @@ import 'package:aspire/features/onboarding/widgets/welcome_step.dart';
 import 'package:aspire/models/goal.dart';
 import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/goal_service.dart';
+import 'package:aspire/services/log_service.dart';
 import 'package:aspire/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -77,8 +78,7 @@ class OnboardingScreen extends HookConsumerWidget {
           context.go(AppRoutes.home);
         }
       } catch (e, stackTrace) {
-        debugPrint('Error completing onboarding: $e');
-        debugPrint('Stack trace: $stackTrace');
+        Log.e('Error completing onboarding', error: e, stackTrace: stackTrace);
         ToastHelper.showError('Something went wrong', details: e.toString());
       } finally {
         isLoading.value = false;

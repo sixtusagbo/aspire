@@ -610,23 +610,27 @@ class _ActionTile extends HookConsumerWidget {
               ? null
               : (value) async {
                   if (value == true) {
+                    // Capture overlay BEFORE async call
+                    final overlay = CelebrationOverlay.of(context);
                     HapticFeedback.mediumImpact();
                     final result = await goalService.completeMicroAction(
                       actionId: action.id,
                       goalId: goalId,
                       userId: action.userId,
                     );
-                    if (context.mounted) {
-                      final CelebrationType celebrationType;
-                      if (result.goalCompleted) {
-                        celebrationType = CelebrationType.goalComplete;
-                      } else if (result.isStreakMilestone) {
-                        celebrationType = CelebrationType.streakMilestone;
-                      } else {
-                        celebrationType = CelebrationType.actionComplete;
-                      }
-                      CelebrationOverlay.of(context)?.celebrate(celebrationType);
+
+                    // Trigger celebration
+                    final CelebrationType celebrationType;
+                    if (result.goalCompleted) {
+                      celebrationType = CelebrationType.goalComplete;
+                    } else if (result.isStreakMilestone) {
+                      celebrationType = CelebrationType.streakMilestone;
+                    } else {
+                      celebrationType = CelebrationType.actionComplete;
                     }
+                    overlay?.celebrate(celebrationType);
+
+                    // Show toast
                     if (result.goalCompleted) {
                       ToastHelper.showSuccess(
                         'Goal completed! +${result.xpEarned} XP',

@@ -70,11 +70,14 @@ Turn big dreams into daily micro-actions with gamified tracking and celebration.
 
 If time permits before deadline, add in priority order:
 
-1. **Goal Templates** - Pre-made goals for common dreams (travel, career, finance)
-2. **Challenges** - Weekly community challenges
-3. **Joint Goals** - Partner with a friend on shared goals
-4. **Social Sharing** - Share wins to social media
-5. **AI Coaching** - Motivational nudges and advice
+1. **Celebration Sound Effects** - Audio feedback for confetti and also for streak increases
+2. **Goal-Specific Reminders** - Set different reminder times for each goal
+3. **Goal Templates** - Pre-made goals for common dreams (travel, career, finance)
+4. **Challenges** - Weekly community challenges
+5. **Joint Goals** - Partner with a friend on shared goals
+6. **Social Sharing** - Share wins to social media
+7. **AI Coaching** - Motivational nudges and advice
+8. **Home Screen Widget** - Android widget showing goals and progress at a glance
 
 ---
 
@@ -252,6 +255,7 @@ class DailyLog {
 - [x] Haptic feedback
 - [x] Daily reminder notification
 - [x] Configurable reminder time
+- [x] Streak increase popup (Duolingo-style with fire emoji and next milestone)
 
 **Deliverable:** Core daily loop works - check in, complete tasks, earn XP, see confetti
 

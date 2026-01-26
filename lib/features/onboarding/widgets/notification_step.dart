@@ -1,7 +1,9 @@
 import 'package:aspire/core/theme/app_theme.dart';
+import 'package:aspire/services/log_service.dart';
 import 'package:aspire/services/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationStep extends ConsumerStatefulWidget {
   final VoidCallback onNext;
@@ -19,15 +21,56 @@ class NotificationStep extends ConsumerStatefulWidget {
 
 class _NotificationStepState extends ConsumerState<NotificationStep> {
   bool _isRequesting = false;
+  bool _reminderEnabled = true;
+  TimeOfDay _reminderTime = const TimeOfDay(hour: 9, minute: 0);
 
-  Future<void> _requestPermission() async {
+  Future<void> _enableNotifications() async {
     setState(() => _isRequesting = true);
 
-    final notificationService = ref.read(notificationServiceProvider);
-    await notificationService.requestPermission();
+    try {
+      final notificationService = ref.read(notificationServiceProvider);
+      final granted = await notificationService.requestPermission();
+
+      if (granted && _reminderEnabled) {
+        // Schedule the daily reminder
+        await notificationService.scheduleDailyReminder(
+          hour: _reminderTime.hour,
+          minute: _reminderTime.minute,
+        );
+
+        // Save preferences
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('daily_reminder_enabled', true);
+        await prefs.setInt('daily_reminder_hour', _reminderTime.hour);
+        await prefs.setInt('daily_reminder_minute', _reminderTime.minute);
+
+        Log.i('Daily reminder scheduled for ${_reminderTime.hour}:${_reminderTime.minute.toString().padLeft(2, '0')}');
+      }
+    } catch (e, stack) {
+      Log.e('Error setting up notifications', error: e, stackTrace: stack);
+    }
 
     setState(() => _isRequesting = false);
     widget.onNext();
+  }
+
+  Future<void> _selectTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: _reminderTime,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(primary: AppTheme.primaryPink),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      setState(() => _reminderTime = picked);
+    }
   }
 
   @override
@@ -82,6 +125,83 @@ class _NotificationStepState extends ConsumerState<NotificationStep> {
               height: 1.5,
             ),
           ),
+          const SizedBox(height: 32),
+
+          // Reminder toggle
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade50,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: Colors.grey.shade200),
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.alarm_rounded,
+                      color: AppTheme.primaryPink,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'Daily Reminder',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    Switch.adaptive(
+                      value: _reminderEnabled,
+                      onChanged: (value) {
+                        setState(() => _reminderEnabled = value);
+                      },
+                      activeTrackColor: AppTheme.primaryPink,
+                    ),
+                  ],
+                ),
+                if (_reminderEnabled) ...[
+                  const SizedBox(height: 12),
+                  InkWell(
+                    onTap: _selectTime,
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.access_time_rounded,
+                            color: Colors.grey.shade600,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            _reminderTime.format(context),
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(fontWeight: FontWeight.w500),
+                          ),
+                          const Spacer(),
+                          Icon(
+                            Icons.chevron_right_rounded,
+                            color: Colors.grey.shade400,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
 
           const Spacer(),
 
@@ -90,7 +210,7 @@ class _NotificationStepState extends ConsumerState<NotificationStep> {
             width: double.infinity,
             height: 56,
             child: ElevatedButton(
-              onPressed: _isRequesting ? null : _requestPermission,
+              onPressed: _isRequesting ? null : _enableNotifications,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.primaryPink,
                 foregroundColor: Colors.white,
@@ -108,9 +228,9 @@ class _NotificationStepState extends ConsumerState<NotificationStep> {
                         color: Colors.white,
                       ),
                     )
-                  : const Text(
-                      'Enable Notifications',
-                      style: TextStyle(
+                  : Text(
+                      _reminderEnabled ? 'Enable Notifications' : 'Continue',
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),

@@ -4,6 +4,7 @@ import 'package:aspire/features/auth/widgets/auth_text_field.dart';
 import 'package:aspire/features/auth/widgets/google_sign_in_button.dart';
 import 'package:aspire/features/auth/widgets/or_divider.dart';
 import 'package:aspire/services/auth_service.dart';
+import 'package:aspire/services/log_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -86,8 +87,7 @@ class SignUpScreen extends HookConsumerWidget {
           context.go(AppRoutes.onboarding);
         }
       } catch (e, stackTrace) {
-        debugPrint('Google sign-up error: $e');
-        debugPrint('Stack trace: $stackTrace');
+        Log.e('Google sign-up error', error: e, stackTrace: stackTrace);
         if (context.mounted) {
           ToastHelper.showError('Sign up was interrupted. Please try again.');
         }

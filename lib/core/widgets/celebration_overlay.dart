@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:aspire/services/log_service.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 
@@ -54,6 +55,7 @@ class CelebrationOverlayState extends State<CelebrationOverlay> {
   }
 
   void celebrate(CelebrationType type) {
+    Log.i('Celebration triggered: ${type.name}');
     switch (type) {
       case CelebrationType.actionComplete:
         _centerController.play();
@@ -77,47 +79,60 @@ class CelebrationOverlayState extends State<CelebrationOverlay> {
       children: [
         widget.child,
 
-        // Center confetti (top)
-        Align(
-          alignment: Alignment.topCenter,
-          child: ConfettiWidget(
-            confettiController: _centerController,
-            blastDirection: pi / 2, // down
-            emissionFrequency: 0.3,
-            numberOfParticles: 15,
-            maxBlastForce: 20,
-            minBlastForce: 10,
-            gravity: 0.2,
-            colors: _confettiColors,
+        // Center confetti (top) - blast downward
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConfettiWidget(
+              confettiController: _centerController,
+              blastDirectionality: BlastDirectionality.explosive,
+              emissionFrequency: 0.02,
+              numberOfParticles: 50,
+              maxBlastForce: 60,
+              minBlastForce: 30,
+              gravity: 0.2,
+              minimumSize: const Size(15, 8),
+              maximumSize: const Size(25, 15),
+              colors: _confettiColors,
+            ),
           ),
         ),
 
         // Left confetti
-        Align(
-          alignment: Alignment.topLeft,
+        Positioned(
+          top: 0,
+          left: 0,
           child: ConfettiWidget(
             confettiController: _leftController,
             blastDirection: -pi / 4, // diagonal right-down
-            emissionFrequency: 0.2,
-            numberOfParticles: 20,
-            maxBlastForce: 30,
-            minBlastForce: 15,
+            emissionFrequency: 0.02,
+            numberOfParticles: 60,
+            maxBlastForce: 80,
+            minBlastForce: 40,
             gravity: 0.15,
+            minimumSize: const Size(15, 8),
+            maximumSize: const Size(25, 15),
             colors: _confettiColors,
           ),
         ),
 
         // Right confetti
-        Align(
-          alignment: Alignment.topRight,
+        Positioned(
+          top: 0,
+          right: 0,
           child: ConfettiWidget(
             confettiController: _rightController,
             blastDirection: pi + pi / 4, // diagonal left-down
-            emissionFrequency: 0.2,
-            numberOfParticles: 20,
-            maxBlastForce: 30,
-            minBlastForce: 15,
+            emissionFrequency: 0.02,
+            numberOfParticles: 60,
+            maxBlastForce: 80,
+            minBlastForce: 40,
             gravity: 0.15,
+            minimumSize: const Size(15, 8),
+            maximumSize: const Size(25, 15),
             colors: _confettiColors,
           ),
         ),

@@ -2,15 +2,20 @@ import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
 import 'package:aspire/core/widgets/celebration_overlay.dart';
+import 'package:aspire/core/widgets/streak_celebration_dialog.dart';
 import 'package:aspire/features/home/widgets/stats_bar.dart';
 import 'package:aspire/models/goal.dart';
 import 'package:aspire/models/micro_action.dart';
 import 'package:aspire/models/user.dart';
 import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/goal_service.dart';
+import 'package:aspire/services/log_service.dart';
+import 'package:aspire/services/notification_service.dart';
 import 'package:aspire/services/user_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -22,10 +27,31 @@ class HomeScreen extends HookConsumerWidget {
     final authService = ref.read(authServiceProvider);
     final userService = ref.read(userServiceProvider);
     final goalService = ref.read(goalServiceProvider);
+    final notificationService = ref.read(notificationServiceProvider);
     final userId = authService.currentUser?.uid;
+
+    // Track notification permission state
+    final notificationsEnabled = useState<bool?>(null);
+    final bannerDismissed = useState(false);
+
+    // Check notification permission on mount
+    useEffect(() {
+      notificationService.areNotificationsEnabled().then((enabled) {
+        notificationsEnabled.value = enabled;
+      });
+      return null;
+    }, []);
 
     if (userId == null) {
       return const Scaffold(body: Center(child: Text('Please sign in')));
+    }
+
+    Future<void> handleEnableNotifications() async {
+      final granted = await notificationService.requestPermission();
+      notificationsEnabled.value = granted;
+      if (granted) {
+        ToastHelper.showSuccess('Notifications enabled!');
+      }
     }
 
     return Scaffold(
@@ -49,6 +75,15 @@ class HomeScreen extends HookConsumerWidget {
             },
             child: CustomScrollView(
               slivers: [
+                // Notification permission banner
+                if (notificationsEnabled.value == false && !bannerDismissed.value)
+                  SliverToBoxAdapter(
+                    child: _NotificationBanner(
+                      onEnable: handleEnableNotifications,
+                      onDismiss: () => bannerDismissed.value = true,
+                    ),
+                  ),
+
                 // Stats bar
                 SliverToBoxAdapter(
                   child: Padding(
@@ -58,6 +93,12 @@ class HomeScreen extends HookConsumerWidget {
                         : _buildStatsPlaceholder(),
                   ),
                 ),
+
+                // Debug buttons (only in debug mode)
+                if (kDebugMode)
+                  SliverToBoxAdapter(
+                    child: _DebugStreakButtons(userId: userId),
+                  ),
 
                 // Section header
                 SliverToBoxAdapter(
@@ -327,6 +368,9 @@ class _ActionTile extends HookConsumerWidget {
   }
 
   Future<void> _completeAction(BuildContext context) async {
+    // Capture overlay BEFORE async call (context may become unmounted)
+    final overlay = CelebrationOverlay.of(context);
+
     // Haptic feedback
     HapticFeedback.mediumImpact();
 
@@ -338,26 +382,33 @@ class _ActionTile extends HookConsumerWidget {
       );
 
       // Trigger appropriate celebration
-      if (context.mounted) {
-        final CelebrationType celebrationType;
-        if (result.goalCompleted) {
-          celebrationType = CelebrationType.goalComplete;
-        } else if (result.isStreakMilestone) {
-          celebrationType = CelebrationType.streakMilestone;
-        } else {
-          celebrationType = CelebrationType.actionComplete;
-        }
-        CelebrationOverlay.of(context)?.celebrate(celebrationType);
+      final CelebrationType celebrationType;
+      if (result.goalCompleted) {
+        celebrationType = CelebrationType.goalComplete;
+      } else if (result.isStreakMilestone) {
+        celebrationType = CelebrationType.streakMilestone;
+      } else {
+        celebrationType = CelebrationType.actionComplete;
+      }
+      overlay?.celebrate(celebrationType);
+
+      // Show streak increase dialog if streak went up
+      final streakIncreased = result.newStreak > result.previousStreak;
+      final newStreak = result.newStreak;
+      if (streakIncreased) {
+        // Small delay so confetti starts first
+        Future.delayed(const Duration(milliseconds: 400), () {
+          // Use overlay's context which stays mounted (it's at the root)
+          if (overlay != null && overlay.mounted) {
+            StreakCelebrationDialog.show(overlay.context, newStreak);
+          }
+        });
       }
 
-      // Show appropriate toast
+      // Show appropriate toast (skip if showing streak dialog)
       if (result.goalCompleted) {
         ToastHelper.showSuccess('Goal completed! +${result.xpEarned} XP');
-      } else if (result.isStreakMilestone) {
-        ToastHelper.showSuccess(
-          '${result.newStreak} day streak! +${result.xpEarned} XP',
-        );
-      } else {
+      } else if (!streakIncreased) {
         ToastHelper.showSuccess('+${result.xpEarned} XP earned!');
       }
     } catch (e) {
@@ -414,6 +465,60 @@ class _CompletedGoalCard extends StatelessWidget {
   }
 }
 
+class _NotificationBanner extends StatelessWidget {
+  final VoidCallback onEnable;
+  final VoidCallback onDismiss;
+
+  const _NotificationBanner({required this.onEnable, required this.onDismiss});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.amber.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.amber.shade200),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.notifications_outlined, color: Colors.amber.shade700),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Stay on track!',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.amber.shade900,
+                  ),
+                ),
+                Text(
+                  'Enable notifications for daily reminders',
+                  style: TextStyle(fontSize: 12, color: Colors.amber.shade800),
+                ),
+              ],
+            ),
+          ),
+          TextButton(
+            onPressed: onEnable,
+            child: const Text('Enable'),
+          ),
+          IconButton(
+            icon: const Icon(Icons.close, size: 18),
+            onPressed: onDismiss,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _EmptyState extends StatelessWidget {
   final VoidCallback onCreateGoal;
 
@@ -461,5 +566,165 @@ class _EmptyState extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// Debug buttons for testing streak milestones (only visible in debug mode)
+class _DebugStreakButtons extends ConsumerWidget {
+  final String userId;
+
+  const _DebugStreakButtons({required this.userId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.orange.shade50,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.orange.shade200),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'DEBUG: Reset & Set Streak (clears all data)',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: Colors.orange.shade800,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                _buildButton(context, ref, 0),
+                _buildButton(context, ref, 6),
+                _buildButton(context, ref, 7),
+                _buildButton(context, ref, 14),
+                _buildButton(context, ref, 30),
+                _buildButton(context, ref, 60),
+                _buildButton(context, ref, 100),
+                _buildButton(context, ref, 365),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildButton(BuildContext context, WidgetRef ref, int streak) {
+    return SizedBox(
+      height: 32,
+      child: ElevatedButton(
+        onPressed: () => _seedData(ref, streak),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.orange.shade100,
+          foregroundColor: Colors.orange.shade900,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+        ),
+        child: Text('$streak'),
+      ),
+    );
+  }
+
+  Future<void> _seedData(WidgetRef ref, int streak) async {
+    final userService = ref.read(userServiceProvider);
+    final goalService = ref.read(goalServiceProvider);
+
+    try {
+      Log.i('Debug: Seeding data with streak $streak...');
+
+      // 1. Delete all existing goals (this cascades to actions)
+      final existingGoals = await goalService.watchUserGoals(userId).first;
+      for (final goal in existingGoals) {
+        await goalService.deleteGoal(goal.id, userId);
+      }
+      Log.d('Deleted ${existingGoals.length} existing goals');
+
+      // 2. Reset user stats - set lastActivityDate to yesterday so next
+      // action completion will increment the streak
+      final yesterday = DateTime.now().subtract(const Duration(days: 1));
+      await userService.updateUser(userId, {
+        'currentStreak': streak,
+        'longestStreak': streak > 0 ? streak : 0,
+        'xp': 0,
+        'level': 1,
+        'lastActivityDate': yesterday,
+      });
+
+      // 3. Create test goals with actions
+      final goal1 = await goalService.createGoal(
+        userId: userId,
+        title: 'Learn a new language',
+        description: 'Become conversational in Spanish',
+        category: GoalCategory.personal,
+        targetDate: DateTime.now().add(const Duration(days: 90)),
+      );
+      await goalService.createMicroAction(
+        goalId: goal1.id,
+        userId: userId,
+        title: 'Practice on Duolingo for 10 min',
+      );
+      await goalService.createMicroAction(
+        goalId: goal1.id,
+        userId: userId,
+        title: 'Watch a Spanish YouTube video',
+      );
+      await goalService.createMicroAction(
+        goalId: goal1.id,
+        userId: userId,
+        title: 'Learn 5 new vocabulary words',
+      );
+
+      final goal2 = await goalService.createGoal(
+        userId: userId,
+        title: 'Save for dream trip',
+        description: 'Save \$3000 for Japan trip',
+        category: GoalCategory.travel,
+        targetDate: DateTime.now().add(const Duration(days: 180)),
+      );
+      await goalService.createMicroAction(
+        goalId: goal2.id,
+        userId: userId,
+        title: 'Transfer \$50 to savings',
+      );
+      await goalService.createMicroAction(
+        goalId: goal2.id,
+        userId: userId,
+        title: 'Skip one takeout meal this week',
+      );
+
+      final goal3 = await goalService.createGoal(
+        userId: userId,
+        title: 'Get promoted',
+        description: 'Reach senior level by end of year',
+        category: GoalCategory.career,
+        targetDate: DateTime.now().add(const Duration(days: 365)),
+      );
+      await goalService.createMicroAction(
+        goalId: goal3.id,
+        userId: userId,
+        title: 'Ask manager for feedback',
+      );
+      await goalService.createMicroAction(
+        goalId: goal3.id,
+        userId: userId,
+        title: 'Complete one online course module',
+      );
+
+      Log.i('Debug: Seeded 3 goals with actions, streak=$streak');
+      ToastHelper.showSuccess('Reset! Streak: $streak');
+    } catch (e, stack) {
+      Log.e('Failed to seed data', error: e, stackTrace: stack);
+      ToastHelper.showError('Failed to seed');
+    }
   }
 }

@@ -4,6 +4,7 @@ import 'package:aspire/features/auth/widgets/auth_text_field.dart';
 import 'package:aspire/features/auth/widgets/google_sign_in_button.dart';
 import 'package:aspire/features/auth/widgets/or_divider.dart';
 import 'package:aspire/services/auth_service.dart';
+import 'package:aspire/services/log_service.dart';
 import 'package:aspire/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -88,8 +89,7 @@ class SignInScreen extends HookConsumerWidget {
           }
         }
       } catch (e, stackTrace) {
-        debugPrint('Google sign-in error: $e');
-        debugPrint('Stack trace: $stackTrace');
+        Log.e('Google sign-in error', error: e, stackTrace: stackTrace);
         if (context.mounted) {
           ToastHelper.showError('Sign in was interrupted. Please try again.');
         }
