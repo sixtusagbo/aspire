@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-/// Shows a Duolingo-style streak celebration dialog
-class StreakCelebrationDialog extends StatelessWidget {
+/// Shows a Duolingo-style streak celebration dialog with animated fire
+class StreakCelebrationDialog extends StatefulWidget {
   final int streak;
 
   const StreakCelebrationDialog({super.key, required this.streak});
@@ -17,21 +17,65 @@ class StreakCelebrationDialog extends StatelessWidget {
     );
   }
 
+  @override
+  State<StreakCelebrationDialog> createState() =>
+      _StreakCelebrationDialogState();
+}
+
+class _StreakCelebrationDialogState extends State<StreakCelebrationDialog>
+    with TickerProviderStateMixin {
+  late final AnimationController _pulseController;
+  late final AnimationController _glowController;
+  late final Animation<double> _pulseAnimation;
+  late final Animation<double> _glowAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Pulse animation for the fire emoji
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.15).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
+    _pulseController.repeat(reverse: true);
+
+    // Glow animation for the background
+    _glowController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
+    _glowAnimation = Tween<double>(begin: 0.15, end: 0.35).animate(
+      CurvedAnimation(parent: _glowController, curve: Curves.easeInOut),
+    );
+    _glowController.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    _glowController.dispose();
+    super.dispose();
+  }
+
   int get _nextMilestone {
     const milestones = [7, 14, 30, 60, 100, 365];
     for (final m in milestones) {
-      if (m > streak) return m;
+      if (m > widget.streak) return m;
     }
-    return streak + 100; // Beyond 365, show next 100
+    return widget.streak + 100; // Beyond 365, show next 100
   }
 
   String get _message {
-    if (streak == 7) return "One week strong!";
-    if (streak == 14) return "Two weeks of consistency!";
-    if (streak == 30) return "A whole month!";
-    if (streak == 60) return "Two months of dedication!";
-    if (streak == 100) return "Triple digits!";
-    if (streak == 365) return "A full year!";
+    if (widget.streak == 7) return "One week strong!";
+    if (widget.streak == 14) return "Two weeks of consistency!";
+    if (widget.streak == 30) return "A whole month!";
+    if (widget.streak == 60) return "Two months of dedication!";
+    if (widget.streak == 100) return "Triple digits!";
+    if (widget.streak == 365) return "A full year!";
     return "You're on fire!";
   }
 
@@ -50,26 +94,50 @@ class StreakCelebrationDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Fire icon with glow effect
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                color: streakColor.withValues(alpha: 0.15),
-                shape: BoxShape.circle,
-              ),
-              child: const Center(
-                child: Text(
-                  '🔥',
-                  style: TextStyle(fontSize: 40),
-                ),
-              ),
+            // Animated fire icon with pulsing glow
+            AnimatedBuilder(
+              animation: Listenable.merge([_pulseAnimation, _glowAnimation]),
+              builder: (context, child) {
+                return Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      colors: [
+                        streakColor.withValues(alpha: _glowAnimation.value),
+                        streakColor.withValues(alpha: _glowAnimation.value * 0.3),
+                        Colors.transparent,
+                      ],
+                      stops: const [0.3, 0.6, 1.0],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: streakColor.withValues(
+                          alpha: _glowAnimation.value * 0.5,
+                        ),
+                        blurRadius: 20,
+                        spreadRadius: 5,
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Transform.scale(
+                      scale: _pulseAnimation.value,
+                      child: const Text(
+                        '🔥',
+                        style: TextStyle(fontSize: 48),
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 16),
 
             // Streak count
             Text(
-              '$streak Day Streak!',
+              '${widget.streak} Day Streak!',
               style: const TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,

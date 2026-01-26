@@ -71,14 +71,13 @@ Turn big dreams into daily micro-actions with gamified tracking and celebration.
 If time permits before deadline, add in priority order:
 
 1. **Celebration Sound Effects** - Audio feedback for confetti and streak increases
-2. **Animated Streak Dialog** - Animate the fire emoji or add particle effects to streak popup
-3. **Goal-Specific Reminders** - Set different reminder times for each goal
-4. **Goal Templates** - Pre-made goals for common dreams (travel, career, finance)
-5. **Challenges** - Weekly community challenges
-6. **Joint Goals** - Partner with a friend on shared goals
-7. **Social Sharing** - Share wins to social media
-8. **AI Coaching** - Motivational nudges and advice
-9. **Home Screen Widget** - Android widget showing goals and progress at a glance
+2. **Goal-Specific Reminders** - Set different reminder times for each goal
+3. **Goal Templates** - Pre-made goals for common dreams (travel, career, finance)
+4. **Challenges** - Weekly community challenges
+5. **Joint Goals** - Partner with a friend on shared goals
+6. **Social Sharing** - Share wins to social media
+7. **AI Coaching** - Motivational nudges and advice
+8. **Home Screen Widget** - Android widget showing goals and progress at a glance
 
 ---
 
@@ -256,7 +255,7 @@ class DailyLog {
 - [x] Haptic feedback
 - [x] Daily reminder notification
 - [x] Configurable reminder time
-- [x] Streak increase popup (Duolingo-style with fire emoji and next milestone)
+- [x] Streak increase popup (Duolingo-style with animated fire emoji and next milestone)
 
 **Deliverable:** Core daily loop works - check in, complete tasks, earn XP, see confetti
 

@@ -3,24 +3,24 @@
 ## 1. Firebase Project Setup
 
 ### Create Project
-- [ ] Go to [Firebase Console](https://console.firebase.google.com/)
-- [ ] Click "Add project"
-- [ ] Name it `aspire` (or `aspire-app` if taken)
-- [ ] Disable Google Analytics (optional, speeds up setup)
-- [ ] Click "Create project"
+- [x] Go to [Firebase Console](https://console.firebase.google.com/)
+- [x] Click "Add project"
+- [x] Name it `aspire` (or `aspire-app` if taken)
+- [x] Disable Google Analytics (optional, speeds up setup)
+- [x] Click "Create project"
 
 ### Add Android App
-- [ ] In project overview, click the Android icon
-- [ ] Package name: `dev.sixtusagbo.aspire`
-- [ ] App nickname: `Aspire`
-- [ ] Download `google-services.json`
-- [ ] Place it in `android/app/google-services.json`
+- [x] In project overview, click the Android icon
+- [x] Package name: `dev.sixtusagbo.aspire`
+- [x] App nickname: `Aspire`
+- [x] Download `google-services.json`
+- [x] Place it in `android/app/google-services.json`
 
 ### Enable Authentication
-- [ ] Go to Build > Authentication
-- [ ] Click "Get started"
-- [ ] Enable **Email/Password** provider
-- [ ] Enable **Google** provider:
+- [x] Go to Build > Authentication
+- [x] Click "Get started"
+- [x] Enable **Email/Password** provider
+- [x] Enable **Google** provider:
   - Add support email
   - Note the Web Client ID (needed for Android)
 
@@ -28,60 +28,47 @@
 
 **Without this, Google Sign-In will fail silently!**
 
-- [ ] Get your SHA-1 fingerprint:
+- [x] Get your SHA-1 fingerprint:
   ```bash
   cd android && ./gradlew signingReport
   ```
   Look for `SHA1:` under `Variant: debug`
 
-- [ ] Go to [Firebase Console](https://console.firebase.google.com/) > Project Settings > Your apps > Android app
+- [x] Go to [Firebase Console](https://console.firebase.google.com/) > Project Settings > Your apps > Android app
 
-- [ ] Click "Add fingerprint" and paste the SHA-1
+- [x] Click "Add fingerprint" and paste the SHA-1
 
-- [ ] Download the updated `google-services.json` and replace `android/app/google-services.json`
+- [x] Download the updated `google-services.json` and replace `android/app/google-services.json`
 
-- [ ] Rebuild the app: `flutter clean && flutter run`
+- [x] Rebuild the app: `flutter clean && flutter run`
 
 ### Enable Firestore
-- [ ] Go to Build > Firestore Database
-- [ ] Click "Create database"
-- [ ] Start in **test mode** (we'll add rules later)
-- [ ] Choose nearest region (e.g., `us-central1`)
-
-### Firestore Security Rules (for development)
-```
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if request.auth != null;
-    }
-  }
-}
-```
+- [x] Go to Build > Firestore Database
+- [x] Click "Create database"
+- [x] Choose nearest region (e.g., `us-central1`)
 
 ---
 
 ## 2. RevenueCat Setup
 
 ### Create Account
-- [ ] Go to [RevenueCat Dashboard](https://app.revenuecat.com/)
-- [ ] Sign up / Log in
+- [x] Go to [RevenueCat Dashboard](https://app.revenuecat.com/)
+- [x] Sign up / Log in
 
 ### Create Project
-- [ ] Click "Create new project"
-- [ ] Name: `Aspire`
+- [x] Click "Create new project"
+- [x] Name: `Aspire`
 
 ### Add Android App
-- [ ] In your project, go to Apps > Add app
-- [ ] Select **Google Play Store**
-- [ ] App name: `Aspire`
-- [ ] Package name: `dev.sixtusagbo.aspire`
+- [x] In your project, go to Apps > Add app
+- [x] Select **Google Play Store**
+- [x] App name: `Aspire`
+- [x] Package name: `dev.sixtusagbo.aspire`
 
 ### Get API Key
-- [ ] Go to your Android app in RevenueCat
-- [ ] Copy the **Public API Key** (starts with `goog_`)
-- [ ] You'll add this to the app later
+- [x] Go to your Android app in RevenueCat
+- [x] Copy the **Public API Key** (starts with `goog_`)
+- [x] You'll add this to the app later
 
 ### Create Products (Do after Google Play Console setup)
 - [ ] Go to Products > Entitlements
@@ -139,11 +126,11 @@ service cloud.firestore {
 
 ## Quick Checklist
 
-- [ ] Firebase project created
-- [ ] `google-services.json` in `android/app/`
-- [ ] Firebase Auth enabled (Email + Google)
-- [ ] SHA-1 added to Firebase
-- [ ] Firestore created
+- [x] Firebase project created
+- [x] `google-services.json` in `android/app/`
+- [x] Firebase Auth enabled (Email + Google)
+- [x] SHA-1 added to Firebase
+- [x] Firestore created
 - [ ] RevenueCat project created
 - [ ] RevenueCat API key copied
 - [ ] Google Play Console app created (can do later)
