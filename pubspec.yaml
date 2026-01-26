@@ -1,6 +1,6 @@
 name: aspire
 description: "From dreaming to doing - for ambitious women"
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0+1
 
 environment:
@@ -53,7 +53,6 @@ dependencies:
   purchases_flutter: ^9.10.7
   logger: ^2.6.2
   flutter_timezone: ^5.0.1
-  lottie: ^3.3.2
 
 dev_dependencies:
   flutter_test:
@@ -71,4 +70,3 @@ flutter:
 
   assets:
     - assets/images/
-    - assets/animations/
