@@ -45,7 +45,7 @@ class AIService {
 
       final data = result.data;
       final actions = (data['actions'] as List<dynamic>)
-          .map((a) => GeneratedAction.fromJson(a as Map<String, dynamic>))
+          .map((a) => GeneratedAction.fromJson(Map<String, dynamic>.from(a as Map)))
           .toList();
 
       Log.i('Generated ${actions.length} micro-actions');

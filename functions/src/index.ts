@@ -1,6 +1,6 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { defineSecret } from "firebase-functions/params";
-import OpenAI from "openai";
+import * as https from "https";
 
 // Define the secret for OpenAI API key
 const openaiApiKey = defineSecret("OPENAI_API_KEY");
@@ -15,6 +15,74 @@ interface GenerateActionsRequest {
 interface MicroAction {
   title: string;
   sortOrder: number;
+}
+
+interface OpenAIResponse {
+  choices: Array<{
+    message: {
+      content: string;
+    };
+  }>;
+}
+
+/**
+ * Make a request to OpenAI API using native https module
+ */
+function callOpenAI(apiKey: string, messages: Array<{ role: string; content: string }>): Promise<OpenAIResponse> {
+  return new Promise((resolve, reject) => {
+    const data = JSON.stringify({
+      model: "gpt-4o-mini",
+      messages: messages,
+      temperature: 0.7,
+      max_tokens: 500,
+    });
+
+    const options: https.RequestOptions = {
+      hostname: "api.openai.com",
+      port: 443,
+      path: "/v1/chat/completions",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Length": Buffer.byteLength(data),
+      },
+      timeout: 30000,
+    };
+
+    const req = https.request(options, (res) => {
+      let responseData = "";
+
+      res.on("data", (chunk) => {
+        responseData += chunk;
+      });
+
+      res.on("end", () => {
+        if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
+          try {
+            const parsed = JSON.parse(responseData);
+            resolve(parsed);
+          } catch (e) {
+            reject(new Error(`Failed to parse response: ${responseData}`));
+          }
+        } else {
+          reject(new Error(`OpenAI API error (${res.statusCode}): ${responseData}`));
+        }
+      });
+    });
+
+    req.on("error", (e) => {
+      reject(new Error(`Request failed: ${e.message}`));
+    });
+
+    req.on("timeout", () => {
+      req.destroy();
+      reject(new Error("Request timed out"));
+    });
+
+    req.write(data);
+    req.end();
+  });
 }
 
 /**
@@ -41,17 +109,13 @@ export const generateMicroActions = onCall(
       throw new HttpsError("invalid-argument", "Goal title is required");
     }
 
-    // Check if API key is available
-    const apiKey = openaiApiKey.value();
+    // Check if API key is available and trim any whitespace/newlines
+    const apiKey = openaiApiKey.value()?.trim();
     if (!apiKey) {
       console.error("OpenAI API key is not set");
       throw new HttpsError("internal", "OpenAI API key is not configured");
     }
     console.log("API key length:", apiKey.length);
-
-    const openai = new OpenAI({
-      apiKey: apiKey,
-    });
 
     // Build the prompt
     const categoryContext = data.category
@@ -81,31 +145,29 @@ Each action should be:
 Return ONLY a JSON array of objects with "title" field. No markdown, no explanation.
 Example: [{"title": "Research flight prices to destination"},{"title": "Set up automatic savings transfer of $50"}]`;
 
+    const messages = [
+      {
+        role: "system",
+        content:
+          "You are a helpful assistant that generates actionable micro-tasks. Always respond with valid JSON only.",
+      },
+      { role: "user", content: prompt },
+    ];
+
     try {
-      console.log("Calling OpenAI API...");
+      console.log("Calling OpenAI API with native https...");
 
       // Retry logic for transient connection errors
-      let completion;
-      let lastError;
+      let response: OpenAIResponse | undefined;
+      let lastError: Error | undefined;
       for (let attempt = 1; attempt <= 3; attempt++) {
         try {
-          completion = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: [
-              {
-                role: "system",
-                content:
-                  "You are a helpful assistant that generates actionable micro-tasks. Always respond with valid JSON only.",
-              },
-              { role: "user", content: prompt },
-            ],
-            temperature: 0.7,
-            max_tokens: 500,
-          });
-          break; // Success, exit retry loop
+          response = await callOpenAI(apiKey, messages);
+          console.log("OpenAI API response received on attempt", attempt);
+          break;
         } catch (e) {
-          lastError = e;
-          console.log(`OpenAI API attempt ${attempt} failed:`, (e as Error).message);
+          lastError = e as Error;
+          console.log(`OpenAI API attempt ${attempt} failed:`, lastError.message);
           if (attempt < 3) {
             // Wait before retrying (exponential backoff)
             await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
@@ -113,12 +175,11 @@ Example: [{"title": "Research flight prices to destination"},{"title": "Set up a
         }
       }
 
-      if (!completion) {
-        throw lastError;
+      if (!response) {
+        throw lastError || new Error("No response from OpenAI");
       }
-      console.log("OpenAI API response received");
 
-      const content = completion.choices[0]?.message?.content;
+      const content = response.choices[0]?.message?.content;
       console.log("Response content:", content);
       if (!content) {
         throw new HttpsError("internal", "No response from AI");

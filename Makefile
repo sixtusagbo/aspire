@@ -13,7 +13,7 @@ FIREBASE_PROJECT_ID := aspire-bc5d7
 .PHONY: help assets watch reset \
 	build-appbundle build-apk extract-symbols \
 	deploy-all deploy-firestore deploy-rules deploy-indexes deploy-functions \
-	signing-report clean analyze test
+	set-openai-key signing-report clean analyze test
 
 # ============================================================================
 # HELP
@@ -43,6 +43,7 @@ help:
 	@echo "  make deploy-rules     - Deploy Firestore rules only"
 	@echo "  make deploy-indexes   - Deploy Firestore indexes only"
 	@echo "  make deploy-functions - Deploy Firebase Functions only"
+	@echo "  make set-openai-key   - Set OpenAI API key secret"
 	@echo ""
 	@echo "Utilities:"
 	@echo "  make signing-report   - Get Android SHA-1 signing report"
@@ -129,6 +130,11 @@ deploy-functions:
 	@echo "Deploying Firebase Functions..."
 	firebase deploy --only functions --project $(FIREBASE_PROJECT_ID)
 	@echo "Functions deployed."
+
+set-openai-key:
+	@echo "Setting OpenAI API key secret..."
+	firebase functions:secrets:set OPENAI_API_KEY --project $(FIREBASE_PROJECT_ID)
+	@echo "Secret set. To apply, redeploy functions now if you've not done so."
 
 # ============================================================================
 # UTILITY COMMANDS
