@@ -331,20 +331,28 @@ class _ActionTile extends HookConsumerWidget {
     HapticFeedback.mediumImpact();
 
     try {
-      await goalService.completeMicroAction(
+      final result = await goalService.completeMicroAction(
         actionId: action.id,
         goalId: goal.id,
         userId: action.userId,
       );
 
-      // Trigger confetti celebration
+      // Trigger appropriate celebration
       if (context.mounted) {
-        CelebrationOverlay.of(
-          context,
-        )?.celebrate(CelebrationType.actionComplete);
+        final celebrationType = result.isStreakMilestone
+            ? CelebrationType.streakMilestone
+            : CelebrationType.actionComplete;
+        CelebrationOverlay.of(context)?.celebrate(celebrationType);
       }
 
-      ToastHelper.showSuccess('+10 XP earned!');
+      // Show appropriate toast
+      if (result.isStreakMilestone) {
+        ToastHelper.showSuccess(
+          '${result.newStreak} day streak! +${result.xpEarned} XP',
+        );
+      } else {
+        ToastHelper.showSuccess('+${result.xpEarned} XP earned!');
+      }
     } catch (e) {
       ToastHelper.showError('Failed to complete action');
     }

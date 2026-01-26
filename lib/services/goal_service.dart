@@ -7,6 +7,25 @@ import '../models/daily_log.dart';
 
 part 'goal_service.g.dart';
 
+/// Result of completing a micro-action
+class ActionCompletionResult {
+  final int xpEarned;
+  final int newStreak;
+  final int previousStreak;
+
+  ActionCompletionResult({
+    required this.xpEarned,
+    required this.newStreak,
+    required this.previousStreak,
+  });
+
+  /// Check if a streak milestone was just reached
+  bool get isStreakMilestone {
+    const milestones = [7, 14, 30, 60, 100, 365];
+    return milestones.contains(newStreak) && newStreak > previousStreak;
+  }
+}
+
 class GoalService {
   final _firestore = FirebaseFirestore.instance;
 
@@ -186,7 +205,7 @@ class GoalService {
   }
 
   /// Complete a micro-action and award XP
-  Future<int> completeMicroAction({
+  Future<ActionCompletionResult> completeMicroAction({
     required String actionId,
     required String goalId,
     required String userId,
@@ -223,13 +242,18 @@ class GoalService {
     final userRef = _firestore.collection('users').doc(userId);
     final userDoc = await userRef.get();
 
+    int previousStreak = 0;
+    int newStreak = 1;
+
     if (userDoc.exists) {
       final userData = userDoc.data()!;
       final lastActivity = userData['lastActivityDate'] as Timestamp?;
       final currentStreak = userData['currentStreak'] as int? ?? 0;
       final longestStreak = userData['longestStreak'] as int? ?? 0;
 
-      int newStreak = currentStreak;
+      previousStreak = currentStreak;
+      newStreak = currentStreak;
+
       if (lastActivity != null) {
         final lastDate = lastActivity.toDate();
         final lastDay = DateTime(lastDate.year, lastDate.month, lastDate.day);
@@ -260,7 +284,11 @@ class GoalService {
 
     await batch.commit();
 
-    return xpReward;
+    return ActionCompletionResult(
+      xpEarned: xpReward,
+      newStreak: newStreak,
+      previousStreak: previousStreak,
+    );
   }
 
   /// Delete a micro-action

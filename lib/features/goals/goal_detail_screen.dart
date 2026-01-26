@@ -611,17 +611,24 @@ class _ActionTile extends HookConsumerWidget {
               : (value) async {
                   if (value == true) {
                     HapticFeedback.mediumImpact();
-                    await goalService.completeMicroAction(
+                    final result = await goalService.completeMicroAction(
                       actionId: action.id,
                       goalId: goalId,
                       userId: action.userId,
                     );
                     if (context.mounted) {
-                      CelebrationOverlay.of(
-                        context,
-                      )?.celebrate(CelebrationType.actionComplete);
+                      final celebrationType = result.isStreakMilestone
+                          ? CelebrationType.streakMilestone
+                          : CelebrationType.actionComplete;
+                      CelebrationOverlay.of(context)?.celebrate(celebrationType);
                     }
-                    ToastHelper.showSuccess('+10 XP!');
+                    if (result.isStreakMilestone) {
+                      ToastHelper.showSuccess(
+                        '${result.newStreak} day streak! +${result.xpEarned} XP',
+                      );
+                    } else {
+                      ToastHelper.showSuccess('+${result.xpEarned} XP!');
+                    }
                   }
                 },
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
