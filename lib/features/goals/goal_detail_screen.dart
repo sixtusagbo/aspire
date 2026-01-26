@@ -617,12 +617,21 @@ class _ActionTile extends HookConsumerWidget {
                       userId: action.userId,
                     );
                     if (context.mounted) {
-                      final celebrationType = result.isStreakMilestone
-                          ? CelebrationType.streakMilestone
-                          : CelebrationType.actionComplete;
+                      final CelebrationType celebrationType;
+                      if (result.goalCompleted) {
+                        celebrationType = CelebrationType.goalComplete;
+                      } else if (result.isStreakMilestone) {
+                        celebrationType = CelebrationType.streakMilestone;
+                      } else {
+                        celebrationType = CelebrationType.actionComplete;
+                      }
                       CelebrationOverlay.of(context)?.celebrate(celebrationType);
                     }
-                    if (result.isStreakMilestone) {
+                    if (result.goalCompleted) {
+                      ToastHelper.showSuccess(
+                        'Goal completed! +${result.xpEarned} XP',
+                      );
+                    } else if (result.isStreakMilestone) {
                       ToastHelper.showSuccess(
                         '${result.newStreak} day streak! +${result.xpEarned} XP',
                       );

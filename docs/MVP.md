@@ -248,7 +248,7 @@ class DailyLog {
 
 - [x] Confetti animation on task completion
 - [x] Bigger celebration on streak milestones (7, 30, etc.)
-- [ ] Goal completion celebration
+- [x] Goal completion celebration
 - [x] Haptic feedback
 - [x] Daily reminder notification
 - [x] Configurable reminder time

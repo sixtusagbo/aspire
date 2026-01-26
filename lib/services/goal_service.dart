@@ -12,11 +12,13 @@ class ActionCompletionResult {
   final int xpEarned;
   final int newStreak;
   final int previousStreak;
+  final bool goalCompleted;
 
   ActionCompletionResult({
     required this.xpEarned,
     required this.newStreak,
     required this.previousStreak,
+    this.goalCompleted = false,
   });
 
   /// Check if a streak milestone was just reached
@@ -284,10 +286,28 @@ class GoalService {
 
     await batch.commit();
 
+    // Check if goal is now complete (all actions done)
+    bool goalCompleted = false;
+    final goalDoc = await _goalsRef.doc(goalId).get();
+    if (goalDoc.exists) {
+      final data = goalDoc.data()!;
+      final total = data['totalActionsCount'] as int? ?? 0;
+      final completed = data['completedActionsCount'] as int? ?? 0;
+      if (total > 0 && completed >= total) {
+        goalCompleted = true;
+        // Mark goal as completed
+        await _goalsRef.doc(goalId).update({
+          'isCompleted': true,
+          'completedAt': FieldValue.serverTimestamp(),
+        });
+      }
+    }
+
     return ActionCompletionResult(
       xpEarned: xpReward,
       newStreak: newStreak,
       previousStreak: previousStreak,
+      goalCompleted: goalCompleted,
     );
   }
 
