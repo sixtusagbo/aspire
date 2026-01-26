@@ -6,6 +6,7 @@ import 'package:aspire/features/onboarding/widgets/name_step.dart';
 import 'package:aspire/features/onboarding/widgets/notification_step.dart';
 import 'package:aspire/features/onboarding/widgets/welcome_step.dart';
 import 'package:aspire/models/goal.dart';
+import 'package:aspire/services/ai_service.dart';
 import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/goal_service.dart';
 import 'package:aspire/services/log_service.dart';
@@ -45,6 +46,7 @@ class OnboardingScreen extends HookConsumerWidget {
       try {
         final userService = ref.read(userServiceProvider);
         final goalService = ref.read(goalServiceProvider);
+        final aiService = ref.read(aiServiceProvider);
 
         if (user == null) {
           if (context.mounted) {
@@ -63,7 +65,7 @@ class OnboardingScreen extends HookConsumerWidget {
 
         // Create first goal if title provided
         if (goalTitle.value.isNotEmpty) {
-          await goalService.createGoal(
+          final goal = await goalService.createGoal(
             userId: user.uid,
             title: goalTitle.value,
             description: goalDescription.value.isNotEmpty
@@ -72,6 +74,31 @@ class OnboardingScreen extends HookConsumerWidget {
             targetDate: goalTargetDate.value,
             category: goalCategory.value,
           );
+
+          // Generate AI micro-actions for the goal (don't block on failure)
+          try {
+            final actions = await aiService.generateMicroActions(
+              goalTitle: goalTitle.value,
+              goalDescription: goalDescription.value.isNotEmpty
+                  ? goalDescription.value
+                  : null,
+              category: goalCategory.value.name,
+              targetDate: goalTargetDate.value,
+            );
+
+            // Save the generated actions
+            for (final action in actions) {
+              await goalService.createMicroAction(
+                goalId: goal.id,
+                userId: user.uid,
+                title: action.title,
+                sortOrder: action.sortOrder,
+              );
+            }
+          } catch (e) {
+            // AI generation failed - user can generate manually later
+            Log.w('AI action generation failed during onboarding: $e');
+          }
         }
 
         if (context.mounted) {
