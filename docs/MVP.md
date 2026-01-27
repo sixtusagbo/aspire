@@ -295,7 +295,7 @@ class DailyLog {
 **Day 9: RevenueCat & Paywall**
 
 - [x] Set up RevenueCat account and SDK
-- [ ] Create offerings in RevenueCat dashboard
+- [x] Create offerings in RevenueCat dashboard
 - [x] Premium entitlement check
 - [x] Restore purchases
 - [x] Paywall screen design

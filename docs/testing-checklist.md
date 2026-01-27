@@ -3,14 +3,14 @@
 ## Day 9: RevenueCat & Paywall
 
 ### Setup (see [SETUP.md](SETUP.md#2-revenuecat-setup))
-- [ ] Create offerings in RevenueCat dashboard
-- [ ] Create entitlement: `premium`
-- [ ] Add products: `aspire_premium_monthly`, `aspire_premium_yearly`
-- [ ] Create offering: `default` with monthly and annual packages
+- [x] Create offerings in RevenueCat dashboard
+- [x] Create entitlement: `premium`
+- [x] Add products: `aspire_premium_monthly`, `aspire_premium_yearly`
+- [x] Create offering: `default` with monthly and annual packages
 
 ### RevenueCat Integration
-- [ ] App launches without errors (RevenueCat initialized)
-- [ ] Sign in and verify RevenueCat login in logs
+- [x] App launches without errors (RevenueCat initialized)
+- [x] Sign in and verify RevenueCat login in logs
 - [ ] Sign out and verify RevenueCat logout in logs
 
 ### Paywall Screen

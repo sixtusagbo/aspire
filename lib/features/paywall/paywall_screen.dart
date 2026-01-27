@@ -28,8 +28,12 @@ class PaywallScreen extends HookConsumerWidget {
             : _PaywallContent(
                 offerings: offerings.value,
                 isPurchasing: isPurchasing,
-                onPurchase: (package) =>
-                    _purchase(context, revenueCatService, package, isPurchasing),
+                onPurchase: (package) => _purchase(
+                  context,
+                  revenueCatService,
+                  package,
+                  isPurchasing,
+                ),
                 onRestore: () =>
                     _restore(context, revenueCatService, isPurchasing),
               ),
@@ -127,11 +131,7 @@ class _PaywallContent extends StatelessWidget {
                       width: 80,
                       height: 80,
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [AppTheme.primaryPink, AppTheme.accentCyan],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
+                        color: AppTheme.primaryPink,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Icon(
@@ -143,10 +143,8 @@ class _PaywallContent extends StatelessWidget {
                     const SizedBox(height: 20),
                     Text(
                       'Unlock Your Full Potential',
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
@@ -376,10 +374,7 @@ class _PricingCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     isAnnual ? 'Save 50% vs monthly' : 'Billed monthly',
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 13,
-                    ),
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                   ),
                 ],
               ),
