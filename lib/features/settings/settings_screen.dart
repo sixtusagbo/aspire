@@ -1,10 +1,8 @@
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
 import 'package:aspire/services/auth_service.dart';
-import 'package:aspire/services/log_service.dart';
 import 'package:aspire/services/notification_service.dart';
 import 'package:aspire/services/revenue_cat_service.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -16,7 +14,7 @@ class SettingsScreen extends HookConsumerWidget {
 
   static const _reminderHourKey = 'reminder_hour';
   static const _reminderMinuteKey = 'reminder_minute';
-  static const _reminderEnabledKey = 'reminder_enabled';
+  static const _reminderEnabledKey = 'daily_reminder_enabled';
   static const aiAppendModeKey = 'ai_append_mode';
 
   @override
@@ -237,11 +235,6 @@ class SettingsScreen extends HookConsumerWidget {
             onTap: handleSignOut,
           ),
 
-          // Debug section (only in debug mode)
-          if (kDebugMode) ...[
-            const Divider(height: 32),
-            _DebugSection(ref: ref),
-          ],
         ],
       ),
     );
@@ -260,92 +253,10 @@ class SettingsScreen extends HookConsumerWidget {
 
     // Load saved preferences
     final prefs = await SharedPreferences.getInstance();
-    reminderEnabled.value = prefs.getBool(_reminderEnabledKey) ?? false;
+    reminderEnabled.value = prefs.getBool(_reminderEnabledKey) ?? true;
     final hour = prefs.getInt(_reminderHourKey) ?? 9;
     final minute = prefs.getInt(_reminderMinuteKey) ?? 0;
     reminderTime.value = TimeOfDay(hour: hour, minute: minute);
     aiAppendMode.value = prefs.getBool(aiAppendModeKey) ?? true;
-  }
-}
-
-/// Debug section for testing notifications
-class _DebugSection extends StatelessWidget {
-  final WidgetRef ref;
-
-  const _DebugSection({required this.ref});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Text(
-            'DEBUG: Test Notifications',
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: Colors.orange,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () => _showTestNotification(context),
-                icon: const Icon(Icons.notifications, size: 16),
-                label: const Text('Test Now'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue.shade100,
-                  foregroundColor: Colors.blue.shade900,
-                  elevation: 0,
-                ),
-              ),
-              ElevatedButton.icon(
-                onPressed: () => _checkPendingNotifications(context),
-                icon: const Icon(Icons.schedule, size: 16),
-                label: const Text('Check Pending'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green.shade100,
-                  foregroundColor: Colors.green.shade900,
-                  elevation: 0,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
-      ],
-    );
-  }
-
-  Future<void> _showTestNotification(BuildContext context) async {
-    final notificationService = ref.read(notificationServiceProvider);
-    try {
-      await notificationService.showTestNotification();
-      ToastHelper.showSuccess('Test notification sent!');
-    } catch (e) {
-      Log.e('Failed to show test notification', error: e);
-      ToastHelper.showError('Failed: $e');
-    }
-  }
-
-  Future<void> _checkPendingNotifications(BuildContext context) async {
-    final notificationService = ref.read(notificationServiceProvider);
-    try {
-      final pending = await notificationService.getPendingNotifications();
-      if (pending.isEmpty) {
-        ToastHelper.showInfo('No pending notifications');
-      } else {
-        ToastHelper.showSuccess('${pending.length} pending notification(s)');
-      }
-    } catch (e) {
-      Log.e('Failed to check notifications', error: e);
-      ToastHelper.showError('Failed: $e');
-    }
   }
 }

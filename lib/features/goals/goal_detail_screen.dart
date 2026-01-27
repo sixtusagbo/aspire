@@ -1,17 +1,21 @@
 import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
 import 'package:aspire/core/widgets/celebration_overlay.dart';
-import 'package:aspire/features/settings/settings_screen.dart';
 import 'package:aspire/models/goal.dart';
 import 'package:aspire/models/micro_action.dart';
 import 'package:aspire/services/ai_service.dart';
 import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/goal_service.dart';
+import 'package:aspire/services/revenue_cat_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+/// Action limits per goal
+const int freeActionLimit = 5;
+const int premiumActionLimit = 10;
 
 class GoalDetailScreen extends HookConsumerWidget {
   final String goalId;
@@ -293,11 +297,25 @@ class GoalDetailScreen extends HookConsumerWidget {
   }
 
   Future<void> _showAddActionDialog(BuildContext context, WidgetRef ref) async {
-    final controller = TextEditingController();
     final goalService = ref.read(goalServiceProvider);
+    final revenueCatService = ref.read(revenueCatServiceProvider);
     final goal = await goalService.getGoal(goalId);
 
     if (goal == null || !context.mounted) return;
+
+    // Check action limit
+    final isPremium = await revenueCatService.isPremium();
+    final actionLimit = isPremium ? premiumActionLimit : freeActionLimit;
+    final currentCount = goal.totalActionsCount;
+
+    if (currentCount >= actionLimit) {
+      if (!context.mounted) return;
+      await _showActionLimitDialog(context, isPremium, actionLimit);
+      return;
+    }
+
+    final controller = TextEditingController();
+    if (!context.mounted) return;
 
     final result = await showDialog<String>(
       context: context,
@@ -333,6 +351,58 @@ class GoalDetailScreen extends HookConsumerWidget {
         title: result.trim(),
       );
       ToastHelper.showSuccess('Action added');
+    }
+  }
+
+  Future<void> _showActionLimitDialog(
+    BuildContext context,
+    bool isPremium,
+    int limit,
+  ) async {
+    if (isPremium) {
+      // Premium users have hit the max limit
+      await showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Action Limit Reached'),
+          content: Text(
+            'You have $limit micro-actions for this goal. '
+            'Complete or remove some actions to add more.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      // Free users - prompt upgrade
+      final upgrade = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Upgrade to Add More'),
+          content: Text(
+            'Free accounts can have up to $limit micro-actions per goal. '
+            'Upgrade to premium for up to $premiumActionLimit actions per goal!',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Upgrade'),
+            ),
+          ],
+        ),
+      );
+
+      if (upgrade == true && context.mounted) {
+        context.push('/paywall');
+      }
     }
   }
 }
@@ -563,6 +633,12 @@ class _GoalDetailContent extends HookConsumerWidget {
     isGenerating.value = true;
 
     try {
+      // Check premium status and limits
+      final revenueCatService = ref.read(revenueCatServiceProvider);
+      final isPremium = await revenueCatService.isPremium();
+      final actionLimit = isPremium ? premiumActionLimit : freeActionLimit;
+      final currentActionCount = goal.totalActionsCount;
+
       final actions = await aiService.generateMicroActions(
         goalTitle: goal.title,
         goalDescription: goal.description,
@@ -572,26 +648,26 @@ class _GoalDetailContent extends HookConsumerWidget {
 
       if (!context.mounted) return;
 
-      // Show review bottom sheet (prevent accidental dismissal)
-      final result = await showModalBottomSheet<List<GeneratedAction>>(
+      // Show review bottom sheet with limit info
+      final result = await showModalBottomSheet<_AIActionsResult>(
         context: context,
         isScrollControlled: true,
         useSafeArea: true,
         isDismissible: false,
         enableDrag: false,
-        builder: (context) =>
-            _AIActionsReviewSheet(actions: actions, goalTitle: goal.title),
+        builder: (context) => _AIActionsReviewSheet(
+          actions: actions,
+          goalTitle: goal.title,
+          isPremium: isPremium,
+          actionLimit: actionLimit,
+          currentActionCount: currentActionCount,
+        ),
       );
 
       // Save the approved actions
-      if (result != null && result.isNotEmpty && context.mounted) {
-        // Check AI append mode setting
-        final prefs = await SharedPreferences.getInstance();
-        final appendMode =
-            prefs.getBool(SettingsScreen.aiAppendModeKey) ?? true;
-
+      if (result != null && result.actions.isNotEmpty && context.mounted) {
         // If replace mode, delete existing actions first
-        if (!appendMode) {
+        if (result.replaceMode) {
           final existingActions = await goalService
               .watchGoalActions(goal.id, goal.userId)
               .first;
@@ -600,7 +676,7 @@ class _GoalDetailContent extends HookConsumerWidget {
           }
         }
 
-        for (final action in result) {
+        for (final action in result.actions) {
           await goalService.createMicroAction(
             goalId: goal.id,
             userId: goal.userId,
@@ -609,9 +685,9 @@ class _GoalDetailContent extends HookConsumerWidget {
           );
         }
         ToastHelper.showSuccess(
-          appendMode
-              ? '${result.length} actions added!'
-              : '${result.length} actions replaced!',
+          result.replaceMode
+              ? '${result.actions.length} actions replaced!'
+              : '${result.actions.length} actions added!',
         );
       }
     } catch (e) {
@@ -622,6 +698,14 @@ class _GoalDetailContent extends HookConsumerWidget {
       isGenerating.value = false;
     }
   }
+}
+
+/// Result from AI actions review sheet
+class _AIActionsResult {
+  final List<GeneratedAction> actions;
+  final bool replaceMode;
+
+  _AIActionsResult({required this.actions, required this.replaceMode});
 }
 
 class _GoalHeader extends StatelessWidget {
@@ -998,8 +1082,17 @@ class _EmptyActionsState extends StatelessWidget {
 class _AIActionsReviewSheet extends StatefulWidget {
   final List<GeneratedAction> actions;
   final String goalTitle;
+  final bool isPremium;
+  final int actionLimit;
+  final int currentActionCount;
 
-  const _AIActionsReviewSheet({required this.actions, required this.goalTitle});
+  const _AIActionsReviewSheet({
+    required this.actions,
+    required this.goalTitle,
+    required this.isPremium,
+    required this.actionLimit,
+    required this.currentActionCount,
+  });
 
   @override
   State<_AIActionsReviewSheet> createState() => _AIActionsReviewSheetState();
@@ -1007,18 +1100,41 @@ class _AIActionsReviewSheet extends StatefulWidget {
 
 class _AIActionsReviewSheetState extends State<_AIActionsReviewSheet> {
   late List<_EditableAction> _editableActions;
+  late bool _replaceMode;
+
+  /// How many actions can be added in current mode
+  int get _availableSlots {
+    if (_replaceMode) {
+      return widget.actionLimit;
+    }
+    return (widget.actionLimit - widget.currentActionCount)
+        .clamp(0, widget.actionLimit);
+  }
+
+  /// Whether we're over the limit
+  bool get _isOverLimit => _editableActions.length > _availableSlots;
 
   @override
   void initState() {
     super.initState();
-    _editableActions = widget.actions
+    // Default to replace mode if user already has actions at limit
+    _replaceMode = widget.currentActionCount >= widget.actionLimit;
+
+    // Initialize editable actions, trimmed to available slots
+    final allActions = widget.actions
         .map((a) => _EditableAction(title: a.title, sortOrder: a.sortOrder))
         .toList();
+
+    // Limit to available slots initially
+    final slotsAvailable =
+        _replaceMode ? widget.actionLimit : _availableSlots;
+    _editableActions = allActions.take(slotsAvailable).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     final actionCount = _editableActions.length;
+    final hasExistingActions = widget.currentActionCount > 0;
 
     return DraggableScrollableSheet(
       initialChildSize: 0.75,
@@ -1053,8 +1169,8 @@ class _AIActionsReviewSheetState extends State<_AIActionsReviewSheet> {
                     Text(
                       'AI Suggestions',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                   ],
                 ),
@@ -1063,9 +1179,15 @@ class _AIActionsReviewSheetState extends State<_AIActionsReviewSheet> {
                   'Review and edit the suggested actions for "${widget.goalTitle}"',
                   style: TextStyle(color: Colors.grey.shade600),
                 ),
+                const SizedBox(height: 8),
+                // Limit indicator
+                _buildLimitInfo(context),
               ],
             ),
           ),
+
+          // Replace/Append toggle (only show if user has existing actions)
+          if (hasExistingActions) _buildModeToggle(context),
 
           const Divider(height: 1),
 
@@ -1077,10 +1199,12 @@ class _AIActionsReviewSheetState extends State<_AIActionsReviewSheet> {
               itemCount: _editableActions.length,
               itemBuilder: (context, index) {
                 final action = _editableActions[index];
+                final isOverLimit = index >= _availableSlots;
                 return _AIActionTile(
                   action: action,
                   index: index,
-                  onEdit: () => _editAction(index),
+                  isDisabled: isOverLimit,
+                  onEdit: isOverLimit ? null : () => _editAction(index),
                   onDelete: () {
                     setState(() {
                       _editableActions.removeAt(index);
@@ -1109,44 +1233,185 @@ class _AIActionsReviewSheetState extends State<_AIActionsReviewSheet> {
                 ),
               ],
             ),
-            child: Row(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('Cancel'),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  flex: 2,
-                  child: ElevatedButton.icon(
-                    onPressed: actionCount > 0
-                        ? () {
-                            final actions = _editableActions
-                                .map(
-                                  (a) => GeneratedAction(
-                                    title: a.title,
-                                    sortOrder: a.sortOrder,
-                                  ),
-                                )
-                                .toList();
-                            Navigator.pop(context, actions);
-                          }
-                        : null,
-                    icon: const Icon(Icons.check),
-                    label: Text('Add $actionCount Actions'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primaryPink,
-                      foregroundColor: Colors.white,
+                if (_isOverLimit && !widget.isPremium) ...[
+                  _buildUpgradePrompt(context),
+                  const SizedBox(height: 12),
+                ],
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Cancel'),
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      flex: 2,
+                      child: ElevatedButton.icon(
+                        onPressed: actionCount > 0 && !_isOverLimit
+                            ? () => _submitActions()
+                            : null,
+                        icon: const Icon(Icons.check),
+                        label: Text(_replaceMode
+                            ? 'Replace with $actionCount'
+                            : 'Add $actionCount Actions'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppTheme.primaryPink,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildLimitInfo(BuildContext context) {
+    final adding = _editableActions.length;
+    final slotsLeft = _availableSlots - adding;
+    final isOver = adding > _availableSlots;
+
+    // Simple, friendly message
+    String message;
+    if (isOver) {
+      final excess = adding - _availableSlots;
+      message = 'Remove $excess to continue';
+    } else if (slotsLeft == 0) {
+      message = 'All $adding slots filled';
+    } else {
+      message = '$adding selected';
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: isOver ? Colors.orange.shade50 : Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            isOver ? Icons.warning_amber_rounded : Icons.check_circle_outline,
+            size: 16,
+            color: isOver ? Colors.orange.shade700 : AppTheme.accentCyan,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            message,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: isOver ? Colors.orange.shade700 : Colors.grey.shade700,
+            ),
+          ),
+          const Spacer(),
+          if (!widget.isPremium && !isOver)
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                context.push('/paywall');
+              },
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: Text(
+                'Get more',
+                style: TextStyle(fontSize: 12, color: AppTheme.primaryPink),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildModeToggle(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+      child: Row(
+        children: [
+          Expanded(
+            child: _ModeButton(
+              label: 'Add to existing',
+              isSelected: !_replaceMode,
+              onTap: () => _setMode(replaceMode: false),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: _ModeButton(
+              label: 'Replace all',
+              isSelected: _replaceMode,
+              onTap: () => _setMode(replaceMode: true),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _setMode({required bool replaceMode}) {
+    if (_replaceMode == replaceMode) return;
+    setState(() {
+      _replaceMode = replaceMode;
+      // Re-trim actions to new available slots
+      final slotsAvailable =
+          replaceMode ? widget.actionLimit : _availableSlots;
+      if (_editableActions.length > slotsAvailable) {
+        _editableActions = _editableActions.take(slotsAvailable).toList();
+      }
+    });
+  }
+
+  Widget _buildUpgradePrompt(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppTheme.primaryPink.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppTheme.primaryPink.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.auto_awesome, color: AppTheme.primaryPink, size: 20),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'Upgrade for $premiumActionLimit actions per goal',
+              style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              context.push('/paywall');
+            },
+            child: const Text('Upgrade'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _submitActions() {
+    final actions = _editableActions
+        .take(_availableSlots)
+        .map((a) => GeneratedAction(title: a.title, sortOrder: a.sortOrder))
+        .toList();
+
+    Navigator.pop(
+      context,
+      _AIActionsResult(actions: actions, replaceMode: _replaceMode),
     );
   }
 
@@ -1199,51 +1464,106 @@ class _EditableAction {
 class _AIActionTile extends StatelessWidget {
   final _EditableAction action;
   final int index;
-  final VoidCallback onEdit;
+  final VoidCallback? onEdit;
   final VoidCallback onDelete;
+  final bool isDisabled;
 
   const _AIActionTile({
     required this.action,
     required this.index,
-    required this.onEdit,
+    this.onEdit,
     required this.onDelete,
+    this.isDisabled = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Container(
-        width: 28,
-        height: 28,
+    return Opacity(
+      opacity: isDisabled ? 0.5 : 1.0,
+      child: ListTile(
+        leading: Container(
+          width: 28,
+          height: 28,
+          decoration: BoxDecoration(
+            color: isDisabled
+                ? Colors.grey.shade300
+                : AppTheme.accentCyan.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            '${index + 1}',
+            style: TextStyle(
+              color: isDisabled ? Colors.grey.shade500 : AppTheme.accentCyan,
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+            ),
+          ),
+        ),
+        title: Text(
+          action.title,
+          style: TextStyle(
+            decoration: isDisabled ? TextDecoration.lineThrough : null,
+          ),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (!isDisabled)
+              IconButton(
+                icon: Icon(Icons.edit_outlined, color: Colors.grey.shade600),
+                onPressed: onEdit,
+                visualDensity: VisualDensity.compact,
+              ),
+            IconButton(
+              icon: Icon(Icons.delete_outline, color: Colors.red.shade400),
+              onPressed: onDelete,
+              visualDensity: VisualDensity.compact,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ModeButton extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _ModeButton({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          color: AppTheme.accentCyan.withValues(alpha: 0.15),
+          color: isSelected
+              ? AppTheme.primaryPink.withValues(alpha: 0.1)
+              : Colors.grey.shade100,
           borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected
+                ? AppTheme.primaryPink
+                : Colors.grey.shade300,
+          ),
         ),
         alignment: Alignment.center,
         child: Text(
-          '${index + 1}',
+          label,
           style: TextStyle(
-            color: AppTheme.accentCyan,
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
+            fontSize: 13,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+            color: isSelected ? AppTheme.primaryPink : Colors.grey.shade600,
           ),
         ),
-      ),
-      title: Text(action.title),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: Icon(Icons.edit_outlined, color: Colors.grey.shade600),
-            onPressed: onEdit,
-            visualDensity: VisualDensity.compact,
-          ),
-          IconButton(
-            icon: Icon(Icons.delete_outline, color: Colors.red.shade400),
-            onPressed: onDelete,
-            visualDensity: VisualDensity.compact,
-          ),
-        ],
       ),
     );
   }

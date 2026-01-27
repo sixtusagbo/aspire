@@ -178,11 +178,6 @@ class _PaywallContent extends StatelessWidget {
                 title: 'Custom Reminders',
                 description: 'Set different reminder times per goal',
               ),
-              _FeatureItem(
-                icon: Icons.insights,
-                title: 'Detailed Analytics',
-                description: 'Track your progress over time',
-              ),
 
               const SizedBox(height: 32),
 

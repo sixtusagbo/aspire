@@ -9,10 +9,8 @@ import 'package:aspire/models/micro_action.dart';
 import 'package:aspire/models/user.dart';
 import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/goal_service.dart';
-import 'package:aspire/services/log_service.dart';
 import 'package:aspire/services/notification_service.dart';
 import 'package:aspire/services/user_service.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -93,12 +91,6 @@ class HomeScreen extends HookConsumerWidget {
                         : _buildStatsPlaceholder(),
                   ),
                 ),
-
-                // Debug buttons (only in debug mode)
-                if (kDebugMode)
-                  SliverToBoxAdapter(
-                    child: _DebugStreakButtons(userId: userId),
-                  ),
 
                 // Section header
                 SliverToBoxAdapter(
@@ -586,162 +578,3 @@ class _EmptyState extends StatelessWidget {
   }
 }
 
-/// Debug buttons for testing streak milestones (only visible in debug mode)
-class _DebugStreakButtons extends ConsumerWidget {
-  final String userId;
-
-  const _DebugStreakButtons({required this.userId});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.orange.shade50,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.orange.shade200),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'DEBUG: Reset & Set Streak (clears all data)',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: Colors.orange.shade800,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: [
-                _buildButton(context, ref, 0),
-                _buildButton(context, ref, 6),
-                _buildButton(context, ref, 7),
-                _buildButton(context, ref, 14),
-                _buildButton(context, ref, 30),
-                _buildButton(context, ref, 60),
-                _buildButton(context, ref, 100),
-                _buildButton(context, ref, 365),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildButton(BuildContext context, WidgetRef ref, int streak) {
-    return SizedBox(
-      height: 32,
-      child: ElevatedButton(
-        onPressed: () => _seedData(ref, streak),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.orange.shade100,
-          foregroundColor: Colors.orange.shade900,
-          elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-        ),
-        child: Text('$streak'),
-      ),
-    );
-  }
-
-  Future<void> _seedData(WidgetRef ref, int streak) async {
-    final userService = ref.read(userServiceProvider);
-    final goalService = ref.read(goalServiceProvider);
-
-    try {
-      Log.i('Debug: Seeding data with streak $streak...');
-
-      // 1. Delete all existing goals (this cascades to actions)
-      final existingGoals = await goalService.watchUserGoals(userId).first;
-      for (final goal in existingGoals) {
-        await goalService.deleteGoal(goal.id, userId);
-      }
-      Log.d('Deleted ${existingGoals.length} existing goals');
-
-      // 2. Reset user stats - set lastActivityDate to yesterday so next
-      // action completion will increment the streak
-      final yesterday = DateTime.now().subtract(const Duration(days: 1));
-      await userService.updateUser(userId, {
-        'currentStreak': streak,
-        'longestStreak': streak > 0 ? streak : 0,
-        'xp': 0,
-        'level': 1,
-        'lastActivityDate': yesterday,
-      });
-
-      // 3. Create test goals with actions
-      final goal1 = await goalService.createGoal(
-        userId: userId,
-        title: 'Learn a new language',
-        description: 'Become conversational in Spanish',
-        category: GoalCategory.personal,
-        targetDate: DateTime.now().add(const Duration(days: 90)),
-      );
-      await goalService.createMicroAction(
-        goalId: goal1.id,
-        userId: userId,
-        title: 'Practice on Duolingo for 10 min',
-      );
-      await goalService.createMicroAction(
-        goalId: goal1.id,
-        userId: userId,
-        title: 'Watch a Spanish YouTube video',
-      );
-      await goalService.createMicroAction(
-        goalId: goal1.id,
-        userId: userId,
-        title: 'Learn 5 new vocabulary words',
-      );
-
-      final goal2 = await goalService.createGoal(
-        userId: userId,
-        title: 'Save for dream trip',
-        description: 'Save \$3000 for Japan trip',
-        category: GoalCategory.travel,
-        targetDate: DateTime.now().add(const Duration(days: 180)),
-      );
-      await goalService.createMicroAction(
-        goalId: goal2.id,
-        userId: userId,
-        title: 'Transfer \$50 to savings',
-      );
-      await goalService.createMicroAction(
-        goalId: goal2.id,
-        userId: userId,
-        title: 'Skip one takeout meal this week',
-      );
-
-      final goal3 = await goalService.createGoal(
-        userId: userId,
-        title: 'Get promoted',
-        description: 'Reach senior level by end of year',
-        category: GoalCategory.career,
-        targetDate: DateTime.now().add(const Duration(days: 365)),
-      );
-      await goalService.createMicroAction(
-        goalId: goal3.id,
-        userId: userId,
-        title: 'Ask manager for feedback',
-      );
-      await goalService.createMicroAction(
-        goalId: goal3.id,
-        userId: userId,
-        title: 'Complete one online course module',
-      );
-
-      Log.i('Debug: Seeded 3 goals with actions, streak=$streak');
-      ToastHelper.showSuccess('Reset! Streak: $streak');
-    } catch (e, stack) {
-      Log.e('Failed to seed data', error: e, stackTrace: stack);
-      ToastHelper.showError('Failed to seed');
-    }
-  }
-}

@@ -11,22 +11,38 @@
 ### RevenueCat Integration
 - [x] App launches without errors (RevenueCat initialized)
 - [x] Sign in and verify RevenueCat login in logs
-- [ ] Sign out and verify RevenueCat logout in logs
+- [x] Sign out and verify RevenueCat logout in logs
 
 ### Paywall Screen
-- [ ] Go to Settings > Premium
-- [ ] Verify paywall screen opens with features list
-- [ ] Verify pricing loads (or shows "Unable to load pricing" if no offerings yet)
-- [ ] Tap close button to dismiss paywall
-- [ ] Test Restore Purchases button
+- [x] Go to Settings > Premium
+- [x] Verify paywall screen opens with features list
+- [x] Verify pricing loads (or shows "Unable to load pricing" if no offerings yet)
+- [x] Tap close button to dismiss paywall
+- [x] Test Restore Purchases button
 
 ### Goal Limit (Free Tier)
-- [ ] Create 3 goals (free tier limit)
-- [ ] Try to create 4th goal
-- [ ] Verify upgrade dialog appears with "Goal Limit Reached"
-- [ ] Tap "Upgrade" and verify paywall opens
-- [ ] Tap "Maybe Later" and verify dialog dismisses
+- [x] Create 3 goals (free tier limit)
+- [x] Try to create 4th goal
+- [x] Verify upgrade dialog appears with "Goal Limit Reached"
+- [x] Tap "Upgrade" and verify paywall opens
+- [x] Tap "Maybe Later" and verify dialog dismisses
 
 ### Premium Status (after purchase/test)
 - [ ] After purchase, verify can create unlimited goals
 - [ ] Verify premium entitlement persists after app restart
+
+### Micro Actions Limit (Free Tier)
+- [x] Create a goal with micro actions
+- [x] Add micro actions up to free tier limit (5 per goal)
+- [x] Try to add 6th micro action manually
+- [x] Verify upgrade dialog appears with limit message
+- [x] Tap "Upgrade" and verify paywall opens
+- [x] Tap "Cancel" and verify dialog dismisses
+
+### AI-Generated Actions Limit
+- [x] Generate AI actions for a goal
+- [x] Verify review sheet shows action count
+- [ ] Verify "Add to existing" vs "Replace all" toggle works
+- [ ] Verify actions over limit are disabled/strikethrough
+- [ ] Verify "Get more" upgrade link works
+- [ ] Verify can only add up to limit

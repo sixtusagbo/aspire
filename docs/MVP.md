@@ -67,19 +67,6 @@ Turn big dreams into daily micro-actions with gamified tracking and celebration.
 7. **Progress Dashboard** - Visual progress on each goal
 8. **Premium Paywall** - RevenueCat integration (required)
 
-### What's OUT (V2 - Post-MVP to Improve Chances)
-
-If time permits before deadline, add in priority order:
-
-1. **Celebration Sound Effects** - Audio feedback for confetti and streak increases
-2. **Goal-Specific Reminders** - Set different reminder times for each goal, only if the user decides to be remided differently about this goal, it should be shown in goal creation and by default turned off.
-3. **Goal Templates** - Pre-made goals for common dreams (travel, career, finance)
-4. **Challenges** - Weekly community challenges
-5. **Joint Goals** - Partner with a friend on shared goals
-6. **Social Sharing** - Share wins to social media
-7. **AI Coaching** - Motivational nudges and advice
-8. **Home Screen Widget** - Android widget showing goals and progress at a glance
-
 ---
 
 ## Reusable from FoodPilot
@@ -304,10 +291,16 @@ class DailyLog {
 
 **Day 10: Settings & Polish**
 
-- [ ] Settings screen (account, notifications, subscription)
+- [x] Action limits enforcement (5 free, 10 premium per goal)
+- [ ] Custom reminders (premium: per-goal reminder times)
+- [ ] Settings screen completion
   - [x] AI behavior setting (append vs replace existing actions)
-  - [ ] More settings stuff
-- [ ] Sign out / delete account
+  - [x] Daily reminder toggle (on by default)
+  - [ ] Reminder time picker
+  - [ ] Sign out functionality
+  - [ ] Delete account
+  - [ ] Manage subscription (link to app store)
+  - [ ] About / Version info
 - [ ] Empty states with encouraging messages
 - [ ] Loading states and error handling
 - [ ] UI/UX improvements
@@ -337,6 +330,15 @@ class DailyLog {
 - [ ] Submit on DevPost
 
 **Deliverable:** App submitted to hackathon
+
+---
+
+### Bonus Phase (If Time Permits)
+
+Add before deadline after core MVP polish:
+
+- [ ] **Celebration Sound Effects** - Audio feedback for confetti and streak increases
+- [ ] **Goal Templates** - Pre-made goals for common dreams (travel, career, finance)
 
 ---
 
@@ -371,16 +373,15 @@ class DailyLog {
 
 - 3 active goals
 - 5 micro-actions per goal
-- Basic progress tracking?
+- Progress tracking
 - Daily reminders
 
 ### Premium ($2.99/month or $17.99/year)
 
 - Unlimited goals
-- Unlimited micro-actions
-- Detailed analytics?
-- Priority support
-- Custom reminder times
+- 10 micro-actions per goal
+- Custom reminder times per goal
+- Custom categories (create your own with custom name, icon, and color)
 
 ---
 
@@ -414,7 +415,7 @@ class DailyLog {
 | ----------------- | ----------------------------- |
 | Time crunch       | Borrow heavily from FoodPilot |
 | RevenueCat issues | Set up early, test on Day 14  |
-| Scope creep       | Strict MVP, no AI features    |
+| Scope creep       | Strict MVP   |
 | Platform issues   | Test on both Android and iOS  |
 
 ---
@@ -429,11 +430,32 @@ class DailyLog {
 
 ---
 
-## Next Steps (Day 1)
+## Post-Hackathon Features
 
-1. [ ] Copy core files from FoodPilot (theme, router, auth patterns)
-2. [ ] Set up Firebase project (aspire)
-3. [ ] Configure Firebase Auth
-4. [ ] Set up RevenueCat account
-5. [ ] Get basic app shell running with routing
-6. [ ] Register on DevPost
+Features to add after submission to improve the app:
+
+### Premium Enhancements
+
+- **Goal-Specific Reminders** - Set different reminder times for each goal
+- **Priority Support** - Direct support channel for premium users
+- **Export Data** - Export goals and progress as PDF/CSV
+- **Goal Templates Library** - Curated templates for common goals
+
+### Community Features
+
+- **Challenges** - Weekly community challenges
+- **Joint Goals** - Partner with a friend on shared goals
+- **Social Sharing** - Share wins to social media
+
+### AI Features
+
+- **AI Coaching** - Motivational nudges and personalized advice
+- **Smart Scheduling** - AI suggests optimal times for actions
+
+### Platform Features
+
+- **Home Screen Widget** - Android/iOS widget showing goals at a glance
+- **Daily Inspiration** - Quotes, affirmations, or tips from Gabby
+- **Events** - Admin-posted events and announcements
+
+---
