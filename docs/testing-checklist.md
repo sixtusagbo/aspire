@@ -46,3 +46,4 @@
 ### Premium Status (after purchase/test)
 - [ ] After purchase, verify can create unlimited goals
 - [ ] Verify premium entitlement persists after app restart
+- [ ] Verify premium entitlement persists after user signs out and logs back in

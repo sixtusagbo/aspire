@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:toastification/toastification.dart';
+import 'package:upgrader/upgrader.dart';
 
 import 'firebase_options.dart';
 
@@ -43,7 +44,10 @@ class AspireApp extends ConsumerWidget {
         builder: (context, child) {
           return GestureDetector(
             onTap: () => FocusScope.of(context).unfocus(),
-            child: child,
+            child: UpgradeAlert(
+              dialogStyle: UpgradeDialogStyle.cupertino,
+              child: child ?? const SizedBox.shrink(),
+            ),
           );
         },
       ),

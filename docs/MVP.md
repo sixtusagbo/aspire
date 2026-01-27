@@ -301,6 +301,7 @@ class DailyLog {
   - [ ] Delete account
   - [ ] Manage subscription (link to app store)
   - [ ] About / Version info
+- [x] App update alerts (prompt user when new version available)
 - [ ] Empty states with encouraging messages
 - [ ] Loading states and error handling
 - [ ] UI/UX improvements
