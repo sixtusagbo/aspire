@@ -58,7 +58,3 @@ lib/
 ├── services/       # Firebase, RevenueCat, notifications
 └── data/           # Static data
 ```
-
-## License
-
-MIT
