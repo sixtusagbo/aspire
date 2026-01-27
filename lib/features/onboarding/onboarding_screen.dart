@@ -77,7 +77,7 @@ class OnboardingScreen extends HookConsumerWidget {
 
           // Generate AI micro-actions for the goal (don't block on failure)
           try {
-            final actions = await aiService.generateMicroActions(
+            final aiResult = await aiService.generateMicroActions(
               goalTitle: goalTitle.value,
               goalDescription: goalDescription.value.isNotEmpty
                   ? goalDescription.value
@@ -87,7 +87,7 @@ class OnboardingScreen extends HookConsumerWidget {
             );
 
             // Save the generated actions
-            for (final action in actions) {
+            for (final action in aiResult.actions) {
               await goalService.createMicroAction(
                 goalId: goal.id,
                 userId: user.uid,

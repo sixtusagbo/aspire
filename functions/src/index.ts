@@ -5,11 +5,18 @@ import * as https from "https";
 // Define the secret for OpenAI API key
 const openaiApiKey = defineSecret("OPENAI_API_KEY");
 
+interface ExistingAction {
+  title: string;
+  isCompleted: boolean;
+}
+
 interface GenerateActionsRequest {
   goalTitle: string;
   goalDescription?: string;
   category?: string;
   targetDate?: string;
+  existingActions?: ExistingAction[];
+  actionLimit: number;
 }
 
 interface MicroAction {
@@ -128,22 +135,52 @@ export const generateMicroActions = onCall(
       ? `Additional context: ${data.goalDescription}`
       : "";
 
+    const existingActions = data.existingActions || [];
+    const hasExisting = existingActions.length > 0;
+    const actionLimit = data.actionLimit || 5;
+
+    let existingContext = "";
+    let generationStrategy = "";
+
+    if (hasExisting) {
+      const existingList = existingActions
+        .map((a) => `- ${a.title}${a.isCompleted ? " (completed)" : ""}`)
+        .join("\n");
+      existingContext = `\nExisting actions for this goal:\n${existingList}\n`;
+
+      // Determine strategy based on existing actions
+      const incompleteCount = existingActions.filter((a) => !a.isCompleted).length;
+      const slotsAvailable = actionLimit - existingActions.length;
+
+      if (slotsAvailable <= 0 || incompleteCount >= 3) {
+        // Suggest replacement - generate fresh set
+        generationStrategy = `The user has ${existingActions.length} existing actions. Generate ${actionLimit} NEW actions as a fresh replacement set. Don't duplicate existing ones - create better alternatives.`;
+      } else {
+        // Suggest append - generate complementary actions
+        generationStrategy = `The user has ${existingActions.length} existing actions with ${slotsAvailable} slots available. Generate exactly ${slotsAvailable} NEW complementary actions that work alongside existing ones. Don't duplicate or overlap with existing actions.`;
+      }
+    }
+
     const prompt = `You are helping an ambitious woman break down her goal into small, actionable daily micro-actions.
 
 Goal: "${data.goalTitle}"
 ${categoryContext}
 ${deadlineContext}
 ${descriptionContext}
+${existingContext}
+${generationStrategy || `Generate ${actionLimit} specific, actionable micro-actions.`}
 
-Generate 5-7 specific, actionable micro-actions that can each be completed in 5-15 minutes.
 Each action should be:
 - Concrete and specific (not vague)
-- Achievable in one sitting
+- Achievable in one sitting (5-15 minutes)
 - Progressive (building towards the goal)
 - Encouraging and empowering
 
-Return ONLY a JSON array of objects with "title" field. No markdown, no explanation.
-Example: [{"title": "Research flight prices to destination"},{"title": "Set up automatic savings transfer of $50"}]`;
+Return a JSON object with:
+- "actions": array of objects with "title" field
+- "suggestedMode": "append" or "replace" (only if there are existing actions)
+
+Example: {"actions": [{"title": "Research flight prices"}], "suggestedMode": "append"}`;
 
     const messages = [
       {
@@ -186,21 +223,28 @@ Example: [{"title": "Research flight prices to destination"},{"title": "Set up a
       }
 
       // Parse the JSON response
-      let actions: MicroAction[];
+      let parsedResponse: { actions: MicroAction[]; suggestedMode?: string };
       try {
         // Clean the response (remove markdown code blocks if present)
         const cleanContent = content
           .replace(/```json\n?/g, "")
           .replace(/```\n?/g, "")
           .trim();
-        actions = JSON.parse(cleanContent);
+        const parsed = JSON.parse(cleanContent);
+
+        // Handle both old format (array) and new format (object with actions)
+        if (Array.isArray(parsed)) {
+          parsedResponse = { actions: parsed };
+        } else {
+          parsedResponse = parsed;
+        }
       } catch {
         console.error("Failed to parse AI response:", content);
         throw new HttpsError("internal", "Failed to parse AI response");
       }
 
       // Add sort order and validate
-      const validatedActions: MicroAction[] = actions
+      const validatedActions: MicroAction[] = parsedResponse.actions
         .filter((a) => a.title && typeof a.title === "string")
         .map((a, index) => ({
           title: a.title.trim(),
@@ -211,7 +255,17 @@ Example: [{"title": "Research flight prices to destination"},{"title": "Set up a
         throw new HttpsError("internal", "No valid actions generated");
       }
 
-      return { actions: validatedActions };
+      // Determine suggested mode
+      let suggestedMode = parsedResponse.suggestedMode || "append";
+      if (hasExisting) {
+        const slotsAvailable = actionLimit - existingActions.length;
+        // If generating more than available slots, suggest replace
+        if (validatedActions.length > slotsAvailable) {
+          suggestedMode = "replace";
+        }
+      }
+
+      return { actions: validatedActions, suggestedMode };
     } catch (error) {
       if (error instanceof HttpsError) {
         throw error;

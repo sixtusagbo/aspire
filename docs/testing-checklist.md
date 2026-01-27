@@ -27,10 +27,6 @@
 - [x] Tap "Upgrade" and verify paywall opens
 - [x] Tap "Maybe Later" and verify dialog dismisses
 
-### Premium Status (after purchase/test)
-- [ ] After purchase, verify can create unlimited goals
-- [ ] Verify premium entitlement persists after app restart
-
 ### Micro Actions Limit (Free Tier)
 - [x] Create a goal with micro actions
 - [x] Add micro actions up to free tier limit (5 per goal)
@@ -42,7 +38,11 @@
 ### AI-Generated Actions Limit
 - [x] Generate AI actions for a goal
 - [x] Verify review sheet shows action count
-- [ ] Verify "Add to existing" vs "Replace all" toggle works
-- [ ] Verify actions over limit are disabled/strikethrough
-- [ ] Verify "Get more" upgrade link works
-- [ ] Verify can only add up to limit
+- [x] Verify "Add to existing" vs "Replace all" toggle works
+- [x] Verify actions over limit are disabled/strikethrough
+- [x] Verify "Get more" upgrade link works
+- [x] Verify can only add up to limit
+
+### Premium Status (after purchase/test)
+- [ ] After purchase, verify can create unlimited goals
+- [ ] Verify premium entitlement persists after app restart

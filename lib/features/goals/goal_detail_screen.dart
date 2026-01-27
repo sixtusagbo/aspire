@@ -639,16 +639,28 @@ class _GoalDetailContent extends HookConsumerWidget {
       final actionLimit = isPremium ? premiumActionLimit : freeActionLimit;
       final currentActionCount = goal.totalActionsCount;
 
-      final actions = await aiService.generateMicroActions(
+      // Get existing actions to provide context to AI
+      final existingActions =
+          await goalService.watchGoalActions(goal.id, goal.userId).first;
+      final existingActionInfo = existingActions
+          .map((a) => ExistingActionInfo(
+                title: a.title,
+                isCompleted: a.isCompleted,
+              ))
+          .toList();
+
+      final aiResult = await aiService.generateMicroActions(
         goalTitle: goal.title,
         goalDescription: goal.description,
         category: goal.category.name,
         targetDate: goal.targetDate,
+        existingActions: existingActionInfo,
+        actionLimit: actionLimit,
       );
 
       if (!context.mounted) return;
 
-      // Show review bottom sheet with limit info
+      // Show review bottom sheet with limit info and AI's mode suggestion
       final result = await showModalBottomSheet<_AIActionsResult>(
         context: context,
         isScrollControlled: true,
@@ -656,11 +668,12 @@ class _GoalDetailContent extends HookConsumerWidget {
         isDismissible: false,
         enableDrag: false,
         builder: (context) => _AIActionsReviewSheet(
-          actions: actions,
+          actions: aiResult.actions,
           goalTitle: goal.title,
           isPremium: isPremium,
           actionLimit: actionLimit,
           currentActionCount: currentActionCount,
+          suggestReplace: aiResult.suggestReplace,
         ),
       );
 
@@ -1085,6 +1098,7 @@ class _AIActionsReviewSheet extends StatefulWidget {
   final bool isPremium;
   final int actionLimit;
   final int currentActionCount;
+  final bool suggestReplace;
 
   const _AIActionsReviewSheet({
     required this.actions,
@@ -1092,6 +1106,7 @@ class _AIActionsReviewSheet extends StatefulWidget {
     required this.isPremium,
     required this.actionLimit,
     required this.currentActionCount,
+    this.suggestReplace = false,
   });
 
   @override
@@ -1117,8 +1132,9 @@ class _AIActionsReviewSheetState extends State<_AIActionsReviewSheet> {
   @override
   void initState() {
     super.initState();
-    // Default to replace mode if user already has actions at limit
-    _replaceMode = widget.currentActionCount >= widget.actionLimit;
+    // Use AI's suggestion, or default to replace if at limit
+    _replaceMode = widget.suggestReplace ||
+        widget.currentActionCount >= widget.actionLimit;
 
     // Initialize editable actions, trimmed to available slots
     final allActions = widget.actions
