@@ -21,6 +21,8 @@ What I shipped today:
 
 The core monetization loop is working. Time to polish.
 
+Side note: Connecting Google Cloud Console to RevenueCat to import products automatically was not easy. There should be a script for this.
+
 #buildinpublic #flutter #hackathon #revenuecat
 
 ---
@@ -29,7 +31,7 @@ The core monetization loop is working. Time to polish.
 
 Day 3 of #Shipyard2026!
 
-What I did:
+What I shipped today:
 
 - AI micro-action generation via Firebase Functions
 - AI considers existing actions for smarter suggestions
