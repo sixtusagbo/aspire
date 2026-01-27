@@ -2,6 +2,16 @@
 
 All notable changes to Aspire will be documented in this file.
 
+## [0.1.3] - 2026-01-27
+
+### Added
+- Custom reminders per goal (premium feature)
+- Premium status indicator in settings
+- "You're Premium" screen for existing premium users
+
+### Changed
+- Paywall now shows premium status for subscribers
+
 ## [0.1.2] - 2026-01-27
 
 ### Added

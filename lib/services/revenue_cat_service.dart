@@ -12,6 +12,10 @@ const String _revenueCatApiKey = 'goog_YsWyoTpPIWRtLtbqiJgxgKRLyYE';
 /// Entitlement identifier for premium features
 const String premiumEntitlement = 'premium';
 
+/// DEBUG: Set to true to bypass premium checks for testing
+/// IMPORTANT: Set to false before release!
+const bool _debugPremiumBypass = false;
+
 /// RevenueCat service for handling subscriptions
 class RevenueCatService {
   bool _isInitialized = false;
@@ -61,6 +65,9 @@ class RevenueCatService {
 
   /// Check if user has premium entitlement
   Future<bool> isPremium() async {
+    // DEBUG: Bypass for testing premium features
+    if (_debugPremiumBypass) return true;
+
     try {
       final customerInfo = await Purchases.getCustomerInfo();
       return customerInfo.entitlements.all[premiumEntitlement]?.isActive ??

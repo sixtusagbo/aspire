@@ -14,10 +14,11 @@ class PaywallScreen extends HookConsumerWidget {
     final revenueCatService = ref.read(revenueCatServiceProvider);
     final isLoading = useState(true);
     final isPurchasing = useState(false);
+    final isPremium = useState(false);
     final offerings = useState<Offerings?>(null);
 
     useEffect(() {
-      _loadOfferings(revenueCatService, offerings, isLoading);
+      _loadData(revenueCatService, offerings, isPremium, isLoading);
       return null;
     }, []);
 
@@ -25,28 +26,36 @@ class PaywallScreen extends HookConsumerWidget {
       body: SafeArea(
         child: isLoading.value
             ? const Center(child: CircularProgressIndicator())
-            : _PaywallContent(
-                offerings: offerings.value,
-                isPurchasing: isPurchasing,
-                onPurchase: (package) => _purchase(
-                  context,
-                  revenueCatService,
-                  package,
-                  isPurchasing,
-                ),
-                onRestore: () =>
-                    _restore(context, revenueCatService, isPurchasing),
-              ),
+            : isPremium.value
+                ? const _PremiumActiveContent()
+                : _PaywallContent(
+                    offerings: offerings.value,
+                    isPurchasing: isPurchasing,
+                    onPurchase: (package) => _purchase(
+                      context,
+                      revenueCatService,
+                      package,
+                      isPurchasing,
+                    ),
+                    onRestore: () =>
+                        _restore(context, revenueCatService, isPurchasing),
+                  ),
       ),
     );
   }
 
-  Future<void> _loadOfferings(
+  Future<void> _loadData(
     RevenueCatService service,
     ValueNotifier<Offerings?> offerings,
+    ValueNotifier<bool> isPremium,
     ValueNotifier<bool> isLoading,
   ) async {
-    offerings.value = await service.getOfferings();
+    final results = await Future.wait([
+      service.isPremium(),
+      service.getOfferings(),
+    ]);
+    isPremium.value = results[0] as bool;
+    offerings.value = results[1] as Offerings?;
     isLoading.value = false;
   }
 
@@ -83,6 +92,85 @@ class PaywallScreen extends HookConsumerWidget {
         ToastHelper.showInfo('No purchases to restore');
       }
     }
+  }
+}
+
+class _PremiumActiveContent extends StatelessWidget {
+  const _PremiumActiveContent();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        children: [
+          // Close button
+          Align(
+            alignment: Alignment.topRight,
+            child: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(Icons.close),
+            ),
+          ),
+
+          const Spacer(),
+
+          // Premium badge
+          Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              color: AppTheme.primaryPink.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.workspace_premium,
+              color: AppTheme.primaryPink,
+              size: 56,
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          Text(
+            "You're Premium!",
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 12),
+
+          Text(
+            'You have access to all premium features.\n'
+            'Thank you for your support!',
+            style: TextStyle(
+              color: Colors.grey.shade600,
+              fontSize: 16,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 32),
+
+          // Features reminder
+          _FeatureItem(
+            icon: Icons.check_circle,
+            title: 'Unlimited Goals',
+            description: 'Create as many dreams as you have',
+          ),
+          _FeatureItem(
+            icon: Icons.check_circle,
+            title: 'More AI Suggestions',
+            description: 'Get 10 micro-actions per goal',
+          ),
+          _FeatureItem(
+            icon: Icons.check_circle,
+            title: 'Custom Reminders',
+            description: 'Set different reminder times per goal',
+          ),
+
+          const Spacer(flex: 2),
+        ],
+      ),
+    );
   }
 }
 

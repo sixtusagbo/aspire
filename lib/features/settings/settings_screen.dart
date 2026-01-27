@@ -19,11 +19,13 @@ class SettingsScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notificationService = ref.read(notificationServiceProvider);
+    final revenueCatService = ref.read(revenueCatServiceProvider);
     final notificationsEnabled = useState<bool?>(null);
     final reminderEnabled = useState<bool>(false);
     final reminderTime = useState<TimeOfDay>(
       const TimeOfDay(hour: 9, minute: 0),
     );
+    final isPremium = useState<bool?>(null);
 
     // Load settings on mount
     useEffect(() {
@@ -33,6 +35,7 @@ class SettingsScreen extends HookConsumerWidget {
         reminderEnabled,
         reminderTime,
       );
+      revenueCatService.isPremium().then((value) => isPremium.value = value);
       return null;
     }, []);
 
@@ -184,9 +187,22 @@ class SettingsScreen extends HookConsumerWidget {
 
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.workspace_premium_outlined),
+            leading: Icon(
+              isPremium.value == true
+                  ? Icons.workspace_premium
+                  : Icons.workspace_premium_outlined,
+              color: isPremium.value == true
+                  ? Theme.of(context).colorScheme.primary
+                  : null,
+            ),
             title: const Text('Premium'),
-            subtitle: const Text('Upgrade to unlock unlimited goals'),
+            subtitle: Text(
+              isPremium.value == null
+                  ? 'Checking...'
+                  : isPremium.value!
+                      ? 'You have premium access'
+                      : 'Upgrade to unlock unlimited goals',
+            ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(AppRoutes.paywall),
           ),
