@@ -75,8 +75,8 @@
 - [ ] Create entitlement: `premium`
 - [ ] Go to Products > Products
 - [ ] Add products (after creating in Google Play Console):
-  - `aspire_premium_monthly` ($4.99/month)
-  - `aspire_premium_yearly` ($29.99/year)
+  - `aspire_premium_monthly` ($2.99/month)
+  - `aspire_premium_yearly` ($17.99/year)
 
 ### Create Offering
 - [ ] Go to Products > Offerings
@@ -101,10 +101,10 @@
 - [ ] Go to Monetize > Products > Subscriptions
 - [ ] Create subscription:
   - Product ID: `aspire_premium_monthly`
-  - Price: $4.99/month
+  - Price: $2.99/month
 - [ ] Create another:
   - Product ID: `aspire_premium_yearly`
-  - Price: $29.99/year
+  - Price: $17.99/year
 
 ---
 

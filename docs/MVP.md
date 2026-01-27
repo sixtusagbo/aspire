@@ -373,7 +373,7 @@ class DailyLog {
 - Basic progress tracking?
 - Daily reminders
 
-### Premium ($4.99/month or $29.99/year)
+### Premium ($2.99/month or $17.99/year)
 
 - Unlimited goals
 - Unlimited micro-actions
