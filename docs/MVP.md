@@ -292,12 +292,12 @@ class DailyLog {
 **Day 10: Settings & Polish**
 
 - [x] Action limits enforcement (5 free, 10 premium per goal)
+- [x] AI considers existing actions and suggests append/replace mode
 - [ ] Custom reminders (premium: per-goal reminder times)
 - [ ] Settings screen completion
-  - [x] AI behavior setting (append vs replace existing actions)
   - [x] Daily reminder toggle (on by default)
-  - [ ] Reminder time picker
-  - [ ] Sign out functionality
+  - [x] Reminder time picker
+  - [x] Sign out functionality
   - [ ] Delete account
   - [ ] Manage subscription (link to app store)
   - [ ] About / Version info
