@@ -6,6 +6,8 @@
 
 Day 3 of building Aspire for RevenueCat's #Shipyard2026 Hackathon!
 
+Honestly, connecting Google Cloud Console to RevenueCat to import products automatically was not easy. There should be a script for this.
+
 What I shipped today:
 
 - AI-powered micro-action generation via Firebase Functions
@@ -21,8 +23,6 @@ What I shipped today:
 
 The core monetization loop is working. Time to polish.
 
-Side note: Connecting Google Cloud Console to RevenueCat to import products automatically was not easy. There should be a script for this.
-
 #buildinpublic #flutter #hackathon #revenuecat
 
 ---
@@ -30,6 +30,8 @@ Side note: Connecting Google Cloud Console to RevenueCat to import products auto
 ### Twitter/X
 
 Day 3 of #Shipyard2026!
+
+Honestly, connecting Google Cloud Console to RevenueCat to import products automatically was not easy. There should be a script for this 😮‍💨
 
 What I shipped today:
 
@@ -42,7 +44,5 @@ What I shipped today:
 - App update alerts
 
 Monetization working. Polish time.
-
-Side note: Connecting Google Cloud Console to RevenueCat to import products automatically was not easy. There should be a script for this.
 
 #buildinpublic
