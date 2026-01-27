@@ -304,9 +304,10 @@ class DailyLog {
 
 **Day 10: Settings & Polish**
 
-- [x] Settings screen (account, notifications, subscription)
+- [ ] Settings screen (account, notifications, subscription)
   - [x] AI behavior setting (append vs replace existing actions)
-- [x] Sign out / delete account
+  - [ ] More settings stuff
+- [ ] Sign out / delete account
 - [ ] Empty states with encouraging messages
 - [ ] Loading states and error handling
 - [ ] UI/UX improvements
