@@ -1,11 +1,13 @@
 import 'dart:async';
 
-import 'package:aspire/config/secrets.dart';
 import 'package:aspire/services/log_service.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'revenue_cat_service.g.dart';
+
+/// RevenueCat public API key (safe to expose)
+const String _revenueCatApiKey = 'goog_YsWyoTpPIWRtLtbqiJgxgKRLyYE';
 
 /// Entitlement identifier for premium features
 const String premiumEntitlement = 'premium';
@@ -22,7 +24,7 @@ class RevenueCatService {
     try {
       await Purchases.setLogLevel(LogLevel.debug);
 
-      final config = PurchasesConfiguration(Secrets.revenueCatApiKey);
+      final config = PurchasesConfiguration(_revenueCatApiKey);
       await Purchases.configure(config);
 
       // Listen to customer info updates
@@ -87,7 +89,7 @@ class RevenueCatService {
       final result = await Purchases.purchasePackage(package);
       final isPremiumNow =
           result.customerInfo.entitlements.all[premiumEntitlement]?.isActive ??
-              false;
+          false;
       Log.i('Purchase completed. Premium: $isPremiumNow');
       return isPremiumNow;
     } on PurchasesErrorCode catch (e) {

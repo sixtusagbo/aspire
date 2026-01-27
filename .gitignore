@@ -44,5 +44,7 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Secrets - DO NOT COMMIT
-lib/config/secrets.dart
+# Signing keys (keep these private)
+*.jks
+*.keystore
+android/key.properties
