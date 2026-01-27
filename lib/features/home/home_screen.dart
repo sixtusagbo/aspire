@@ -3,6 +3,7 @@ import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
 import 'package:aspire/core/widgets/celebration_overlay.dart';
 import 'package:aspire/core/widgets/streak_celebration_dialog.dart';
+import 'package:aspire/features/goals/widgets/create_goal_sheet.dart';
 import 'package:aspire/features/home/widgets/stats_bar.dart';
 import 'package:aspire/models/goal.dart';
 import 'package:aspire/models/micro_action.dart';
@@ -161,7 +162,9 @@ class _ActionsList extends HookConsumerWidget {
 
         if (goals.isEmpty) {
           return SliverFillRemaining(
-            child: _EmptyState(onCreateGoal: () => context.go(AppRoutes.goals)),
+            child: _EmptyState(
+              onCreateGoal: () => showCreateGoalSheet(context, ref, userId),
+            ),
           );
         }
 
