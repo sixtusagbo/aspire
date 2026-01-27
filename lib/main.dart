@@ -40,6 +40,12 @@ class AspireApp extends ConsumerWidget {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         routerConfig: router,
+        builder: (context, child) {
+          return GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: child,
+          );
+        },
       ),
     );
   }
