@@ -43,4 +43,6 @@ What I shipped today:
 
 Monetization working. Polish time.
 
+Side note: Connecting Google Cloud Console to RevenueCat to import products automatically was not easy. There should be a script for this.
+
 #buildinpublic
