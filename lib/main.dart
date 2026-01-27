@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/core/theme/theme_provider.dart';
 import 'package:aspire/core/utils/app_router.dart';
@@ -45,7 +47,9 @@ class AspireApp extends ConsumerWidget {
           return GestureDetector(
             onTap: () => FocusScope.of(context).unfocus(),
             child: UpgradeAlert(
-              dialogStyle: UpgradeDialogStyle.cupertino,
+              dialogStyle: Platform.isIOS
+                  ? UpgradeDialogStyle.cupertino
+                  : UpgradeDialogStyle.material,
               child: child ?? const SizedBox.shrink(),
             ),
           );
