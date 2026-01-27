@@ -140,6 +140,25 @@ class GoalMapper extends ClassMapperBase<Goal> {
     opt: true,
     def: 0,
   );
+  static bool _$reminderEnabled(Goal v) => v.reminderEnabled;
+  static const Field<Goal, bool> _f$reminderEnabled = Field(
+    'reminderEnabled',
+    _$reminderEnabled,
+    opt: true,
+    def: false,
+  );
+  static int? _$reminderHour(Goal v) => v.reminderHour;
+  static const Field<Goal, int> _f$reminderHour = Field(
+    'reminderHour',
+    _$reminderHour,
+    opt: true,
+  );
+  static int? _$reminderMinute(Goal v) => v.reminderMinute;
+  static const Field<Goal, int> _f$reminderMinute = Field(
+    'reminderMinute',
+    _$reminderMinute,
+    opt: true,
+  );
 
   @override
   final MappableFields<Goal> fields = const {
@@ -154,6 +173,9 @@ class GoalMapper extends ClassMapperBase<Goal> {
     #category: _f$category,
     #completedActionsCount: _f$completedActionsCount,
     #totalActionsCount: _f$totalActionsCount,
+    #reminderEnabled: _f$reminderEnabled,
+    #reminderHour: _f$reminderHour,
+    #reminderMinute: _f$reminderMinute,
   };
 
   static Goal _instantiate(DecodingData data) {
@@ -169,6 +191,9 @@ class GoalMapper extends ClassMapperBase<Goal> {
       category: data.dec(_f$category),
       completedActionsCount: data.dec(_f$completedActionsCount),
       totalActionsCount: data.dec(_f$totalActionsCount),
+      reminderEnabled: data.dec(_f$reminderEnabled),
+      reminderHour: data.dec(_f$reminderHour),
+      reminderMinute: data.dec(_f$reminderMinute),
     );
   }
 
@@ -230,6 +255,9 @@ abstract class GoalCopyWith<$R, $In extends Goal, $Out>
     GoalCategory? category,
     int? completedActionsCount,
     int? totalActionsCount,
+    bool? reminderEnabled,
+    int? reminderHour,
+    int? reminderMinute,
   });
   GoalCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
@@ -253,6 +281,9 @@ class _GoalCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Goal, $Out>
     GoalCategory? category,
     int? completedActionsCount,
     int? totalActionsCount,
+    bool? reminderEnabled,
+    Object? reminderHour = $none,
+    Object? reminderMinute = $none,
   }) => $apply(
     FieldCopyWithData({
       if (id != null) #id: id,
@@ -267,6 +298,9 @@ class _GoalCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Goal, $Out>
       if (completedActionsCount != null)
         #completedActionsCount: completedActionsCount,
       if (totalActionsCount != null) #totalActionsCount: totalActionsCount,
+      if (reminderEnabled != null) #reminderEnabled: reminderEnabled,
+      if (reminderHour != $none) #reminderHour: reminderHour,
+      if (reminderMinute != $none) #reminderMinute: reminderMinute,
     }),
   );
   @override
@@ -288,6 +322,9 @@ class _GoalCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Goal, $Out>
       #totalActionsCount,
       or: $value.totalActionsCount,
     ),
+    reminderEnabled: data.get(#reminderEnabled, or: $value.reminderEnabled),
+    reminderHour: data.get(#reminderHour, or: $value.reminderHour),
+    reminderMinute: data.get(#reminderMinute, or: $value.reminderMinute),
   );
 
   @override

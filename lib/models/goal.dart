@@ -34,6 +34,15 @@ class Goal with GoalMappable {
   /// Total number of micro-actions (denormalized for quick access)
   final int totalActionsCount;
 
+  /// Whether this goal has a custom reminder (premium feature)
+  final bool reminderEnabled;
+
+  /// Hour for custom reminder (0-23)
+  final int? reminderHour;
+
+  /// Minute for custom reminder (0-59)
+  final int? reminderMinute;
+
   Goal({
     required this.id,
     required this.userId,
@@ -46,6 +55,9 @@ class Goal with GoalMappable {
     this.category = GoalCategory.personal,
     this.completedActionsCount = 0,
     this.totalActionsCount = 0,
+    this.reminderEnabled = false,
+    this.reminderHour,
+    this.reminderMinute,
   });
 
   /// Progress as a percentage (0.0 to 1.0)
@@ -59,4 +71,7 @@ class Goal with GoalMappable {
     if (targetDate == null) return null;
     return targetDate!.difference(DateTime.now()).inDays;
   }
+
+  /// Whether a valid reminder time is set
+  bool get hasReminderTime => reminderHour != null && reminderMinute != null;
 }

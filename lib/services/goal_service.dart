@@ -104,6 +104,20 @@ class GoalService {
     await _goalsRef.doc(goal.id).update(goal.toMap()..remove('id'));
   }
 
+  /// Update goal reminder settings
+  Future<void> updateGoalReminder({
+    required String goalId,
+    required bool enabled,
+    int? hour,
+    int? minute,
+  }) async {
+    await _goalsRef.doc(goalId).update({
+      'reminderEnabled': enabled,
+      'reminderHour': hour,
+      'reminderMinute': minute,
+    });
+  }
+
   /// Mark a goal as completed
   Future<void> completeGoal(String goalId) async {
     await _goalsRef.doc(goalId).update({

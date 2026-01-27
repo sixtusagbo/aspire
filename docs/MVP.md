@@ -293,7 +293,7 @@ class DailyLog {
 
 - [x] Action limits enforcement (5 free, 10 premium per goal)
 - [x] AI considers existing actions and suggests append/replace mode
-- [ ] Custom reminders (premium: per-goal reminder times)
+- [x] Custom reminders (premium: per-goal reminder times)
 - [ ] Settings screen completion
   - [x] Daily reminder toggle (on by default)
   - [x] Reminder time picker
@@ -311,6 +311,15 @@ class DailyLog {
 - [ ] Accessibility improvements
 
 **Deliverable:** Monetization works, app is feature-complete
+
+---
+
+### Bonus Phase (If Time Permits)
+
+Add before deadline after core MVP polish:
+
+- [ ] **Celebration Sound Effects** - Audio feedback for confetti and streak increases
+- [ ] **Goal Templates** - Pre-made goals for common dreams (travel, career, finance)
 
 ---
 
@@ -332,15 +341,6 @@ class DailyLog {
 - [ ] Submit on DevPost
 
 **Deliverable:** App submitted to hackathon
-
----
-
-### Bonus Phase (If Time Permits)
-
-Add before deadline after core MVP polish:
-
-- [ ] **Celebration Sound Effects** - Audio feedback for confetti and streak increases
-- [ ] **Goal Templates** - Pre-made goals for common dreams (travel, career, finance)
 
 ---
 

@@ -1,4 +1,5 @@
 import 'package:aspire/core/theme/app_theme.dart';
+import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
 import 'package:aspire/core/widgets/celebration_overlay.dart';
 import 'package:aspire/models/goal.dart';
@@ -6,6 +7,7 @@ import 'package:aspire/models/micro_action.dart';
 import 'package:aspire/services/ai_service.dart';
 import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/goal_service.dart';
+import 'package:aspire/services/notification_service.dart';
 import 'package:aspire/services/revenue_cat_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -43,7 +45,7 @@ class GoalDetailScreen extends HookConsumerWidget {
             ),
             IconButton(
               icon: const Icon(Icons.delete_outline),
-              onPressed: () => _showDeleteDialog(context, goalService, userId),
+              onPressed: () => _showDeleteDialog(context, ref, goalService, userId),
             ),
           ],
         ),
@@ -75,6 +77,7 @@ class GoalDetailScreen extends HookConsumerWidget {
 
   Future<void> _showDeleteDialog(
     BuildContext context,
+    WidgetRef ref,
     GoalService goalService,
     String userId,
   ) async {
@@ -103,6 +106,10 @@ class GoalDetailScreen extends HookConsumerWidget {
       // Pop first to avoid showing "Goal not found" during delete
       Navigator.pop(context);
       try {
+        // Cancel any goal reminder
+        final notificationService = ref.read(notificationServiceProvider);
+        await notificationService.cancelGoalReminder(goalId);
+
         await goalService.deleteGoal(goalId, userId);
         ToastHelper.showSuccess('Goal deleted');
       } catch (e) {
@@ -423,6 +430,9 @@ class _GoalDetailContent extends HookConsumerWidget {
       children: [
         // Goal header with mark complete
         _GoalHeader(goal: goal),
+
+        // Custom reminder section (premium feature)
+        if (!goal.isCompleted) _GoalReminderSection(goal: goal),
 
         // Mark as complete button (only show if not completed and has actions)
         if (!goal.isCompleted && goal.totalActionsCount > 0)
@@ -1580,6 +1590,270 @@ class _ModeButton extends StatelessWidget {
             color: isSelected ? AppTheme.primaryPink : Colors.grey.shade600,
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Custom reminder settings for a goal (premium feature)
+class _GoalReminderSection extends HookConsumerWidget {
+  final Goal goal;
+
+  const _GoalReminderSection({required this.goal});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final revenueCatService = ref.read(revenueCatServiceProvider);
+    final goalService = ref.read(goalServiceProvider);
+    final notificationService = ref.read(notificationServiceProvider);
+    final isUpdating = useState(false);
+
+    Future<void> handleToggle(bool enabled) async {
+      // Check premium status
+      final isPremium = await revenueCatService.isPremium();
+      if (!isPremium) {
+        if (context.mounted) {
+          _showPremiumDialog(context);
+        }
+        return;
+      }
+
+      isUpdating.value = true;
+      try {
+        if (enabled) {
+          // Default to 9:00 AM if no time set
+          final hour = goal.reminderHour ?? 9;
+          final minute = goal.reminderMinute ?? 0;
+
+          await goalService.updateGoalReminder(
+            goalId: goal.id,
+            enabled: true,
+            hour: hour,
+            minute: minute,
+          );
+
+          // Schedule notification
+          await notificationService.scheduleGoalReminder(
+            goalId: goal.id,
+            goalTitle: goal.title,
+            hour: hour,
+            minute: minute,
+          );
+
+          ToastHelper.showSuccess('Reminder set for ${_formatTime(hour, minute)}');
+        } else {
+          await goalService.updateGoalReminder(
+            goalId: goal.id,
+            enabled: false,
+            hour: null,
+            minute: null,
+          );
+
+          // Cancel notification
+          await notificationService.cancelGoalReminder(goal.id);
+
+          ToastHelper.showInfo('Reminder disabled');
+        }
+      } catch (e) {
+        ToastHelper.showError('Failed to update reminder');
+      } finally {
+        isUpdating.value = false;
+      }
+    }
+
+    Future<void> handleTimeChange() async {
+      final picked = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay(
+          hour: goal.reminderHour ?? 9,
+          minute: goal.reminderMinute ?? 0,
+        ),
+      );
+
+      if (picked != null) {
+        isUpdating.value = true;
+        try {
+          await goalService.updateGoalReminder(
+            goalId: goal.id,
+            enabled: true,
+            hour: picked.hour,
+            minute: picked.minute,
+          );
+
+          // Reschedule notification
+          await notificationService.scheduleGoalReminder(
+            goalId: goal.id,
+            goalTitle: goal.title,
+            hour: picked.hour,
+            minute: picked.minute,
+          );
+
+          ToastHelper.showSuccess(
+            'Reminder updated to ${_formatTime(picked.hour, picked.minute)}',
+          );
+        } catch (e) {
+          ToastHelper.showError('Failed to update reminder time');
+        } finally {
+          isUpdating.value = false;
+        }
+      }
+    }
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.notifications_outlined,
+                size: 20,
+                color: goal.reminderEnabled
+                    ? AppTheme.primaryPink
+                    : Colors.grey.shade600,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Text(
+                          'Custom Reminder',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppTheme.goldAchievement.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            'Premium',
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              color: AppTheme.goldAchievement,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      'Get a daily nudge for this goal',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (isUpdating.value)
+                const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              else
+                Switch.adaptive(
+                  value: goal.reminderEnabled,
+                  onChanged: handleToggle,
+                  activeTrackColor: AppTheme.primaryPink,
+                ),
+            ],
+          ),
+          if (goal.reminderEnabled && goal.hasReminderTime) ...[
+            const SizedBox(height: 8),
+            InkWell(
+              onTap: isUpdating.value ? null : handleTimeChange,
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.access_time,
+                      size: 16,
+                      color: Colors.grey.shade600,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      _formatTime(goal.reminderHour!, goal.reminderMinute!),
+                      style: const TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                    const SizedBox(width: 4),
+                    Icon(
+                      Icons.edit,
+                      size: 14,
+                      color: Colors.grey.shade400,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  String _formatTime(int hour, int minute) {
+    final h = hour % 12 == 0 ? 12 : hour % 12;
+    final m = minute.toString().padLeft(2, '0');
+    final period = hour < 12 ? 'AM' : 'PM';
+    return '$h:$m $period';
+  }
+
+  void _showPremiumDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Premium Feature'),
+        content: const Text(
+          'Custom reminders per goal is a premium feature.\n\n'
+          'Upgrade to set different reminder times for each goal!',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Maybe Later'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              context.push(AppRoutes.paywall);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryPink,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Upgrade'),
+          ),
+        ],
       ),
     );
   }

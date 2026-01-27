@@ -189,6 +189,56 @@ class NotificationService {
     Log.i('All notifications cancelled');
   }
 
+  /// Schedule a goal-specific reminder notification
+  Future<void> scheduleGoalReminder({
+    required String goalId,
+    required String goalTitle,
+    required int hour,
+    required int minute,
+  }) async {
+    await initialize();
+
+    final notificationId = _goalNotificationId(goalId);
+    final scheduledTime = _nextInstanceOfTime(hour, minute);
+    Log.i('Scheduling goal reminder for "$goalTitle" at $scheduledTime');
+
+    await _notifications.zonedSchedule(
+      notificationId,
+      'Time to work on your goal!',
+      goalTitle,
+      scheduledTime,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'goal_reminder',
+          'Goal Reminders',
+          channelDescription: 'Reminders for specific goals',
+          importance: Importance.high,
+          priority: Priority.high,
+        ),
+        iOS: DarwinNotificationDetails(),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time,
+    );
+
+    Log.i('Goal reminder scheduled successfully');
+  }
+
+  /// Cancel a goal-specific reminder
+  Future<void> cancelGoalReminder(String goalId) async {
+    final notificationId = _goalNotificationId(goalId);
+    await _notifications.cancel(notificationId);
+    Log.i('Goal reminder cancelled for goal: $goalId');
+  }
+
+  /// Generate a unique notification ID for a goal (based on hash)
+  int _goalNotificationId(String goalId) {
+    // Use hashCode but ensure it's positive and doesn't conflict with ID 0 (daily reminder)
+    return (goalId.hashCode.abs() % 1000000) + 1000;
+  }
+
   /// Get pending notifications (for debugging)
   Future<List<PendingNotificationRequest>> getPendingNotifications() async {
     await initialize();
