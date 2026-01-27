@@ -299,7 +299,7 @@ class DailyLog {
   - [x] Reminder time picker
   - [x] Sign out functionality
   - [ ] Delete account
-  - [ ] Manage subscription (link to app store)
+  - [ ] Manage subscription (link to app store or google play store)
   - [ ] About / Version info
 - [x] App update alerts (prompt user when new version available)
 - [ ] Empty states with encouraging messages
@@ -307,6 +307,7 @@ class DailyLog {
 - [ ] UI/UX improvements
   - [ ] App UI/UX redesign
   - [ ] Dark mode polish (improve colors and contrast)
+  - [ ] Review UX again as an expert UX analyst, could use a subagent here...
 - [ ] Accessibility improvements
 
 **Deliverable:** Monetization works, app is feature-complete
