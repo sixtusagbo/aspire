@@ -41,6 +41,8 @@ class OnboardingScreen extends HookConsumerWidget {
     final goalCategory = useState(GoalCategory.personal);
 
     Future<void> completeOnboarding() async {
+      // Prevent multiple submissions
+      if (isLoading.value) return;
       isLoading.value = true;
 
       try {
@@ -148,6 +150,7 @@ class OnboardingScreen extends HookConsumerWidget {
       NotificationStep(
         onNext: () => completeOnboarding(),
         onBack: previousPage,
+        isLoading: isLoading.value,
       ),
     ];
 

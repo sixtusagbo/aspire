@@ -8,11 +8,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 class NotificationStep extends ConsumerStatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
+  final bool isLoading;
 
   const NotificationStep({
     super.key,
     required this.onNext,
     required this.onBack,
+    this.isLoading = false,
   });
 
   @override
@@ -210,7 +212,8 @@ class _NotificationStepState extends ConsumerState<NotificationStep> {
             width: double.infinity,
             height: 56,
             child: ElevatedButton(
-              onPressed: _isRequesting ? null : _enableNotifications,
+              onPressed:
+                  _isRequesting || widget.isLoading ? null : _enableNotifications,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.primaryPink,
                 foregroundColor: Colors.white,
@@ -219,7 +222,7 @@ class _NotificationStepState extends ConsumerState<NotificationStep> {
                 ),
                 elevation: 0,
               ),
-              child: _isRequesting
+              child: _isRequesting || widget.isLoading
                   ? const SizedBox(
                       width: 24,
                       height: 24,
@@ -242,7 +245,8 @@ class _NotificationStepState extends ConsumerState<NotificationStep> {
           // Skip option
           Center(
             child: TextButton(
-              onPressed: _isRequesting ? null : widget.onNext,
+              onPressed:
+                  _isRequesting || widget.isLoading ? null : widget.onNext,
               child: Text(
                 'Maybe later',
                 style: TextStyle(color: Colors.grey.shade600),
