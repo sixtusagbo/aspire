@@ -21,7 +21,7 @@ What I shipped today:
 - App update alerts
 - Keyboard dismissal on tap outside
 
-The core monetization loop is working. Time to polish.
+Monetization is working now.
 
 #buildinpublic #flutter #hackathon #revenuecat
 
@@ -46,3 +46,6 @@ What I shipped today:
 Monetization working. Polish time.
 
 #buildinpublic
+
+-----------
+ DAY 4 NEXT

@@ -77,7 +77,7 @@ class _NotificationStepState extends ConsumerState<NotificationStep> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -204,8 +204,7 @@ class _NotificationStepState extends ConsumerState<NotificationStep> {
               ],
             ),
           ),
-
-          const Spacer(),
+          const SizedBox(height: 32),
 
           // Enable button
           SizedBox(

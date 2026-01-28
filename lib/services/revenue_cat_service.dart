@@ -57,6 +57,11 @@ class RevenueCatService {
   /// Logout user from RevenueCat
   Future<void> logout() async {
     try {
+      // Check if user is anonymous - can't logout anonymous users
+      if (await Purchases.isAnonymous) {
+        Log.i('RevenueCat user is anonymous, skipping logout');
+        return;
+      }
       await Purchases.logOut();
       Log.i('RevenueCat user logged out');
     } catch (e, stack) {
