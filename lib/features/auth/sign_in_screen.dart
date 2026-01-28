@@ -5,6 +5,7 @@ import 'package:aspire/features/auth/widgets/google_sign_in_button.dart';
 import 'package:aspire/features/auth/widgets/or_divider.dart';
 import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/log_service.dart';
+import 'package:aspire/services/revenue_cat_service.dart';
 import 'package:aspire/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -39,6 +40,10 @@ class SignInScreen extends HookConsumerWidget {
 
         final user = authService.currentUser;
         if (user != null && context.mounted) {
+          // Login to RevenueCat with Firebase user ID
+          final revenueCatService = ref.read(revenueCatServiceProvider);
+          await revenueCatService.login(user.uid);
+
           final userService = ref.read(userServiceProvider);
           final profile = await userService.getUser(user.uid);
 
@@ -75,6 +80,10 @@ class SignInScreen extends HookConsumerWidget {
         }
 
         if (context.mounted) {
+          // Login to RevenueCat with Firebase user ID
+          final revenueCatService = ref.read(revenueCatServiceProvider);
+          await revenueCatService.login(userCredential.user!.uid);
+
           final userService = ref.read(userServiceProvider);
           final profile = await userService.getUser(userCredential.user!.uid);
 
