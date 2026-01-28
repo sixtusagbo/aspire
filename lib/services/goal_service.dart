@@ -397,6 +397,31 @@ class GoalService {
         .get();
     return snapshot.count ?? 0;
   }
+
+  /// Delete all data for a user (goals, micro-actions, daily logs)
+  Future<void> deleteAllUserData(String userId) async {
+    final batch = _firestore.batch();
+
+    // Delete all goals
+    final goals = await _goalsRef.where('userId', isEqualTo: userId).get();
+    for (final doc in goals.docs) {
+      batch.delete(doc.reference);
+    }
+
+    // Delete all micro-actions
+    final actions = await _actionsRef.where('userId', isEqualTo: userId).get();
+    for (final doc in actions.docs) {
+      batch.delete(doc.reference);
+    }
+
+    // Delete all daily logs
+    final logs = await _logsRef.where('userId', isEqualTo: userId).get();
+    for (final doc in logs.docs) {
+      batch.delete(doc.reference);
+    }
+
+    await batch.commit();
+  }
 }
 
 @riverpod

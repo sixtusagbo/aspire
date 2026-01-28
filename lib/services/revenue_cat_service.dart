@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aspire/services/log_service.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 part 'revenue_cat_service.g.dart';
 
@@ -128,6 +129,26 @@ class RevenueCatService {
 
   /// Stream of customer info updates
   Stream<CustomerInfo> get customerInfoStream => _customerInfoController.stream;
+
+  /// Open subscription management (App Store or Play Store)
+  Future<void> showManageSubscriptions() async {
+    try {
+      final customerInfo = await Purchases.getCustomerInfo();
+      final managementUrl = customerInfo.managementURL;
+
+      if (managementUrl == null) {
+        throw Exception('No subscription management URL available');
+      }
+
+      final uri = Uri.parse(managementUrl);
+      if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+        throw Exception('Could not launch subscription management');
+      }
+    } catch (e, stack) {
+      Log.e('Failed to show manage subscriptions', error: e, stackTrace: stack);
+      rethrow;
+    }
+  }
 
   /// Dispose the service
   void dispose() {

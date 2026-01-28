@@ -294,19 +294,19 @@ class DailyLog {
 - [x] Action limits enforcement (5 free, 10 premium per goal)
 - [x] AI considers existing actions and suggests append/replace mode
 - [x] Custom reminders (premium: per-goal reminder times)
-- [ ] Settings screen completion
+- [x] Settings screen completion
   - [x] Daily reminder toggle (on by default)
   - [x] Reminder time picker
   - [x] Sign out functionality
-  - [ ] Delete account
-  - [ ] Manage subscription (link to app store or google play store)
-  - [ ] About / Version info
+  - [x] Delete account
+  - [x] Manage subscription (link to app store or google play store)
+  - [x] About / Version info
 - [x] App update alerts (prompt user when new version available)
 - [ ] Empty states with encouraging messages
 - [ ] Loading states and error handling
 - [ ] UI/UX improvements
   - [ ] App UI/UX redesign
-  - [ ] Dark mode polish (improve colors and contrast)
+  - [ ] Dark mode polish (improve colors)
   - [ ] Review UX again as an expert UX analyst, could use a subagent here...
 - [ ] Accessibility improvements
 

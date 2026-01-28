@@ -1,12 +1,15 @@
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
 import 'package:aspire/services/auth_service.dart';
+import 'package:aspire/services/goal_service.dart';
 import 'package:aspire/services/notification_service.dart';
 import 'package:aspire/services/revenue_cat_service.dart';
+import 'package:aspire/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends HookConsumerWidget {
@@ -26,6 +29,8 @@ class SettingsScreen extends HookConsumerWidget {
       const TimeOfDay(hour: 9, minute: 0),
     );
     final isPremium = useState<bool?>(null);
+    final appVersion = useState<String>('');
+    final isDeleting = useState<bool>(false);
 
     // Load settings on mount
     useEffect(() {
@@ -36,6 +41,9 @@ class SettingsScreen extends HookConsumerWidget {
         reminderTime,
       );
       revenueCatService.isPremium().then((value) => isPremium.value = value);
+      PackageInfo.fromPlatform().then((info) {
+        appVersion.value = '${info.version} (${info.buildNumber})';
+      });
       return null;
     }, []);
 
@@ -129,6 +137,72 @@ class SettingsScreen extends HookConsumerWidget {
       return '$hour:$minute $period';
     }
 
+    Future<void> handleManageSubscription() async {
+      try {
+        await revenueCatService.showManageSubscriptions();
+      } catch (e) {
+        ToastHelper.showError('Could not open subscription settings');
+      }
+    }
+
+    Future<void> handleDeleteAccount() async {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Delete Account'),
+          content: const Text(
+            'This will permanently delete your account and all your data '
+            '(goals, actions, progress). This action cannot be undone.\n\n'
+            'Are you sure you want to delete your account?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: const Text('Delete'),
+            ),
+          ],
+        ),
+      );
+
+      if (confirmed != true) return;
+
+      isDeleting.value = true;
+      try {
+        final authService = ref.read(authServiceProvider);
+        final goalService = ref.read(goalServiceProvider);
+        final userService = ref.read(userServiceProvider);
+        final userId = authService.currentUser?.uid;
+
+        if (userId == null) {
+          throw Exception('No user signed in');
+        }
+
+        // Delete all user data from Firestore
+        await goalService.deleteAllUserData(userId);
+        await userService.deleteUser(userId);
+
+        // Logout from RevenueCat
+        await revenueCatService.logout();
+
+        // Delete Firebase Auth account
+        await authService.deleteAccount();
+
+        if (context.mounted) {
+          context.go(AppRoutes.signIn);
+        }
+        ToastHelper.showSuccess('Account deleted');
+      } catch (e) {
+        ToastHelper.showError('Failed to delete account: $e');
+      } finally {
+        isDeleting.value = false;
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
@@ -206,12 +280,48 @@ class SettingsScreen extends HookConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(AppRoutes.paywall),
           ),
+          if (isPremium.value == true)
+            ListTile(
+              leading: const SizedBox(width: 24),
+              title: const Text('Manage Subscription'),
+              subtitle: const Text('View or cancel in app store'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: handleManageSubscription,
+            ),
+          const Divider(),
+
+          // About section
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: const Text('About'),
+            subtitle: Text(
+              appVersion.value.isEmpty
+                  ? 'Loading...'
+                  : 'Version ${appVersion.value}',
+            ),
+          ),
           const Divider(),
 
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.red),
             title: const Text('Sign Out', style: TextStyle(color: Colors.red)),
             onTap: handleSignOut,
+          ),
+          ListTile(
+            leading: const Icon(Icons.delete_forever, color: Colors.red),
+            title: const Text(
+              'Delete Account',
+              style: TextStyle(color: Colors.red),
+            ),
+            subtitle: const Text('Permanently delete all data'),
+            trailing: isDeleting.value
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : null,
+            onTap: isDeleting.value ? null : handleDeleteAccount,
           ),
         ],
       ),
