@@ -308,9 +308,57 @@ class _GoalsProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final activeGoals = goals.where((g) => !g.isCompleted).toList();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (activeGoals.isEmpty) {
-      return const SizedBox.shrink();
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Active Goals',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+              ),
+            ),
+            child: Column(
+              children: [
+                Icon(
+                  Icons.flag_rounded,
+                  size: 48,
+                  color: AppTheme.primaryPink.withValues(alpha: 0.5),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'No active goals yet',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Start your journey by setting a goal.\nEvery big achievement begins with a single step.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                    height: 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
     }
 
     return Column(

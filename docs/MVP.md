@@ -302,8 +302,8 @@ class DailyLog {
   - [x] Manage subscription (link to app store or google play store)
   - [x] About / Version info
 - [x] App update alerts (prompt user when new version available)
-- [ ] Empty states with encouraging messages
-- [ ] Loading states and error handling
+- [x] Empty states with encouraging messages
+- [x] Loading states and error handling
 - [ ] UI/UX improvements
   - [ ] App UI/UX redesign
   - [ ] Dark mode polish (improve colors)

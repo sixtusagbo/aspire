@@ -1,5 +1,7 @@
 # Testing Checklist
 
+> NOTE: When clearing this file, only clear unchecked/done tasks.
+
 ## Day 9: RevenueCat & Paywall [KEEP, NEVER REMOVE]
 
 ### Premium Status (after purchase/test)
@@ -9,18 +11,22 @@
 
 ## Day 10: Settings Screen Completion
 
-### Version Info
-- [x] Open Settings and verify all sections display correctly
-- [x] Check that "About" section shows the correct version (0.1.3+4)
-
 ### Manage Subscription (premium only)
 - [ ] As premium user, verify "Manage Subscription" option appears under Premium
 - [ ] Tap "Manage Subscription" and verify it opens App Store/Play Store subscription settings
 
-### Delete Account
-- [x] Tap "Delete Account" and verify confirmation dialog appears
-- [x] Tap "Cancel" and verify nothing happens
-- [ ] (Optional - use test account) Tap "Delete" and verify:
-  - [ ] All user data is deleted from Firestore
-  - [ ] User is redirected to sign in screen
-  - [ ] Toast shows "Account deleted"
+
+## Day 10: Empty States & Loading
+
+### Empty States
+- [x] Progress Screen: When no active goals, verify encouraging message shows
+- [x] Home Screen: When no goals exist, verify empty state with "Create a Goal" button
+- [x] Goals Screen: When no goals, verify empty state message
+- [x] Goal Detail Screen: When no actions, verify AI suggestion empty state
+
+### Loading States
+- [x] Home Screen: Verify loading spinner shows while goals load
+- [x] Goals Screen: Verify loading spinner shows while data loads
+- [x] Goal Detail Screen: Verify loading spinner shows while loading
+- [x] Progress Screen: Verify loading spinner shows while loading
+- [x] Settings Screen: Verify "Checking..." shows while loading notification/premium status
