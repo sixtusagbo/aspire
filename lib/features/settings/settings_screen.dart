@@ -1,11 +1,9 @@
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
-import 'package:aspire/data/sample_tips.dart';
 import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/goal_service.dart';
 import 'package:aspire/services/notification_service.dart';
 import 'package:aspire/services/revenue_cat_service.dart';
-import 'package:aspire/services/tip_service.dart';
 import 'package:aspire/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -425,25 +423,6 @@ class SettingsScreen extends HookConsumerWidget {
                   )
                 : null,
             onTap: isDeleting.value ? null : handleDeleteAccount,
-          ),
-          const Divider(),
-
-          // Developer section (hidden in production)
-          ListTile(
-            leading: const Icon(Icons.developer_mode, color: Colors.grey),
-            title:
-                const Text('Reseed Tips', style: TextStyle(color: Colors.grey)),
-            subtitle: const Text('Clear and reseed all tips'),
-            onTap: () async {
-              final tipService = ref.read(tipServiceProvider);
-              try {
-                await tipService.reseedTips();
-                ref.invalidate(tipOfTheDayProvider);
-                ToastHelper.showSuccess('Tips reseeded (${sampleTips.length})');
-              } catch (e) {
-                ToastHelper.showError('Failed to reseed tips');
-              }
-            },
           ),
         ],
       ),
