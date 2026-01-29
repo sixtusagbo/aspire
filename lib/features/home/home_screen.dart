@@ -6,14 +6,13 @@ import 'package:aspire/core/widgets/celebration_overlay.dart';
 import 'package:aspire/core/widgets/goal_completion_dialog.dart';
 import 'package:aspire/core/widgets/streak_celebration_dialog.dart';
 import 'package:aspire/features/goals/widgets/create_goal_sheet.dart';
-import 'package:aspire/features/home/widgets/stats_bar.dart';
+import 'package:aspire/features/home/widgets/tip_card.dart';
 import 'package:aspire/models/goal.dart';
 import 'package:aspire/models/micro_action.dart';
-import 'package:aspire/models/user.dart';
 import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/goal_service.dart';
 import 'package:aspire/services/notification_service.dart';
-import 'package:aspire/services/user_service.dart';
+import 'package:aspire/services/tip_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -26,7 +25,6 @@ class HomeScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authService = ref.read(authServiceProvider);
-    final userService = ref.read(userServiceProvider);
     final goalService = ref.read(goalServiceProvider);
     final notificationService = ref.read(notificationServiceProvider);
     final userId = authService.currentUser?.uid;
@@ -65,80 +63,60 @@ class HomeScreen extends HookConsumerWidget {
           ),
         ],
       ),
-      body: StreamBuilder<AppUser?>(
-        stream: userService.watchUser(userId),
-        builder: (context, userSnapshot) {
-          final user = userSnapshot.data;
-
-          return RefreshIndicator(
-            onRefresh: () async {
-              // Just trigger rebuild
-            },
-            child: CustomScrollView(
-              slivers: [
-                // Notification permission banner
-                if (notificationsEnabled.value == false && !bannerDismissed.value)
-                  SliverToBoxAdapter(
-                    child: _NotificationBanner(
-                      onEnable: handleEnableNotifications,
-                      onDismiss: () => bannerDismissed.value = true,
-                    ),
-                  ),
-
-                // Stats bar
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: user != null
-                        ? StatsBar(user: user)
-                        : _buildStatsPlaceholder(context),
-                  ),
-                ),
-
-                // Section header
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-                    child: Row(
-                      children: [
-                        const Text(
-                          'Your Actions',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const Spacer(),
-                        TextButton(
-                          onPressed: () => context.go(AppRoutes.goals),
-                          child: Text(
-                            'See Goals',
-                            style: TextStyle(color: AppTheme.primaryPink),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Actions list
-                _ActionsList(userId: userId, goalService: goalService),
-              ],
-            ),
-          );
+      body: RefreshIndicator(
+        onRefresh: () async {
+          ref.invalidate(tipOfTheDayProvider);
         },
-      ),
-    );
-  }
+        child: CustomScrollView(
+          slivers: [
+            // Notification permission banner
+            if (notificationsEnabled.value == false && !bannerDismissed.value)
+              SliverToBoxAdapter(
+                child: _NotificationBanner(
+                  onEnable: handleEnableNotifications,
+                  onDismiss: () => bannerDismissed.value = true,
+                ),
+              ),
 
-  Widget _buildStatsPlaceholder(BuildContext context) {
-    return Container(
-      height: 160,
-      decoration: BoxDecoration(
-        color: context.surfaceSubtle,
-        borderRadius: BorderRadius.circular(16),
+            // Tip of the day
+            const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: TipCard(),
+              ),
+            ),
+
+            // Section header
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                child: Row(
+                  children: [
+                    const Text(
+                      'Your Actions',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Spacer(),
+                    TextButton(
+                      onPressed: () => context.go(AppRoutes.goals),
+                      child: Text(
+                        'See Goals',
+                        style: TextStyle(color: AppTheme.primaryPink),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // Actions list
+            _ActionsList(userId: userId, goalService: goalService),
+          ],
+        ),
       ),
-      child: const Center(child: CircularProgressIndicator()),
     );
   }
 }

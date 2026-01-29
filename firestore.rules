@@ -39,5 +39,12 @@ service cloud.firestore {
       allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
       allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
     }
+
+    // Tips collection - read for all authenticated, create for seeding
+    match /tips/{tipId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated(); // For initial seeding
+      allow update, delete: if false; // Admin only
+    }
   }
 }

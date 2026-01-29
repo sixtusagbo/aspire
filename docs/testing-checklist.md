@@ -24,4 +24,12 @@
 - [x] Tap Share on streak dialog → native share sheet opens with streak message and #Aspire #PacksLight
 - [x] Complete all actions on a goal → GoalCompletionDialog appears with trophy animation
 - [x] Tap Share on goal completion → native share sheet opens with goal message and #Aspire #PacksLight
-- [ ] Manually mark goal complete → GoalCompletionDialog appears with Share button
+- [x] Manually mark goal complete → GoalCompletionDialog appears with Share button
+
+### Tip Card
+
+- [ ] Home screen shows "Tip of the Day" card instead of stats bar
+- [ ] Tips are seeded on first launch (check Firestore 'tips' collection)
+- [ ] Tip changes daily (same tip throughout the day, different next day)
+- [ ] Pull to refresh on Home screen refreshes the tip
+- [ ] Tips display correctly in dark mode
