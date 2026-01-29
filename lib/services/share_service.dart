@@ -7,7 +7,7 @@ class ShareService {
     final message = _getStreakMessage(streak);
     await SharePlus.instance.share(
       ShareParams(
-        text: '$message\n\n#Aspire #GoalsApp #BuildInPublic',
+        text: '$message\n\n#Aspire #PacksLight',
         subject: 'My Aspire Streak',
       ),
     );
@@ -19,7 +19,7 @@ class ShareService {
       ShareParams(
         text: "I just completed my goal: \"$goalTitle\" with Aspire! "
             "From dreaming to doing, one micro-action at a time.\n\n"
-            "#Aspire #GoalCrusher #BuildInPublic",
+            "#Aspire #PacksLight",
         subject: 'Goal Completed!',
       ),
     );

@@ -16,8 +16,12 @@
 - [ ] As premium user, verify "Manage Subscription" option appears under Premium
 - [ ] Tap "Manage Subscription" and verify it opens App Store/Play Store subscription settings
 
-## Day 5 Fixes
+## Bonus Features
 
-### Notifications
+### Social Sharing
 
-- [x] As premium, goal-specific reminders fire correctly
+- [ ] Complete an action that increases streak → StreakCelebrationDialog appears with Share button
+- [ ] Tap Share on streak dialog → native share sheet opens with streak message and #Aspire #PacksLight
+- [ ] Complete all actions on a goal → GoalCompletionDialog appears with trophy animation
+- [ ] Tap Share on goal completion → native share sheet opens with goal message and #Aspire #PacksLight
+- [ ] Manually mark goal complete → GoalCompletionDialog appears with Share button
