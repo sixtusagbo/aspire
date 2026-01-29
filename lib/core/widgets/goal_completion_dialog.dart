@@ -1,7 +1,7 @@
 import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/services/share_service.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 /// Shows a celebration dialog when a goal is completed
 class GoalCompletionDialog extends StatefulWidget {
@@ -9,33 +9,13 @@ class GoalCompletionDialog extends StatefulWidget {
 
   const GoalCompletionDialog({super.key, required this.goalTitle});
 
-  /// Show the dialog with a nice scale+fade transition
+  /// Show the dialog
   static Future<void> show(BuildContext context, String goalTitle) {
-    HapticFeedback.heavyImpact();
-    return showGeneralDialog(
+    AudioPlayer().play(AssetSource('sounds/goal_complete.mp3'));
+    return showDialog(
       context: context,
       barrierDismissible: true,
-      barrierLabel: 'Dismiss',
-      barrierColor: Colors.black54,
-      transitionDuration: const Duration(milliseconds: 500),
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return ScaleTransition(
-          scale: CurvedAnimation(
-            parent: animation,
-            curve: Curves.elasticOut,
-          ),
-          child: FadeTransition(
-            opacity: CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeIn,
-            ),
-            child: child,
-          ),
-        );
-      },
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return GoalCompletionDialog(goalTitle: goalTitle);
-      },
+      builder: (context) => GoalCompletionDialog(goalTitle: goalTitle),
     );
   }
 
@@ -156,10 +136,7 @@ class _GoalCompletionDialogState extends State<GoalCompletionDialog>
               // Goal title
               Text(
                 widget.goalTitle,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: context.textSecondary,
-                ),
+                style: TextStyle(fontSize: 16, color: context.textSecondary),
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -197,9 +174,7 @@ class _GoalCompletionDialogState extends State<GoalCompletionDialog>
                     },
                     icon: const Icon(Icons.share, size: 18),
                     label: const Text('Share'),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: goldColor,
-                    ),
+                    style: FilledButton.styleFrom(backgroundColor: goldColor),
                   ),
                 ],
               ),
