@@ -3,6 +3,7 @@ import 'package:aspire/core/theme/category_colors.dart';
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
 import 'package:aspire/core/widgets/celebration_overlay.dart';
+import 'package:aspire/core/widgets/goal_completion_dialog.dart';
 import 'package:aspire/core/widgets/streak_celebration_dialog.dart';
 import 'package:aspire/features/goals/widgets/create_goal_sheet.dart';
 import 'package:aspire/features/home/widgets/stats_bar.dart';
@@ -368,10 +369,20 @@ class _ActionTile extends HookConsumerWidget {
       }
       overlay?.celebrate(celebrationType);
 
-      // Show streak increase dialog if streak went up
+      // Show goal completion dialog if goal was completed
+      final goalTitle = goal.title;
+      if (result.goalCompleted) {
+        Future.delayed(const Duration(milliseconds: 400), () {
+          if (overlay != null && overlay.mounted) {
+            GoalCompletionDialog.show(overlay.context, goalTitle);
+          }
+        });
+      }
+
+      // Show streak increase dialog if streak went up (and goal not completed)
       final streakIncreased = result.newStreak > result.previousStreak;
       final newStreak = result.newStreak;
-      if (streakIncreased) {
+      if (streakIncreased && !result.goalCompleted) {
         // Small delay so confetti starts first
         Future.delayed(const Duration(milliseconds: 400), () {
           // Use overlay's context which stays mounted (it's at the root)
@@ -381,10 +392,8 @@ class _ActionTile extends HookConsumerWidget {
         });
       }
 
-      // Show appropriate toast (skip if showing streak dialog)
-      if (result.goalCompleted) {
-        ToastHelper.showSuccess('Goal completed! +${result.xpEarned} XP');
-      } else if (!streakIncreased) {
+      // Show appropriate toast (skip if showing dialog)
+      if (!result.goalCompleted && !streakIncreased) {
         ToastHelper.showSuccess('+${result.xpEarned} XP earned!');
       }
     } catch (e) {

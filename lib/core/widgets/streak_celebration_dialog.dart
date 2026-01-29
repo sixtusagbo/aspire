@@ -1,4 +1,5 @@
 import 'package:aspire/core/theme/app_theme.dart';
+import 'package:aspire/services/share_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -213,15 +214,32 @@ class _StreakCelebrationDialogState extends State<StreakCelebrationDialog>
                     ],
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 20),
 
-                // Tap to dismiss hint
-                Text(
-                  'Tap anywhere to continue',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: context.textSecondary,
-                  ),
+                // Action buttons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text(
+                        'Continue',
+                        style: TextStyle(color: context.textSecondary),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    FilledButton.icon(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        ShareService.shareStreak(widget.streak);
+                      },
+                      icon: const Icon(Icons.share, size: 18),
+                      label: const Text('Share'),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: streakColor,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

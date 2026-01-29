@@ -3,6 +3,8 @@ import 'package:aspire/core/theme/category_colors.dart';
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
 import 'package:aspire/core/widgets/celebration_overlay.dart';
+import 'package:aspire/core/widgets/goal_completion_dialog.dart';
+import 'package:aspire/core/widgets/streak_celebration_dialog.dart';
 import 'package:aspire/models/goal.dart';
 import 'package:aspire/models/micro_action.dart';
 import 'package:aspire/services/ai_service.dart';
@@ -546,7 +548,11 @@ class _GoalDetailContent extends HookConsumerWidget {
                 );
               }
 
-              return _ActionsList(actions: actions, goalId: goal.id);
+              return _ActionsList(
+                actions: actions,
+                goalId: goal.id,
+                goalTitle: goal.title,
+              );
             },
           ),
         ),
@@ -625,7 +631,13 @@ class _GoalDetailContent extends HookConsumerWidget {
           final overlay = CelebrationOverlay.of(context);
           overlay?.celebrate(CelebrationType.goalComplete);
           HapticFeedback.heavyImpact();
-          ToastHelper.showSuccess('Congratulations! Goal completed!');
+
+          // Show goal completion dialog
+          Future.delayed(const Duration(milliseconds: 400), () {
+            if (overlay != null && overlay.mounted) {
+              GoalCompletionDialog.show(overlay.context, goal.title);
+            }
+          });
         }
       } catch (e) {
         if (context.mounted) {
@@ -841,8 +853,13 @@ class _GoalHeader extends StatelessWidget {
 class _ActionsList extends HookConsumerWidget {
   final List<MicroAction> actions;
   final String goalId;
+  final String goalTitle;
 
-  const _ActionsList({required this.actions, required this.goalId});
+  const _ActionsList({
+    required this.actions,
+    required this.goalId,
+    required this.goalTitle,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -864,6 +881,7 @@ class _ActionsList extends HookConsumerWidget {
           key: ValueKey(action.id),
           action: action,
           goalId: goalId,
+          goalTitle: goalTitle,
         );
       },
     );
@@ -873,8 +891,14 @@ class _ActionsList extends HookConsumerWidget {
 class _ActionTile extends HookConsumerWidget {
   final MicroAction action;
   final String goalId;
+  final String goalTitle;
 
-  const _ActionTile({super.key, required this.action, required this.goalId});
+  const _ActionTile({
+    super.key,
+    required this.action,
+    required this.goalId,
+    required this.goalTitle,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -940,16 +964,25 @@ class _ActionTile extends HookConsumerWidget {
                     }
                     overlay?.celebrate(celebrationType);
 
-                    // Show toast
+                    // Show goal completion dialog
                     if (result.goalCompleted) {
-                      ToastHelper.showSuccess(
-                        'Goal completed! +${result.xpEarned} XP',
-                      );
+                      Future.delayed(const Duration(milliseconds: 400), () {
+                        if (overlay != null && overlay.mounted) {
+                          GoalCompletionDialog.show(overlay.context, goalTitle);
+                        }
+                      });
                     } else if (result.isStreakMilestone) {
-                      ToastHelper.showSuccess(
-                        '${result.newStreak} day streak! +${result.xpEarned} XP',
-                      );
+                      // Show streak dialog
+                      Future.delayed(const Duration(milliseconds: 400), () {
+                        if (overlay != null && overlay.mounted) {
+                          StreakCelebrationDialog.show(
+                            overlay.context,
+                            result.newStreak,
+                          );
+                        }
+                      });
                     } else {
+                      // Just show XP toast for regular action
                       ToastHelper.showSuccess('+${result.xpEarned} XP!');
                     }
                   }

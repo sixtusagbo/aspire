@@ -316,12 +316,12 @@ class DailyLog {
 
 Add before deadline after core MVP polish:
 
-- [ ] **Social Sharing** - Share wins to social media with #Aspire hashtag
+- [x] **Social Sharing** - Share wins to social media with #Aspire hashtag
 - [ ] **Tips Card** - Replace gamification card on Home with daily tips from Gabby
 - [ ] **Goal Templates** - Pre-made goals for common dreams (travel, career, finance)
 - [ ] **Celebration Sound Effects** - Audio feedback for confetti and streak increases
-- [ ] **Accessibility** - Screen reader support, contrast ratios, reduced motion
 - [ ] **Custom Categories (Premium)** - Allow premium users to create custom goal categories (name only, uses default icon/color)
+- [ ] **Accessibility** - Screen reader support, contrast ratios, reduced motion
 
 ---
 
