@@ -318,7 +318,7 @@ Add before deadline after core MVP polish:
 
 - [x] **Social Sharing** - Share wins to social media with #Aspire hashtag
 - [x] **Tips Card** - Replace gamification card on Home with daily tips from Gabby
-- [ ] **Goal Templates** - Pre-made goals for common dreams (travel, career, finance)
+- [x] **Goal Templates** - Pre-made goals for common dreams (travel, career, finance)
 - [ ] **Celebration Sound Effects** - Audio feedback for confetti and streak increases
 - [ ] **Custom Categories (Premium)** - Allow premium users to create custom goal categories (name only, uses default icon/color)
 - [ ] **Accessibility** - Screen reader support, contrast ratios, reduced motion

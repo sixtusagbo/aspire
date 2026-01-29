@@ -1,6 +1,8 @@
 import 'package:aspire/core/theme/app_theme.dart';
+import 'package:aspire/core/theme/category_colors.dart';
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/widgets/gradient_button.dart';
+import 'package:aspire/data/goal_templates.dart';
 import 'package:aspire/features/goals/goals_screen.dart';
 import 'package:aspire/models/goal.dart';
 import 'package:aspire/services/goal_service.dart';
@@ -38,10 +40,8 @@ Future<bool> showCreateGoalSheet(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
-    builder: (context) => _CreateGoalSheetContent(
-      userId: userId,
-      goalService: goalService,
-    ),
+    builder: (context) =>
+        _CreateGoalSheetContent(userId: userId, goalService: goalService),
   );
 
   if (createdGoalId != null && context.mounted) {
@@ -50,6 +50,16 @@ Future<bool> showCreateGoalSheet(
   }
 
   return false;
+}
+
+/// Shows the goal template selector and returns the selected template.
+Future<GoalTemplate?> showGoalTemplateSelector(BuildContext context) {
+  return showModalBottomSheet<GoalTemplate>(
+    context: context,
+    isScrollControlled: true,
+    useSafeArea: true,
+    builder: (context) => const _TemplateSelectorSheet(),
+  );
 }
 
 void _showUpgradeDialog(BuildContext context) {
@@ -92,7 +102,8 @@ class _CreateGoalSheetContent extends StatefulWidget {
   });
 
   @override
-  State<_CreateGoalSheetContent> createState() => _CreateGoalSheetContentState();
+  State<_CreateGoalSheetContent> createState() =>
+      _CreateGoalSheetContentState();
 }
 
 class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
@@ -101,12 +112,35 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
   GoalCategory _selectedCategory = GoalCategory.personal;
   DateTime? _targetDate;
   bool _isCreating = false;
+  GoalTemplate? _selectedTemplate;
 
   @override
   void dispose() {
     _titleController.dispose();
     _descController.dispose();
     super.dispose();
+  }
+
+  void _applyTemplate(GoalTemplate template) {
+    setState(() {
+      _selectedTemplate = template;
+      _titleController.text = template.title;
+      _descController.text = template.description;
+      _selectedCategory = template.category;
+    });
+  }
+
+  Future<void> _showTemplateSelector() async {
+    final template = await showModalBottomSheet<GoalTemplate>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (context) => const _TemplateSelectorSheet(),
+    );
+
+    if (template != null && mounted) {
+      _applyTemplate(template);
+    }
   }
 
   Future<void> _createGoal() async {
@@ -164,9 +198,9 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
               children: [
                 Text(
                   'Create New Goal',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 IconButton(
                   onPressed: () => Navigator.pop(context),
@@ -174,7 +208,28 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 12),
+
+            // Template selector button
+            OutlinedButton.icon(
+              onPressed: _showTemplateSelector,
+              icon: const Icon(Icons.auto_awesome_outlined, size: 18),
+              label: Text(
+                _selectedTemplate != null
+                    ? 'Change template'
+                    : 'Choose from templates',
+              ),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppTheme.primaryPink,
+                side: BorderSide(
+                  color: AppTheme.primaryPink.withValues(alpha: 0.5),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
 
             // Title
             TextField(
@@ -230,8 +285,9 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
                       cat.name[0].toUpperCase() + cat.name.substring(1),
                       style: TextStyle(
                         color: isSelected ? Colors.white : context.textPrimary,
-                        fontWeight:
-                            isSelected ? FontWeight.w600 : FontWeight.normal,
+                        fontWeight: isSelected
+                            ? FontWeight.w600
+                            : FontWeight.normal,
                       ),
                     ),
                   ),
@@ -259,7 +315,8 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
                 final picked = await showDatePicker(
                   context: context,
                   initialDate:
-                      _targetDate ?? DateTime.now().add(const Duration(days: 30)),
+                      _targetDate ??
+                      DateTime.now().add(const Duration(days: 30)),
                   firstDate: DateTime.now(),
                   lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
                 );
@@ -279,6 +336,247 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
             ),
             const SizedBox(height: 16),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Bottom sheet for selecting a goal template
+class _TemplateSelectorSheet extends StatefulWidget {
+  const _TemplateSelectorSheet();
+
+  @override
+  State<_TemplateSelectorSheet> createState() => _TemplateSelectorSheetState();
+}
+
+class _TemplateSelectorSheetState extends State<_TemplateSelectorSheet> {
+  GoalCategory? _selectedCategory;
+
+  List<GoalTemplate> get _filteredTemplates {
+    if (_selectedCategory == null) return goalTemplates;
+    return getTemplatesForCategory(_selectedCategory!);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DraggableScrollableSheet(
+      initialChildSize: 0.85,
+      minChildSize: 0.5,
+      maxChildSize: 0.95,
+      expand: false,
+      builder: (context, scrollController) => Column(
+        children: [
+          // Header
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
+            child: Column(
+              children: [
+                // Drag handle
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: context.borderColor,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Goal Templates',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(Icons.close),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Choose a template to get started quickly',
+                  style: TextStyle(color: context.textSecondary),
+                ),
+                const SizedBox(height: 16),
+
+                // Category filter
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      _CategoryChip(
+                        label: 'All',
+                        isSelected: _selectedCategory == null,
+                        onTap: () => setState(() => _selectedCategory = null),
+                      ),
+                      const SizedBox(width: 8),
+                      ...GoalCategory.values.map(
+                        (cat) => Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: _CategoryChip(
+                            label: cat.label,
+                            icon: cat.icon,
+                            color: cat.color,
+                            isSelected: _selectedCategory == cat,
+                            onTap: () =>
+                                setState(() => _selectedCategory = cat),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
+            ),
+          ),
+
+          // Template list
+          Expanded(
+            child: ListView.builder(
+              controller: scrollController,
+              padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+              itemCount: _filteredTemplates.length,
+              itemBuilder: (context, index) {
+                final template = _filteredTemplates[index];
+                return _TemplateCard(
+                  template: template,
+                  onTap: () => Navigator.pop(context, template),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CategoryChip extends StatelessWidget {
+  final String label;
+  final IconData? icon;
+  final Color? color;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _CategoryChip({
+    required this.label,
+    this.icon,
+    this.color,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? (color ?? AppTheme.primaryPink)
+              : context.surfaceSubtle,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              Icon(
+                icon,
+                size: 16,
+                color: isSelected ? Colors.white : context.textSecondary,
+              ),
+              const SizedBox(width: 4),
+            ],
+            Text(
+              label,
+              style: TextStyle(
+                color: isSelected ? Colors.white : context.textSecondary,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                fontSize: 13,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TemplateCard extends StatelessWidget {
+  final GoalTemplate template;
+  final VoidCallback onTap;
+
+  const _TemplateCard({required this.template, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: template.category.color.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      template.category.icon,
+                      size: 20,
+                      color: template.category.color,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      template.title,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 16,
+                    color: context.textSecondary,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                template.description,
+                style: TextStyle(color: context.textSecondary, fontSize: 13),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                '${template.suggestedActions.length} suggested actions',
+                style: TextStyle(
+                  color: AppTheme.primaryPink,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,6 +1,8 @@
 import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/core/theme/category_colors.dart';
 import 'package:aspire/core/widgets/gradient_button.dart';
+import 'package:aspire/data/goal_templates.dart';
+import 'package:aspire/features/goals/widgets/create_goal_sheet.dart';
 import 'package:aspire/models/goal.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -50,6 +52,21 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
   }
 
   bool get _isValid => _titleController.text.trim().isNotEmpty;
+
+  void _applyTemplate(GoalTemplate template) {
+    setState(() {
+      _titleController.text = template.title;
+      _descriptionController.text = template.description;
+      widget.category.value = template.category;
+    });
+  }
+
+  Future<void> _showTemplateSelector() async {
+    final template = await showGoalTemplateSelector(context);
+    if (template != null && mounted) {
+      _applyTemplate(template);
+    }
+  }
 
   void _handleNext() {
     widget.title.value = _titleController.text.trim();
@@ -118,7 +135,24 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
               ).colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 16),
+
+          // Template selector button
+          OutlinedButton.icon(
+            onPressed: _showTemplateSelector,
+            icon: const Icon(Icons.auto_awesome_outlined, size: 18),
+            label: const Text('Choose from templates'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppTheme.primaryPink,
+              side: BorderSide(
+                color: AppTheme.primaryPink.withValues(alpha: 0.5),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
 
           // Goal title
           TextField(
@@ -211,7 +245,9 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
                       Icon(
                         cat.icon,
                         size: 18,
-                        color: isSelected ? Colors.white : context.textSecondary,
+                        color: isSelected
+                            ? Colors.white
+                            : context.textSecondary,
                       ),
                       const SizedBox(width: 6),
                       Text(
@@ -288,8 +324,7 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
           // Complete button
           GradientButton(
             text: 'Start My Journey',
-            onPressed:
-                widget.isLoading || !_isValid ? null : _handleNext,
+            onPressed: widget.isLoading || !_isValid ? null : _handleNext,
             isLoading: widget.isLoading,
           ),
 
