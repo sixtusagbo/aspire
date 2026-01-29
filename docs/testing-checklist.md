@@ -18,30 +18,19 @@
 
 ## Bonus Features
 
-### Social Sharing
-
-- [x] Complete an action that increases streak → StreakCelebrationDialog appears with Share button
-- [x] Tap Share on streak dialog → native share sheet opens with streak message and #Aspire #PacksLight
-- [x] Complete all actions on a goal → GoalCompletionDialog appears with trophy animation
-- [x] Tap Share on goal completion → native share sheet opens with goal message and #Aspire #PacksLight
-- [x] Manually mark goal complete → GoalCompletionDialog appears with Share button
-
-### Tip Card
-
-- [x] Home screen shows "Tip of the Day" card instead of stats bar
-- [x] Tips are seeded on first launch (check Firestore 'tips' collection)
-- [x] Tip changes daily (same tip throughout the day, different next day)
-- [x] Pull to refresh on Home screen refreshes the tip
-- [x] Tips display correctly in dark mode
-
 ### Goal Templates
 
-- [ ] Tap "New Goal" on Goals screen → "Choose from templates" button visible
-- [ ] Tap "Choose from templates" → template selector sheet opens
-- [ ] All 15 templates displayed with category icons and colors
-- [ ] Filter by category works (All, Travel, Career, Finance, Wellness, Personal)
-- [ ] Select a template → form pre-fills with title, description, and category
-- [ ] Button text changes to "Change template" after selection
+- [x] Tap "New Goal" on Goals screen → "Choose from templates" button visible
+- [x] Tap "Choose from templates" → template selector sheet opens
+- [x] All 15 templates displayed with category icons and colors
+- [x] Filter by category works (All, Travel, Career, Finance, Wellness, Personal)
+- [x] Select a template → form pre-fills with title, description, and category
+- [x] Button text changes to "Change template" after selection
 - [ ] Create goal from template works correctly
 - [ ] In onboarding, "Choose from templates" button visible on goal setup step
 - [ ] Templates work correctly from onboarding flow
+
+### Celebration Sound Effects
+
+- [x] Mark goal as complete → celebration sound plays
+- [x] Sound plays with goal completion dialog
