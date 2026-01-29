@@ -1,4 +1,5 @@
 import 'package:aspire/core/theme/app_theme.dart';
+import 'package:aspire/core/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 
 class NameStep extends StatefulWidget {
@@ -54,7 +55,7 @@ class _NameStepState extends State<NameStep> {
           IconButton(
             onPressed: widget.onBack,
             icon: const Icon(Icons.arrow_back_rounded),
-            style: IconButton.styleFrom(backgroundColor: Colors.grey.shade100),
+            style: IconButton.styleFrom(backgroundColor: context.surfaceSubtle),
           ),
           const SizedBox(height: 32),
 
@@ -87,7 +88,7 @@ class _NameStepState extends State<NameStep> {
             decoration: InputDecoration(
               hintText: 'Your first name',
               filled: true,
-              fillColor: Colors.grey.shade100,
+              fillColor: context.surfaceSubtle,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide.none,
@@ -111,25 +112,9 @@ class _NameStepState extends State<NameStep> {
           const Spacer(),
 
           // Continue button
-          SizedBox(
-            width: double.infinity,
-            height: 56,
-            child: ElevatedButton(
-              onPressed: _isValid ? _handleNext : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryPink,
-                foregroundColor: Colors.white,
-                disabledBackgroundColor: Colors.grey.shade300,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: 0,
-              ),
-              child: const Text(
-                'Continue',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-            ),
+          GradientButton(
+            text: 'Continue',
+            onPressed: _isValid ? _handleNext : null,
           ),
           const SizedBox(height: 16),
         ],

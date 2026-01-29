@@ -1,3 +1,4 @@
+import 'package:aspire/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -112,7 +113,7 @@ class _StreakCelebrationDialogState extends State<StreakCelebrationDialog>
             margin: const EdgeInsets.all(32),
             padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.surface,
               borderRadius: BorderRadius.circular(24),
             ),
             child: Column(
@@ -178,7 +179,7 @@ class _StreakCelebrationDialogState extends State<StreakCelebrationDialog>
                   _message,
                   style: TextStyle(
                     fontSize: 16,
-                    color: Colors.grey.shade600,
+                    color: context.textSecondary,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -189,7 +190,7 @@ class _StreakCelebrationDialogState extends State<StreakCelebrationDialog>
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
+                    color: context.surfaceSubtle,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -206,7 +207,7 @@ class _StreakCelebrationDialogState extends State<StreakCelebrationDialog>
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: Colors.grey.shade700,
+                          color: context.textSecondary,
                         ),
                       ),
                     ],
@@ -219,7 +220,7 @@ class _StreakCelebrationDialogState extends State<StreakCelebrationDialog>
                   'Tap anywhere to continue',
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.grey.shade400,
+                    color: context.textSecondary,
                   ),
                 ),
               ],

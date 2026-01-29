@@ -1,4 +1,5 @@
 import 'package:aspire/core/theme/app_theme.dart';
+import 'package:aspire/core/theme/category_colors.dart';
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
 import 'package:aspire/core/widgets/celebration_overlay.dart';
@@ -211,13 +212,15 @@ class GoalDetailScreen extends HookConsumerWidget {
                         decoration: BoxDecoration(
                           color: isSelected
                               ? AppTheme.primaryPink
-                              : Colors.grey.shade100,
+                              : context.surfaceSubtle,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
                           cat.name[0].toUpperCase() + cat.name.substring(1),
                           style: TextStyle(
-                            color: isSelected ? Colors.white : Colors.black87,
+                            color: isSelected
+                                ? Colors.white
+                                : context.textPrimary,
                             fontWeight: isSelected
                                 ? FontWeight.w600
                                 : FontWeight.normal,
@@ -747,23 +750,22 @@ class _GoalHeader extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: _categoryColor(goal.category).withValues(alpha: 0.1),
+              color: goal.category.color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
-                  _categoryIcon(goal.category),
+                  goal.category.icon,
                   size: 16,
-                  color: _categoryColor(goal.category),
+                  color: goal.category.color,
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  goal.category.name[0].toUpperCase() +
-                      goal.category.name.substring(1),
+                  goal.category.label,
                   style: TextStyle(
-                    color: _categoryColor(goal.category),
+                    color: goal.category.color,
                     fontWeight: FontWeight.w600,
                     fontSize: 12,
                   ),
@@ -787,7 +789,7 @@ class _GoalHeader extends StatelessWidget {
               goal.description!,
               style: Theme.of(
                 context,
-              ).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade600),
+              ).textTheme.bodyMedium?.copyWith(color: context.textSecondary),
             ),
           ],
 
@@ -802,7 +804,7 @@ class _GoalHeader extends StatelessWidget {
                 children: [
                   Text(
                     '${(goal.progress * 100).toInt()}% complete',
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                    style: TextStyle(color: context.textSecondary, fontSize: 13),
                   ),
                   if (goal.daysRemaining != null)
                     Text(
@@ -810,7 +812,7 @@ class _GoalHeader extends StatelessWidget {
                       style: TextStyle(
                         color: goal.daysRemaining! < 7
                             ? Colors.orange
-                            : Colors.grey.shade600,
+                            : context.textSecondary,
                         fontSize: 13,
                       ),
                     ),
@@ -821,7 +823,7 @@ class _GoalHeader extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4),
                 child: LinearProgressIndicator(
                   value: goal.progress,
-                  backgroundColor: Colors.grey.shade200,
+                  backgroundColor: context.borderColor,
                   valueColor: AlwaysStoppedAnimation(AppTheme.primaryPink),
                   minHeight: 8,
                 ),
@@ -833,25 +835,6 @@ class _GoalHeader extends StatelessWidget {
     );
   }
 
-  Color _categoryColor(GoalCategory category) {
-    return switch (category) {
-      GoalCategory.travel => Colors.blue,
-      GoalCategory.career => Colors.orange,
-      GoalCategory.finance => Colors.green,
-      GoalCategory.wellness => Colors.pink,
-      GoalCategory.personal => Colors.purple,
-    };
-  }
-
-  IconData _categoryIcon(GoalCategory category) {
-    return switch (category) {
-      GoalCategory.travel => Icons.flight_rounded,
-      GoalCategory.career => Icons.work_rounded,
-      GoalCategory.finance => Icons.attach_money_rounded,
-      GoalCategory.wellness => Icons.favorite_rounded,
-      GoalCategory.personal => Icons.star_rounded,
-    };
-  }
 }
 
 class _ActionsList extends HookConsumerWidget {
@@ -1064,7 +1047,7 @@ class _EmptyActionsState extends StatelessWidget {
             Text(
               'Let AI help break down your goal into\nsmall, achievable daily steps',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey.shade600),
+              style: TextStyle(color: context.textSecondary),
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
@@ -1092,7 +1075,7 @@ class _EmptyActionsState extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               'Or tap + to add manually',
-              style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
+              style: TextStyle(color: context.textSecondary, fontSize: 12),
             ),
           ],
         ),
@@ -1176,7 +1159,7 @@ class _AIActionsReviewSheetState extends State<_AIActionsReviewSheet> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey.shade300,
+                color: context.borderColor,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -1203,7 +1186,7 @@ class _AIActionsReviewSheetState extends State<_AIActionsReviewSheet> {
                 const SizedBox(height: 4),
                 Text(
                   'Review and edit the suggested actions for "${widget.goalTitle}"',
-                  style: TextStyle(color: Colors.grey.shade600),
+                  style: TextStyle(color: context.textSecondary),
                 ),
                 const SizedBox(height: 8),
                 // Limit indicator
@@ -1320,7 +1303,7 @@ class _AIActionsReviewSheetState extends State<_AIActionsReviewSheet> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: isOver ? Colors.orange.shade50 : Colors.grey.shade100,
+        color: isOver ? Colors.orange.shade50 : context.surfaceSubtle,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -1336,7 +1319,7 @@ class _AIActionsReviewSheetState extends State<_AIActionsReviewSheet> {
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w500,
-              color: isOver ? Colors.orange.shade700 : Colors.grey.shade700,
+              color: isOver ? Colors.orange.shade700 : context.textSecondary,
             ),
           ),
           const Spacer(),
@@ -1414,7 +1397,7 @@ class _AIActionsReviewSheetState extends State<_AIActionsReviewSheet> {
           Expanded(
             child: Text(
               'Upgrade for $premiumActionLimit actions per goal',
-              style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
+              style: TextStyle(fontSize: 13, color: context.textSecondary),
             ),
           ),
           TextButton(
@@ -1512,7 +1495,7 @@ class _AIActionTile extends StatelessWidget {
           height: 28,
           decoration: BoxDecoration(
             color: isDisabled
-                ? Colors.grey.shade300
+                ? context.borderColor
                 : AppTheme.accentCyan.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(8),
           ),
@@ -1520,7 +1503,7 @@ class _AIActionTile extends StatelessWidget {
           child: Text(
             '${index + 1}',
             style: TextStyle(
-              color: isDisabled ? Colors.grey.shade500 : AppTheme.accentCyan,
+              color: isDisabled ? context.textSecondary : AppTheme.accentCyan,
               fontWeight: FontWeight.w600,
               fontSize: 14,
             ),
@@ -1537,7 +1520,7 @@ class _AIActionTile extends StatelessWidget {
           children: [
             if (!isDisabled)
               IconButton(
-                icon: Icon(Icons.edit_outlined, color: Colors.grey.shade600),
+                icon: Icon(Icons.edit_outlined, color: context.textSecondary),
                 onPressed: onEdit,
                 visualDensity: VisualDensity.compact,
               ),
@@ -1573,12 +1556,12 @@ class _ModeButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? AppTheme.primaryPink.withValues(alpha: 0.1)
-              : Colors.grey.shade100,
+              : context.surfaceSubtle,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: isSelected
                 ? AppTheme.primaryPink
-                : Colors.grey.shade300,
+                : context.borderColor,
           ),
         ),
         alignment: Alignment.center,
@@ -1587,7 +1570,7 @@ class _ModeButton extends StatelessWidget {
           style: TextStyle(
             fontSize: 13,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-            color: isSelected ? AppTheme.primaryPink : Colors.grey.shade600,
+            color: isSelected ? AppTheme.primaryPink : context.textSecondary,
           ),
         ),
       ),
@@ -1703,9 +1686,9 @@ class _GoalReminderSection extends HookConsumerWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: context.surfaceSubtle,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: context.borderColor),
       ),
       child: Column(
         children: [
@@ -1716,7 +1699,7 @@ class _GoalReminderSection extends HookConsumerWidget {
                 size: 20,
                 color: goal.reminderEnabled
                     ? AppTheme.primaryPink
-                    : Colors.grey.shade600,
+                    : context.textSecondary,
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -1757,7 +1740,7 @@ class _GoalReminderSection extends HookConsumerWidget {
                       'Get a daily nudge for this goal',
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.grey.shade600,
+                        color: context.textSecondary,
                       ),
                     ),
                   ],
@@ -1788,9 +1771,9 @@ class _GoalReminderSection extends HookConsumerWidget {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: context.surface,
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey.shade300),
+                  border: Border.all(color: context.borderColor),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -1798,7 +1781,7 @@ class _GoalReminderSection extends HookConsumerWidget {
                     Icon(
                       Icons.access_time,
                       size: 16,
-                      color: Colors.grey.shade600,
+                      color: context.textSecondary,
                     ),
                     const SizedBox(width: 6),
                     Text(
@@ -1809,7 +1792,7 @@ class _GoalReminderSection extends HookConsumerWidget {
                     Icon(
                       Icons.edit,
                       size: 14,
-                      color: Colors.grey.shade400,
+                      color: context.textSecondary,
                     ),
                   ],
                 ),

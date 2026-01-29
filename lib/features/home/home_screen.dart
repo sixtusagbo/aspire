@@ -1,4 +1,5 @@
 import 'package:aspire/core/theme/app_theme.dart';
+import 'package:aspire/core/theme/category_colors.dart';
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
 import 'package:aspire/core/widgets/celebration_overlay.dart';
@@ -89,7 +90,7 @@ class HomeScreen extends HookConsumerWidget {
                     padding: const EdgeInsets.all(16),
                     child: user != null
                         ? StatsBar(user: user)
-                        : _buildStatsPlaceholder(),
+                        : _buildStatsPlaceholder(context),
                   ),
                 ),
 
@@ -129,11 +130,11 @@ class HomeScreen extends HookConsumerWidget {
     );
   }
 
-  Widget _buildStatsPlaceholder() {
+  Widget _buildStatsPlaceholder(BuildContext context) {
     return Container(
       height: 160,
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: context.surfaceSubtle,
         borderRadius: BorderRadius.circular(16),
       ),
       child: const Center(child: CircularProgressIndicator()),
@@ -217,9 +218,9 @@ class _GoalActionsSection extends HookConsumerWidget {
                 child: Row(
                   children: [
                     Icon(
-                      _categoryIcon(goal.category),
+                      goal.category.icon,
                       size: 16,
-                      color: _categoryColor(goal.category),
+                      color: goal.category.color,
                     ),
                     const SizedBox(width: 6),
                     Expanded(
@@ -228,7 +229,7 @@ class _GoalActionsSection extends HookConsumerWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade700,
+                          color: context.textSecondary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -238,7 +239,7 @@ class _GoalActionsSection extends HookConsumerWidget {
                       '${goal.completedActionsCount}/${goal.totalActionsCount}',
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.grey.shade500,
+                        color: context.textSecondary,
                       ),
                     ),
                   ],
@@ -274,26 +275,6 @@ class _GoalActionsSection extends HookConsumerWidget {
       },
     );
   }
-
-  Color _categoryColor(GoalCategory category) {
-    return switch (category) {
-      GoalCategory.travel => Colors.blue,
-      GoalCategory.career => Colors.orange,
-      GoalCategory.finance => Colors.green,
-      GoalCategory.wellness => Colors.pink,
-      GoalCategory.personal => Colors.purple,
-    };
-  }
-
-  IconData _categoryIcon(GoalCategory category) {
-    return switch (category) {
-      GoalCategory.travel => Icons.flight_rounded,
-      GoalCategory.career => Icons.work_rounded,
-      GoalCategory.finance => Icons.attach_money_rounded,
-      GoalCategory.wellness => Icons.favorite_rounded,
-      GoalCategory.personal => Icons.star_rounded,
-    };
-  }
 }
 
 class _ActionTile extends HookConsumerWidget {
@@ -314,7 +295,7 @@ class _ActionTile extends HookConsumerWidget {
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey.shade200),
+        side: BorderSide(color: context.borderColor),
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
@@ -469,13 +450,12 @@ class _NotificationBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: isDark ? Colors.grey.shade800 : Colors.grey.shade100,
+        color: context.surfaceSubtle,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -493,7 +473,7 @@ class _NotificationBanner extends StatelessWidget {
                   'Stay on track!',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    color: isDark ? Colors.white : Colors.grey.shade900,
+                    color: context.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -501,7 +481,7 @@ class _NotificationBanner extends StatelessWidget {
                   'Enable notifications for daily reminders',
                   style: TextStyle(
                     fontSize: 12,
-                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                    color: context.textSecondary,
                   ),
                 ),
               ],
@@ -518,7 +498,7 @@ class _NotificationBanner extends StatelessWidget {
             icon: Icon(
               Icons.close,
               size: 18,
-              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+              color: context.textSecondary,
             ),
             onPressed: onDismiss,
             padding: EdgeInsets.zero,
@@ -547,7 +527,7 @@ class _EmptyState extends StatelessWidget {
             Icon(
               Icons.rocket_launch_rounded,
               size: 80,
-              color: Colors.grey.shade300,
+              color: context.borderColor,
             ),
             const SizedBox(height: 24),
             const Text(
@@ -558,7 +538,7 @@ class _EmptyState extends StatelessWidget {
             Text(
               'Create your first goal and break it down\ninto small, achievable actions.',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey.shade600, height: 1.4),
+              style: TextStyle(color: context.textSecondary, height: 1.4),
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(

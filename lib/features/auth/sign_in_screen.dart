@@ -1,5 +1,7 @@
+import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
+import 'package:aspire/core/widgets/gradient_button.dart';
 import 'package:aspire/features/auth/widgets/auth_text_field.dart';
 import 'package:aspire/features/auth/widgets/google_sign_in_button.dart';
 import 'package:aspire/features/auth/widgets/or_divider.dart';
@@ -109,9 +111,7 @@ class SignInScreen extends HookConsumerWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark
-          ? const Color(0xFF151022)
-          : const Color(0xFFF6F5F8),
+      backgroundColor: context.background,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -195,37 +195,11 @@ class SignInScreen extends HookConsumerWidget {
                 ),
                 const SizedBox(height: 24),
                 // Sign In Button
-                SizedBox(
-                  height: 56,
-                  child: ElevatedButton(
-                    onPressed: isLoading.value ? null : handleEmailSignIn,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: isLoading.value
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator.adaptive(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
-                              ),
-                            ),
-                          )
-                        : const Text(
-                            'Continue',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                  ),
+                GradientButton(
+                  text: 'Continue',
+                  onPressed:
+                      isLoading.value ? null : handleEmailSignIn,
+                  isLoading: isLoading.value,
                 ),
                 const SizedBox(height: 24),
                 const OrDivider(),

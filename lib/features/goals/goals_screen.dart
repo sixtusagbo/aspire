@@ -1,4 +1,5 @@
 import 'package:aspire/core/theme/app_theme.dart';
+import 'package:aspire/core/theme/category_colors.dart';
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/features/goals/widgets/create_goal_sheet.dart';
 import 'package:aspire/models/goal.dart';
@@ -100,15 +101,13 @@ class _GoalCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: _categoryColor(
-                        goal.category,
-                      ).withValues(alpha: 0.1),
+                      color: goal.category.color.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
-                      _categoryIcon(goal.category),
+                      goal.category.icon,
                       size: 20,
-                      color: _categoryColor(goal.category),
+                      color: goal.category.color,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -134,7 +133,7 @@ class _GoalCard extends StatelessWidget {
                             style: TextStyle(
                               color: goal.daysRemaining! < 7
                                   ? Colors.orange
-                                  : Colors.grey.shade600,
+                                  : context.textSecondary,
                               fontSize: 12,
                             ),
                           ),
@@ -171,7 +170,8 @@ class _GoalCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(4),
                       child: LinearProgressIndicator(
                         value: goal.progress,
-                        backgroundColor: Colors.grey.shade200,
+                        backgroundColor:
+                            context.isDark ? AppTheme.darkBorder : Colors.grey.shade200,
                         valueColor: AlwaysStoppedAnimation(
                           goal.isCompleted
                               ? Colors.green
@@ -185,7 +185,7 @@ class _GoalCard extends StatelessWidget {
                   Text(
                     '${goal.completedActionsCount}/${goal.totalActionsCount}',
                     style: TextStyle(
-                      color: Colors.grey.shade600,
+                      color: context.textSecondary,
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
@@ -199,25 +199,6 @@ class _GoalCard extends StatelessWidget {
     );
   }
 
-  Color _categoryColor(GoalCategory category) {
-    return switch (category) {
-      GoalCategory.travel => Colors.blue,
-      GoalCategory.career => Colors.orange,
-      GoalCategory.finance => Colors.green,
-      GoalCategory.wellness => Colors.pink,
-      GoalCategory.personal => Colors.purple,
-    };
-  }
-
-  IconData _categoryIcon(GoalCategory category) {
-    return switch (category) {
-      GoalCategory.travel => Icons.flight_rounded,
-      GoalCategory.career => Icons.work_rounded,
-      GoalCategory.finance => Icons.attach_money_rounded,
-      GoalCategory.wellness => Icons.favorite_rounded,
-      GoalCategory.personal => Icons.star_rounded,
-    };
-  }
 }
 
 class _EmptyGoalsState extends StatelessWidget {
@@ -234,21 +215,21 @@ class _EmptyGoalsState extends StatelessWidget {
           Icon(
             showCompleted ? Icons.check_circle_outline : Icons.flag_outlined,
             size: 64,
-            color: Colors.grey.shade400,
+            color: context.textSecondary,
           ),
           const SizedBox(height: 16),
           Text(
             showCompleted ? 'No goals yet' : 'No active goals',
             style: Theme.of(
               context,
-            ).textTheme.titleMedium?.copyWith(color: Colors.grey.shade600),
+            ).textTheme.titleMedium?.copyWith(color: context.textSecondary),
           ),
           const SizedBox(height: 8),
           Text(
             showCompleted
                 ? 'Create your first goal to get started!'
                 : 'All caught up! Create a new goal.',
-            style: TextStyle(color: Colors.grey.shade500),
+            style: TextStyle(color: context.textSecondary),
           ),
         ],
       ),

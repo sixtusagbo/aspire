@@ -1,4 +1,6 @@
 import 'package:aspire/core/theme/app_theme.dart';
+import 'package:aspire/core/theme/category_colors.dart';
+import 'package:aspire/core/widgets/gradient_button.dart';
 import 'package:aspire/models/goal.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -94,7 +96,7 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
           IconButton(
             onPressed: widget.onBack,
             icon: const Icon(Icons.arrow_back_rounded),
-            style: IconButton.styleFrom(backgroundColor: Colors.grey.shade100),
+            style: IconButton.styleFrom(backgroundColor: context.surfaceSubtle),
           ),
           const SizedBox(height: 32),
 
@@ -127,7 +129,7 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
             decoration: InputDecoration(
               hintText: 'e.g., Visit Japan, Get a six-figure job',
               filled: true,
-              fillColor: Colors.grey.shade100,
+              fillColor: context.surfaceSubtle,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide.none,
@@ -157,7 +159,7 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
             decoration: InputDecoration(
               hintText: 'Why is this important to you? (optional)',
               filled: true,
-              fillColor: Colors.grey.shade100,
+              fillColor: context.surfaceSubtle,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide.none,
@@ -200,24 +202,24 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
                   decoration: BoxDecoration(
                     color: isSelected
                         ? AppTheme.primaryPink
-                        : Colors.grey.shade100,
+                        : context.surfaceSubtle,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        _categoryIcon(cat),
+                        cat.icon,
                         size: 18,
-                        color: isSelected ? Colors.white : Colors.grey.shade700,
+                        color: isSelected ? Colors.white : context.textSecondary,
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        _categoryLabel(cat),
+                        cat.label,
                         style: TextStyle(
                           color: isSelected
                               ? Colors.white
-                              : Colors.grey.shade700,
+                              : context.textSecondary,
                           fontWeight: isSelected
                               ? FontWeight.w600
                               : FontWeight.normal,
@@ -244,14 +246,14 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               decoration: BoxDecoration(
-                color: Colors.grey.shade100,
+                color: context.surfaceSubtle,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Row(
                 children: [
                   Icon(
                     Icons.calendar_today_rounded,
-                    color: Colors.grey.shade600,
+                    color: context.textSecondary,
                   ),
                   const SizedBox(width: 12),
                   Text(
@@ -263,8 +265,8 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
                     style: TextStyle(
                       fontSize: 16,
                       color: widget.targetDate.value != null
-                          ? Colors.black
-                          : Colors.grey.shade500,
+                          ? context.textPrimary
+                          : context.textSecondary,
                     ),
                   ),
                   const Spacer(),
@@ -274,7 +276,7 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
                           setState(() => widget.targetDate.value = null),
                       child: Icon(
                         Icons.close_rounded,
-                        color: Colors.grey.shade500,
+                        color: context.textSecondary,
                       ),
                     ),
                 ],
@@ -284,37 +286,11 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
           const SizedBox(height: 40),
 
           // Complete button
-          SizedBox(
-            width: double.infinity,
-            height: 56,
-            child: ElevatedButton(
-              onPressed: widget.isLoading || !_isValid ? null : _handleNext,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryPink,
-                foregroundColor: Colors.white,
-                disabledBackgroundColor: Colors.grey.shade300,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: 0,
-              ),
-              child: widget.isLoading
-                  ? const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                  : const Text(
-                      'Start My Journey',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-            ),
+          GradientButton(
+            text: 'Start My Journey',
+            onPressed:
+                widget.isLoading || !_isValid ? null : _handleNext,
+            isLoading: widget.isLoading,
           ),
 
           // Skip option
@@ -329,7 +305,7 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
                     },
               child: Text(
                 'Skip for now',
-                style: TextStyle(color: Colors.grey.shade600),
+                style: TextStyle(color: context.textSecondary),
               ),
             ),
           ),
@@ -337,25 +313,5 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
         ],
       ),
     );
-  }
-
-  IconData _categoryIcon(GoalCategory category) {
-    return switch (category) {
-      GoalCategory.travel => Icons.flight_rounded,
-      GoalCategory.career => Icons.work_rounded,
-      GoalCategory.finance => Icons.attach_money_rounded,
-      GoalCategory.wellness => Icons.favorite_rounded,
-      GoalCategory.personal => Icons.star_rounded,
-    };
-  }
-
-  String _categoryLabel(GoalCategory category) {
-    return switch (category) {
-      GoalCategory.travel => 'Travel',
-      GoalCategory.career => 'Career',
-      GoalCategory.finance => 'Finance',
-      GoalCategory.wellness => 'Wellness',
-      GoalCategory.personal => 'Personal',
-    };
   }
 }

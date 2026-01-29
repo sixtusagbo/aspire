@@ -14,15 +14,18 @@ class StatsBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.surface,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: context.borderColor),
+        boxShadow: context.isDark
+            ? []
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                ),
+              ],
       ),
       child: Column(
         children: [
@@ -87,7 +90,7 @@ class _LevelBadge extends StatelessWidget {
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.5,
-                color: Colors.grey.shade500,
+                color: context.textSecondary,
               ),
             ),
             Text(
@@ -148,7 +151,7 @@ class _StreakBadge extends StatelessWidget {
           padding: const EdgeInsets.only(right: 4),
           child: Text(
             'Best: $longestStreak',
-            style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+            style: TextStyle(fontSize: 11, color: context.textSecondary),
           ),
         ),
       ],
@@ -202,7 +205,7 @@ class _XpProgressSection extends StatelessWidget {
                   TextSpan(
                     text: ' / $_xpNeeded',
                     style: TextStyle(
-                      color: Colors.grey.shade500,
+                      color: context.textSecondary,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -216,7 +219,7 @@ class _XpProgressSection extends StatelessWidget {
           borderRadius: BorderRadius.circular(4),
           child: LinearProgressIndicator(
             value: progress,
-            backgroundColor: Colors.grey.shade200,
+            backgroundColor: context.borderColor,
             valueColor: AlwaysStoppedAnimation(AppTheme.primaryPink),
             minHeight: 8,
           ),
@@ -226,7 +229,7 @@ class _XpProgressSection extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Text(
             '$xpRemaining XP to Level ${level + 1}',
-            style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+            style: TextStyle(fontSize: 11, color: context.textSecondary),
           ),
         ),
       ],

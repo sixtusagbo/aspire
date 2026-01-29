@@ -1,4 +1,5 @@
 import 'package:aspire/core/theme/app_theme.dart';
+import 'package:aspire/core/widgets/gradient_button.dart';
 import 'package:aspire/services/log_service.dart';
 import 'package:aspire/services/notification_service.dart';
 import 'package:flutter/material.dart';
@@ -88,7 +89,7 @@ class _NotificationStepState extends ConsumerState<NotificationStep> {
           IconButton(
             onPressed: widget.onBack,
             icon: const Icon(Icons.arrow_back_rounded),
-            style: IconButton.styleFrom(backgroundColor: Colors.grey.shade100),
+            style: IconButton.styleFrom(backgroundColor: context.surfaceSubtle),
           ),
           const SizedBox(height: 32),
 
@@ -123,7 +124,7 @@ class _NotificationStepState extends ConsumerState<NotificationStep> {
           Text(
             'Get gentle nudges to complete your daily micro-actions and keep your streak going.',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Colors.grey.shade600,
+              color: context.textSecondary,
               height: 1.5,
             ),
           ),
@@ -133,9 +134,9 @@ class _NotificationStepState extends ConsumerState<NotificationStep> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.grey.shade50,
+              color: context.surfaceSubtle,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.grey.shade200),
+              border: Border.all(color: context.borderColor),
             ),
             child: Column(
               children: [
@@ -174,15 +175,15 @@ class _NotificationStepState extends ConsumerState<NotificationStep> {
                         vertical: 12,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: context.surface,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey.shade300),
+                        border: Border.all(color: context.borderColor),
                       ),
                       child: Row(
                         children: [
                           Icon(
                             Icons.access_time_rounded,
-                            color: Colors.grey.shade600,
+                            color: context.textSecondary,
                             size: 20,
                           ),
                           const SizedBox(width: 12),
@@ -194,7 +195,7 @@ class _NotificationStepState extends ConsumerState<NotificationStep> {
                           const Spacer(),
                           Icon(
                             Icons.chevron_right_rounded,
-                            color: Colors.grey.shade400,
+                            color: context.textSecondary,
                           ),
                         ],
                       ),
@@ -207,37 +208,14 @@ class _NotificationStepState extends ConsumerState<NotificationStep> {
           const SizedBox(height: 32),
 
           // Enable button
-          SizedBox(
-            width: double.infinity,
-            height: 56,
-            child: ElevatedButton(
-              onPressed:
-                  _isRequesting || widget.isLoading ? null : _enableNotifications,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryPink,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: 0,
-              ),
-              child: _isRequesting || widget.isLoading
-                  ? const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                  : Text(
-                      _reminderEnabled ? 'Enable Notifications' : 'Continue',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-            ),
+          GradientButton(
+            text: _reminderEnabled
+                ? 'Enable Notifications'
+                : 'Continue',
+            onPressed: _isRequesting || widget.isLoading
+                ? null
+                : _enableNotifications,
+            isLoading: _isRequesting || widget.isLoading,
           ),
           const SizedBox(height: 12),
 
@@ -248,7 +226,7 @@ class _NotificationStepState extends ConsumerState<NotificationStep> {
                   _isRequesting || widget.isLoading ? null : widget.onNext,
               child: Text(
                 'Maybe later',
-                style: TextStyle(color: Colors.grey.shade600),
+                style: TextStyle(color: context.textSecondary),
               ),
             ),
           ),

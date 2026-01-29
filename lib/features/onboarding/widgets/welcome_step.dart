@@ -1,4 +1,5 @@
 import 'package:aspire/core/theme/app_theme.dart';
+import 'package:aspire/core/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeStep extends StatelessWidget {
@@ -59,24 +60,9 @@ class WelcomeStep extends StatelessWidget {
           const Spacer(),
 
           // CTA
-          SizedBox(
-            width: double.infinity,
-            height: 56,
-            child: ElevatedButton(
-              onPressed: onNext,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryPink,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: 0,
-              ),
-              child: const Text(
-                'Let\'s Go',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-            ),
+          GradientButton(
+            text: "Let's Go",
+            onPressed: onNext,
           ),
           const SizedBox(height: 16),
         ],

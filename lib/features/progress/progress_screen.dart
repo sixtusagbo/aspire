@@ -1,4 +1,6 @@
 import 'package:aspire/core/theme/app_theme.dart';
+import 'package:aspire/core/theme/category_colors.dart';
+import 'package:aspire/features/home/widgets/stats_bar.dart';
 import 'package:aspire/models/goal.dart';
 import 'package:aspire/models/user.dart';
 import 'package:aspire/services/auth_service.dart';
@@ -45,11 +47,11 @@ class ProgressScreen extends HookConsumerWidget {
                   children: [
                     _StatsOverview(user: user, goals: goals),
                     const SizedBox(height: 24),
+                    if (user != null) StatsBar(user: user),
+                    if (user != null) const SizedBox(height: 24),
                     _StreakSection(user: user),
                     const SizedBox(height: 24),
                     _GoalsProgress(goals: goals),
-                    const SizedBox(height: 24),
-                    _LevelProgress(user: user),
                   ],
                 ),
               );
@@ -147,16 +149,12 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
+        color: context.surfaceSubtle,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
-        ),
+        border: Border.all(color: context.borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,7 +170,10 @@ class _StatCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             label,
-            style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+            style: TextStyle(
+              color: context.textSecondary,
+              fontSize: 13,
+            ),
           ),
         ],
       ),
@@ -189,7 +190,6 @@ class _StreakSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentStreak = user?.currentStreak ?? 0;
     final longestStreak = user?.longestStreak ?? 0;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -197,7 +197,7 @@ class _StreakSection extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             AppTheme.primaryPink.withValues(alpha: 0.1),
-            AppTheme.secondaryPink.withValues(alpha: 0.05),
+            AppTheme.coralSunset.withValues(alpha: 0.05),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -220,7 +220,7 @@ class _StreakSection extends StatelessWidget {
                   Text(
                     'Current Streak',
                     style: TextStyle(
-                      color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
+                      color: context.textSecondary,
                       fontSize: 14,
                     ),
                   ),
@@ -249,7 +249,7 @@ class _StreakSection extends StatelessWidget {
           Text(
             'Longest streak: $longestStreak days',
             style: TextStyle(
-              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+              color: context.textSecondary,
               fontSize: 13,
             ),
           ),
@@ -276,12 +276,14 @@ class _StreakMilestone extends StatelessWidget {
             decoration: BoxDecoration(
               color: achieved
                   ? AppTheme.goldAchievement
-                  : Colors.grey.shade300.withValues(alpha: 0.5),
+                  : context.borderColor.withValues(alpha: 0.5),
               shape: BoxShape.circle,
             ),
             child: Icon(
               achieved ? Icons.check : Icons.lock_outline,
-              color: achieved ? Colors.white : Colors.grey.shade500,
+              color: achieved
+                  ? Colors.white
+                  : context.textSecondary,
               size: 18,
             ),
           ),
@@ -290,8 +292,11 @@ class _StreakMilestone extends StatelessWidget {
             '$days',
             style: TextStyle(
               fontSize: 11,
-              fontWeight: achieved ? FontWeight.bold : FontWeight.normal,
-              color: achieved ? AppTheme.goldAchievement : Colors.grey,
+              fontWeight:
+                  achieved ? FontWeight.bold : FontWeight.normal,
+              color: achieved
+                  ? AppTheme.goldAchievement
+                  : context.textSecondary,
             ),
           ),
         ],
@@ -308,7 +313,6 @@ class _GoalsProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final activeGoals = goals.where((g) => !g.isCompleted).toList();
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (activeGoals.isEmpty) {
       return Column(
@@ -325,11 +329,9 @@ class _GoalsProgress extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
+              color: context.surfaceSubtle,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
-              ),
+              border: Border.all(color: context.borderColor),
             ),
             child: Column(
               children: [
@@ -350,7 +352,7 @@ class _GoalsProgress extends StatelessWidget {
                   'Start your journey by setting a goal.\nEvery big achievement begins with a single step.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                    color: context.textSecondary,
                     height: 1.5,
                   ),
                 ),
@@ -384,17 +386,13 @@ class _GoalProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? Colors.grey.shade900 : Colors.white,
+        color: context.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
-        ),
+        border: Border.all(color: context.borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -402,8 +400,8 @@ class _GoalProgressCard extends StatelessWidget {
           Row(
             children: [
               Icon(
-                _categoryIcon(goal.category),
-                color: _categoryColor(goal.category),
+                goal.category.icon,
+                color: goal.category.color,
                 size: 20,
               ),
               const SizedBox(width: 8),
@@ -429,165 +427,23 @@ class _GoalProgressCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: goal.progress,
-              backgroundColor: Colors.grey.shade200,
-              valueColor: AlwaysStoppedAnimation(_categoryColor(goal.category)),
+              backgroundColor: context.borderColor,
+              valueColor:
+                  AlwaysStoppedAnimation(goal.category.color),
               minHeight: 6,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             '${goal.completedActionsCount} of ${goal.totalActionsCount} actions completed',
-            style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Color _categoryColor(GoalCategory category) {
-    return switch (category) {
-      GoalCategory.travel => Colors.blue,
-      GoalCategory.career => Colors.orange,
-      GoalCategory.finance => Colors.green,
-      GoalCategory.wellness => Colors.pink,
-      GoalCategory.personal => Colors.purple,
-    };
-  }
-
-  IconData _categoryIcon(GoalCategory category) {
-    return switch (category) {
-      GoalCategory.travel => Icons.flight_rounded,
-      GoalCategory.career => Icons.work_rounded,
-      GoalCategory.finance => Icons.attach_money_rounded,
-      GoalCategory.wellness => Icons.favorite_rounded,
-      GoalCategory.personal => Icons.star_rounded,
-    };
-  }
-}
-
-class _LevelProgress extends StatelessWidget {
-  final AppUser? user;
-
-  const _LevelProgress({required this.user});
-
-  @override
-  Widget build(BuildContext context) {
-    final level = user?.level ?? 1;
-    final xp = user?.xp ?? 0;
-    final xpForCurrentLevel = _xpForLevel(level);
-    final xpForNextLevel = _xpForLevel(level + 1);
-    final xpProgress = xpForNextLevel > xpForCurrentLevel
-        ? (xp - xpForCurrentLevel) / (xpForNextLevel - xpForCurrentLevel)
-        : 0.0;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [AppTheme.accentCyan, AppTheme.accentTeal],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Text(
-                    '$level',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Level $level',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                    Text(
-                      _levelTitle(level),
-                      style: TextStyle(
-                        color: AppTheme.accentCyan,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '$xp XP',
-                style: TextStyle(
-                  color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              Text(
-                '$xpForNextLevel XP',
-                style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: xpProgress.clamp(0.0, 1.0),
-              backgroundColor: Colors.grey.shade300,
-              valueColor: AlwaysStoppedAnimation(AppTheme.accentCyan),
-              minHeight: 8,
+            style: TextStyle(
+              color: context.textSecondary,
+              fontSize: 12,
             ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            '${xpForNextLevel - xp} XP until Level ${level + 1}',
-            style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
-          ),
         ],
       ),
     );
   }
-
-  int _xpForLevel(int level) {
-    // Simple exponential XP curve
-    return (level * level * 50);
-  }
-
-  String _levelTitle(int level) {
-    if (level < 5) return 'Dreamer';
-    if (level < 10) return 'Achiever';
-    if (level < 20) return 'Go-Getter';
-    if (level < 30) return 'Trailblazer';
-    if (level < 50) return 'Unstoppable';
-    return 'Legend';
-  }
 }
+

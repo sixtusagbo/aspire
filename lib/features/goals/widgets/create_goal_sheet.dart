@@ -1,5 +1,6 @@
 import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/core/utils/app_router.dart';
+import 'package:aspire/core/widgets/gradient_button.dart';
 import 'package:aspire/features/goals/goals_screen.dart';
 import 'package:aspire/models/goal.dart';
 import 'package:aspire/services/goal_service.dart';
@@ -210,13 +211,13 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
                     decoration: BoxDecoration(
                       color: isSelected
                           ? AppTheme.primaryPink
-                          : Colors.grey.shade100,
+                          : context.surfaceSubtle,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
                       cat.name[0].toUpperCase() + cat.name.substring(1),
                       style: TextStyle(
-                        color: isSelected ? Colors.white : Colors.black87,
+                        color: isSelected ? Colors.white : context.textPrimary,
                         fontWeight:
                             isSelected ? FontWeight.w600 : FontWeight.normal,
                       ),
@@ -258,32 +259,11 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
             const SizedBox(height: 24),
 
             // Create button
-            SizedBox(
-              width: double.infinity,
+            GradientButton(
+              text: 'Create Goal',
+              onPressed: _isCreating ? null : _createGoal,
+              isLoading: _isCreating,
               height: 50,
-              child: ElevatedButton(
-                onPressed: _isCreating ? null : _createGoal,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryPink,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: _isCreating
-                    ? const SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Text(
-                        'Create Goal',
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-              ),
             ),
             const SizedBox(height: 16),
           ],

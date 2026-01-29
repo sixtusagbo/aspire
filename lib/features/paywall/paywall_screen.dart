@@ -143,7 +143,7 @@ class _PremiumActiveContent extends StatelessWidget {
             'You have access to all premium features.\n'
             'Thank you for your support!',
             style: TextStyle(
-              color: Colors.grey.shade600,
+              color: context.textSecondary,
               fontSize: 16,
             ),
             textAlign: TextAlign.center,
@@ -239,7 +239,7 @@ class _PaywallContent extends StatelessWidget {
                     Text(
                       'Go premium to crush all your goals',
                       style: TextStyle(
-                        color: Colors.grey.shade600,
+                        color: context.textSecondary,
                         fontSize: 16,
                       ),
                       textAlign: TextAlign.center,
@@ -274,7 +274,7 @@ class _PaywallContent extends StatelessWidget {
                 Center(
                   child: Text(
                     'Unable to load pricing. Please try again.',
-                    style: TextStyle(color: Colors.grey.shade600),
+                    style: TextStyle(color: context.textSecondary),
                   ),
                 )
               else ...[
@@ -313,7 +313,7 @@ class _PaywallContent extends StatelessWidget {
               Center(
                 child: Text(
                   'Cancel anytime. Terms apply.',
-                  style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
+                  style: TextStyle(color: context.textSecondary, fontSize: 12),
                 ),
               ),
 
@@ -411,7 +411,7 @@ class _PricingCard extends StatelessWidget {
               ? AppTheme.primaryPink.withValues(alpha: 0.05)
               : null,
           border: Border.all(
-            color: isRecommended ? AppTheme.primaryPink : Colors.grey.shade300,
+            color: isRecommended ? AppTheme.primaryPink : context.borderColor,
             width: isRecommended ? 2 : 1,
           ),
           borderRadius: BorderRadius.circular(16),
@@ -457,7 +457,7 @@ class _PricingCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     isAnnual ? 'Save 50% vs monthly' : 'Billed monthly',
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                    style: TextStyle(color: context.textSecondary, fontSize: 13),
                   ),
                 ],
               ),
@@ -475,7 +475,7 @@ class _PricingCard extends StatelessWidget {
                 ),
                 Text(
                   isAnnual ? '/year' : '/month',
-                  style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                  style: TextStyle(color: context.textSecondary, fontSize: 12),
                 ),
               ],
             ),
