@@ -47,5 +47,51 @@ Monetization working. Polish time.
 
 #buildinpublic
 
+---
+
+## Day 4
+
+### LinkedIn
+
+Day 4 of building Aspire for RevenueCat's #Shipyard2026 Hackathon!
+
+Today was all about design. I brought in the interface-design skill to do proper domain exploration before writing any code.
+
+What I shipped:
+
+- Complete UX overhaul inspired by Packslight.com (the creator's brand)
+- New "Life Passport" design direction with warm, travel-inspired palette
+- Deep purple-black dark mode, warm off-white light mode
+- Gradient buttons with magenta-to-coral gradient and glow effect
+- Centralized category colors system
+- Fixed dark mode across 15+ screens
+- Unified gamification bars between home and progress screens
+- Updated bottom navigation with new theme
+
+The app went from looking generic to feeling like it belongs in Gabby's world. Warm colors, bold typography, travel-journal vibes.
+
+#buildinpublic #flutter #hackathon #revenuecat #uxdesign
+
+---
+
+### Twitter/X
+
+Day 4 of #Shipyard2026!
+
+Complete UX overhaul today. Went from generic app to matching the creator's brand (Packslight.com).
+
+What I shipped:
+
+- "Life Passport" design direction
+- Warm color palette (deep purple-black dark, warm off-white light)
+- Gradient buttons with glow effect
+- Dark mode fixes across 15+ screens
+- Unified gamification bars
+- New bottom nav theme
+
+The app actually feels like her world now.
+
+#buildinpublic
+
 -----------
- DAY 4 NEXT
+DAY 5 NEXT
