@@ -72,6 +72,7 @@ class GoalsScreen extends HookConsumerWidget {
         onPressed: () => showCreateGoalSheet(context, ref, user.uid),
         icon: const Icon(Icons.add),
         label: const Text('New Goal'),
+        shape: const StadiumBorder(),
       ),
     );
   }

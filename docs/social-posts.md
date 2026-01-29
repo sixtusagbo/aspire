@@ -55,22 +55,20 @@ Monetization working. Polish time.
 
 Day 4 of building Aspire for RevenueCat's #Shipyard2026 Hackathon!
 
-Today was all about design. I brought in the interface-design skill to do proper domain exploration before writing any code.
+UX overhaul day. The app was looking too generic, so I redesigned it to match Gabby's brand (packslight.com).
 
 What I shipped:
 
-- Complete UX overhaul inspired by Packslight.com (the creator's brand)
-- New "Life Passport" design direction with warm, travel-inspired palette
-- Deep purple-black dark mode, warm off-white light mode
-- Gradient buttons with magenta-to-coral gradient and glow effect
-- Centralized category colors system
-- Fixed dark mode across 15+ screens
-- Unified gamification bars between home and progress screens
-- Updated bottom navigation with new theme
+- Warm color palette inspired by packslight.com
+- Dark mode fixes across all screens
+- Gradient buttons with glow effect
+- Centralized category colors/icons
+- Gamification bar redesign
+- New bottom navigation theme
 
-The app went from looking generic to feeling like it belongs in Gabby's world. Warm colors, bold typography, travel-journal vibes.
+The app feels like her world now.
 
-#buildinpublic #flutter #hackathon #revenuecat #uxdesign
+#buildinpublic #flutter #hackathon #revenuecat
 
 ---
 
@@ -78,18 +76,15 @@ The app went from looking generic to feeling like it belongs in Gabby's world. W
 
 Day 4 of #Shipyard2026!
 
-Complete UX overhaul today. Went from generic app to matching the creator's brand (Packslight.com).
+UX overhaul. App was too generic, redesigned to match the creator's brand.
 
 What I shipped:
 
-- "Life Passport" design direction
-- Warm color palette (deep purple-black dark, warm off-white light)
-- Gradient buttons with glow effect
-- Dark mode fixes across 15+ screens
-- Unified gamification bars
+- Warm color palette (packslight.com inspired)
+- Dark mode fixes everywhere
+- Gradient buttons
+- Gamification bar redesign
 - New bottom nav theme
-
-The app actually feels like her world now.
 
 #buildinpublic
 

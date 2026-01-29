@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 
 class StatsBar extends StatelessWidget {
   final AppUser user;
+  final bool showStreak;
 
-  const StatsBar({super.key, required this.user});
+  const StatsBar({super.key, required this.user, this.showStreak = true});
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +35,13 @@ class StatsBar extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _LevelBadge(level: user.level),
-              const Spacer(),
-              _StreakBadge(
-                currentStreak: user.currentStreak,
-                longestStreak: user.longestStreak,
-              ),
+              if (showStreak) ...[
+                const Spacer(),
+                _StreakBadge(
+                  currentStreak: user.currentStreak,
+                  longestStreak: user.longestStreak,
+                ),
+              ],
             ],
           ),
           const SizedBox(height: 20),

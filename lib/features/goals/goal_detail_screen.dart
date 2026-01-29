@@ -71,6 +71,7 @@ class GoalDetailScreen extends HookConsumerWidget {
           onPressed: () => _showAddActionDialog(context, ref),
           icon: const Icon(Icons.add),
           label: const Text('Add Action'),
+          shape: const StadiumBorder(),
         ),
       ),
     );

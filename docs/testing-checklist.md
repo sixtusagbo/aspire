@@ -18,25 +18,27 @@
 ## Day 5 Fixes
 
 ### Design Consistency
-- [ ] Google OAuth button has pill shape (same as Continue/Enable buttons)
-- [ ] Google OAuth button adapts to dark mode properly
+- [x] Google OAuth button has pill shape (same as Continue/Enable buttons)
+- [x] Google OAuth button adapts to dark mode properly
 
 ### Sign Out
-- [ ] Tapping "Sign Out" shows confirmation modal before signing out
-- [ ] Cancelling modal returns to settings without signing out
+- [x] Tapping "Sign Out" shows confirmation modal before signing out
+- [x] Cancelling modal returns to settings without signing out
 
 ### AI Actions Bug Fix
-- [ ] When goal has existing actions (e.g., 5), clicking AI Generate and switching to "Add to existing" does NOT clear the generated actions
-- [ ] Actions over the limit are shown greyed out (not deleted)
-- [ ] Upgrade prompt appears when over limit for free users
+- [x] When goal has existing actions (e.g., 5), clicking AI Generate and switching to "Add to existing" does NOT clear the generated actions
+- [x] Actions over the limit are shown greyed out (not deleted)
+- [x] Upgrade prompt appears when over limit for free users
 
 ### Reminder Sync to Firebase
 - [ ] Set daily reminder time in settings
 - [ ] Sign out and sign back in
 - [ ] Verify reminder time is preserved (synced from Firebase, not local only)
 
-### Notifications (PENDING FIX)
+### Notifications
 - [ ] Daily reminder notification fires at scheduled time
+- [ ] Notification appears when app is in foreground
+- [ ] Notification appears when app is in background
 - [ ] Notification appears when app is in foreground
 - [ ] Notification appears when app is in background
 - [ ] Goal-specific reminders fire correctly

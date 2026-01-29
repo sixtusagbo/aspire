@@ -47,7 +47,7 @@ class ProgressScreen extends HookConsumerWidget {
                   children: [
                     _StatsOverview(user: user, goals: goals),
                     const SizedBox(height: 24),
-                    if (user != null) StatsBar(user: user),
+                    if (user != null) StatsBar(user: user, showStreak: false),
                     if (user != null) const SizedBox(height: 24),
                     _StreakSection(user: user),
                     const SizedBox(height: 24),
