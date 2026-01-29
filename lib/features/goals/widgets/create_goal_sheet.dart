@@ -2,10 +2,11 @@ import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/core/theme/category_colors.dart';
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/widgets/gradient_button.dart';
-import 'package:aspire/data/goal_templates.dart';
 import 'package:aspire/features/goals/goals_screen.dart';
 import 'package:aspire/models/goal.dart';
+import 'package:aspire/models/goal_template.dart';
 import 'package:aspire/services/goal_service.dart';
+import 'package:aspire/services/goal_template_service.dart';
 import 'package:aspire/services/revenue_cat_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -40,8 +41,10 @@ Future<bool> showCreateGoalSheet(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
-    builder: (context) =>
-        _CreateGoalSheetContent(userId: userId, goalService: goalService),
+    builder: (context) => _CreateGoalSheetContent(
+      userId: userId,
+      goalService: goalService,
+    ),
   );
 
   if (createdGoalId != null && context.mounted) {
@@ -113,6 +116,8 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
   DateTime? _targetDate;
   bool _isCreating = false;
   GoalTemplate? _selectedTemplate;
+  List<String> _suggestedActions = [];
+  bool _hasSelectedTemplate = false;
 
   @override
   void dispose() {
@@ -124,9 +129,12 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
   void _applyTemplate(GoalTemplate template) {
     setState(() {
       _selectedTemplate = template;
+      _hasSelectedTemplate = true;
       _titleController.text = template.title;
       _descController.text = template.description;
       _selectedCategory = template.category;
+      _targetDate = template.targetDateType.toDateTime();
+      _suggestedActions = List.from(template.suggestedActions);
     });
   }
 
@@ -140,6 +148,21 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
 
     if (template != null && mounted) {
       _applyTemplate(template);
+    }
+  }
+
+  Future<void> _showSuggestedActions() async {
+    final result = await showModalBottomSheet<List<String>>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (context) => _SuggestedActionsSheet(
+        actions: _suggestedActions,
+      ),
+    );
+
+    if (result != null && mounted) {
+      setState(() => _suggestedActions = result);
     }
   }
 
@@ -158,6 +181,18 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
         targetDate: _targetDate,
         category: _selectedCategory,
       );
+
+      // Create micro actions from template if available
+      if (_suggestedActions.isNotEmpty) {
+        for (var i = 0; i < _suggestedActions.length; i++) {
+          await widget.goalService.createMicroAction(
+            goalId: goal.id,
+            userId: widget.userId,
+            title: _suggestedActions[i],
+            sortOrder: i,
+          );
+        }
+      }
 
       if (mounted) {
         Navigator.pop(context, goal.id);
@@ -198,9 +233,10 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
               children: [
                 Text(
                   'Create New Goal',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge
+                      ?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 IconButton(
                   onPressed: () => Navigator.pop(context),
@@ -234,7 +270,7 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
             // Title
             TextField(
               controller: _titleController,
-              autofocus: true,
+              autofocus: !_hasSelectedTemplate,
               textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(
                 labelText: 'What\'s your goal?',
@@ -285,9 +321,8 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
                       cat.name[0].toUpperCase() + cat.name.substring(1),
                       style: TextStyle(
                         color: isSelected ? Colors.white : context.textPrimary,
-                        fontWeight: isSelected
-                            ? FontWeight.w600
-                            : FontWeight.normal,
+                        fontWeight:
+                            isSelected ? FontWeight.w600 : FontWeight.normal,
                       ),
                     ),
                   ),
@@ -314,8 +349,7 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
               onTap: () async {
                 final picked = await showDatePicker(
                   context: context,
-                  initialDate:
-                      _targetDate ??
+                  initialDate: _targetDate ??
                       DateTime.now().add(const Duration(days: 30)),
                   firstDate: DateTime.now(),
                   lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
@@ -325,6 +359,22 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
                 }
               },
             ),
+
+            // Suggested actions (only show if template selected)
+            if (_suggestedActions.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.checklist_outlined),
+                title: Text(
+                  '${_suggestedActions.length} suggested actions',
+                  style: TextStyle(color: AppTheme.primaryPink),
+                ),
+                trailing: const Icon(Icons.edit_outlined, size: 20),
+                onTap: _showSuggestedActions,
+              ),
+            ],
+
             const SizedBox(height: 24),
 
             // Create button
@@ -342,20 +392,205 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
   }
 }
 
+/// Bottom sheet for editing suggested actions
+class _SuggestedActionsSheet extends StatefulWidget {
+  final List<String> actions;
+
+  const _SuggestedActionsSheet({required this.actions});
+
+  @override
+  State<_SuggestedActionsSheet> createState() => _SuggestedActionsSheetState();
+}
+
+class _SuggestedActionsSheetState extends State<_SuggestedActionsSheet> {
+  late List<TextEditingController> _controllers;
+
+  @override
+  void initState() {
+    super.initState();
+    _controllers = widget.actions
+        .map((action) => TextEditingController(text: action))
+        .toList();
+  }
+
+  @override
+  void dispose() {
+    for (final controller in _controllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  void _addAction() {
+    setState(() {
+      _controllers.add(TextEditingController());
+    });
+  }
+
+  void _removeAction(int index) {
+    setState(() {
+      _controllers[index].dispose();
+      _controllers.removeAt(index);
+    });
+  }
+
+  void _save() {
+    final actions = _controllers
+        .map((c) => c.text.trim())
+        .where((t) => t.isNotEmpty)
+        .toList();
+    Navigator.pop(context, actions);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: DraggableScrollableSheet(
+        initialChildSize: 0.7,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (context, scrollController) => Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
+              child: Column(
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: context.borderColor,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Suggested Actions',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      TextButton(
+                        onPressed: _save,
+                        child: const Text('Done'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Edit the actions that will be created with your goal',
+                    style: TextStyle(color: context.textSecondary),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                controller: scrollController,
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                itemCount: _controllers.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == _controllers.length) {
+                    return TextButton.icon(
+                      onPressed: _addAction,
+                      icon: const Icon(Icons.add),
+                      label: const Text('Add action'),
+                    );
+                  }
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Row(
+                      children: [
+                        Text(
+                          '${index + 1}.',
+                          style: TextStyle(
+                            color: context.textSecondary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: TextField(
+                            controller: _controllers[index],
+                            textCapitalization: TextCapitalization.sentences,
+                            decoration: InputDecoration(
+                              hintText: 'Action description',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 12,
+                              ),
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.remove_circle_outline,
+                            color: Colors.red.shade400,
+                          ),
+                          onPressed: () => _removeAction(index),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /// Bottom sheet for selecting a goal template
-class _TemplateSelectorSheet extends StatefulWidget {
+class _TemplateSelectorSheet extends HookConsumerWidget {
   const _TemplateSelectorSheet();
 
   @override
-  State<_TemplateSelectorSheet> createState() => _TemplateSelectorSheetState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final templatesAsync = ref.watch(goalTemplatesStreamProvider);
+
+    return templatesAsync.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Error loading templates: $e')),
+      data: (templates) => _TemplateSelectorContent(templates: templates),
+    );
+  }
 }
 
-class _TemplateSelectorSheetState extends State<_TemplateSelectorSheet> {
+class _TemplateSelectorContent extends StatefulWidget {
+  final List<GoalTemplate> templates;
+
+  const _TemplateSelectorContent({required this.templates});
+
+  @override
+  State<_TemplateSelectorContent> createState() =>
+      _TemplateSelectorContentState();
+}
+
+class _TemplateSelectorContentState extends State<_TemplateSelectorContent> {
   GoalCategory? _selectedCategory;
 
   List<GoalTemplate> get _filteredTemplates {
-    if (_selectedCategory == null) return goalTemplates;
-    return getTemplatesForCategory(_selectedCategory!);
+    if (_selectedCategory == null) return widget.templates;
+    return widget.templates
+        .where((t) => t.category == _selectedCategory)
+        .toList();
   }
 
   @override
@@ -390,8 +625,8 @@ class _TemplateSelectorSheetState extends State<_TemplateSelectorSheet> {
                     Text(
                       'Goal Templates',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                     IconButton(
                       onPressed: () => Navigator.pop(context),
@@ -440,18 +675,25 @@ class _TemplateSelectorSheetState extends State<_TemplateSelectorSheet> {
 
           // Template list
           Expanded(
-            child: ListView.builder(
-              controller: scrollController,
-              padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-              itemCount: _filteredTemplates.length,
-              itemBuilder: (context, index) {
-                final template = _filteredTemplates[index];
-                return _TemplateCard(
-                  template: template,
-                  onTap: () => Navigator.pop(context, template),
-                );
-              },
-            ),
+            child: _filteredTemplates.isEmpty
+                ? Center(
+                    child: Text(
+                      'No templates available',
+                      style: TextStyle(color: context.textSecondary),
+                    ),
+                  )
+                : ListView.builder(
+                    controller: scrollController,
+                    padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                    itemCount: _filteredTemplates.length,
+                    itemBuilder: (context, index) {
+                      final template = _filteredTemplates[index];
+                      return _TemplateCard(
+                        template: template,
+                        onTap: () => Navigator.pop(context, template),
+                      );
+                    },
+                  ),
           ),
         ],
       ),
@@ -550,8 +792,8 @@ class _TemplateCard extends StatelessWidget {
                     child: Text(
                       template.title,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
                   ),
                   Icon(
@@ -567,13 +809,33 @@ class _TemplateCard extends StatelessWidget {
                 style: TextStyle(color: context.textSecondary, fontSize: 13),
               ),
               const SizedBox(height: 12),
-              Text(
-                '${template.suggestedActions.length} suggested actions',
-                style: TextStyle(
-                  color: AppTheme.primaryPink,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
+              Row(
+                children: [
+                  Text(
+                    '${template.suggestedActions.length} suggested actions',
+                    style: TextStyle(
+                      color: AppTheme.primaryPink,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  if (template.targetDateType != TargetDateType.none) ...[
+                    const SizedBox(width: 12),
+                    Icon(
+                      Icons.schedule,
+                      size: 14,
+                      color: context.textSecondary,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      template.targetDateType.label,
+                      style: TextStyle(
+                        color: context.textSecondary,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ],
           ),

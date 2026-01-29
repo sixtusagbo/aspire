@@ -1,9 +1,9 @@
 import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/core/theme/category_colors.dart';
 import 'package:aspire/core/widgets/gradient_button.dart';
-import 'package:aspire/data/goal_templates.dart';
 import 'package:aspire/features/goals/widgets/create_goal_sheet.dart';
 import 'package:aspire/models/goal.dart';
+import 'package:aspire/models/goal_template.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -12,6 +12,7 @@ class GoalSetupStep extends StatefulWidget {
   final ValueNotifier<String> description;
   final ValueNotifier<DateTime?> targetDate;
   final ValueNotifier<GoalCategory> category;
+  final ValueNotifier<List<String>> suggestedActions;
   final bool isLoading;
   final VoidCallback onNext;
   final VoidCallback onBack;
@@ -22,6 +23,7 @@ class GoalSetupStep extends StatefulWidget {
     required this.description,
     required this.targetDate,
     required this.category,
+    required this.suggestedActions,
     required this.isLoading,
     required this.onNext,
     required this.onBack,
@@ -58,6 +60,8 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
       _titleController.text = template.title;
       _descriptionController.text = template.description;
       widget.category.value = template.category;
+      widget.targetDate.value = template.targetDateType.toDateTime();
+      widget.suggestedActions.value = List.from(template.suggestedActions);
     });
   }
 

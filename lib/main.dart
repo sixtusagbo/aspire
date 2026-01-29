@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/core/theme/theme_provider.dart';
 import 'package:aspire/core/utils/app_router.dart';
+import 'package:aspire/services/goal_template_service.dart';
 import 'package:aspire/services/notification_service.dart';
 import 'package:aspire/services/revenue_cat_service.dart';
+import 'package:aspire/services/tip_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +24,10 @@ void main() async {
 
   // Register FCM background handler (must be done before runApp)
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
+  // Seed Firestore collections if needed (non-blocking)
+  TipService().seedTipsIfEmpty();
+  GoalTemplateService().seedTemplatesIfNeeded();
 
   // Initialize timezone for scheduled notifications
   tz.initializeTimeZones();

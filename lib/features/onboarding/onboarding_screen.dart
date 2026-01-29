@@ -39,6 +39,7 @@ class OnboardingScreen extends HookConsumerWidget {
     final goalDescription = useState('');
     final goalTargetDate = useState<DateTime?>(null);
     final goalCategory = useState(GoalCategory.personal);
+    final goalSuggestedActions = useState<List<String>>([]);
 
     Future<void> completeOnboarding() async {
       // Prevent multiple submissions
@@ -77,29 +78,42 @@ class OnboardingScreen extends HookConsumerWidget {
             category: goalCategory.value,
           );
 
-          // Generate AI micro-actions for the goal (don't block on failure)
+          // Create micro-actions (use template actions if available, otherwise AI)
           try {
-            final aiResult = await aiService.generateMicroActions(
-              goalTitle: goalTitle.value,
-              goalDescription: goalDescription.value.isNotEmpty
-                  ? goalDescription.value
-                  : null,
-              category: goalCategory.value.name,
-              targetDate: goalTargetDate.value,
-            );
-
-            // Save the generated actions
-            for (final action in aiResult.actions) {
-              await goalService.createMicroAction(
-                goalId: goal.id,
-                userId: user.uid,
-                title: action.title,
-                sortOrder: action.sortOrder,
+            if (goalSuggestedActions.value.isNotEmpty) {
+              // Use template's suggested actions
+              for (var i = 0; i < goalSuggestedActions.value.length; i++) {
+                await goalService.createMicroAction(
+                  goalId: goal.id,
+                  userId: user.uid,
+                  title: goalSuggestedActions.value[i],
+                  sortOrder: i,
+                );
+              }
+            } else {
+              // Generate AI micro-actions for the goal
+              final aiResult = await aiService.generateMicroActions(
+                goalTitle: goalTitle.value,
+                goalDescription: goalDescription.value.isNotEmpty
+                    ? goalDescription.value
+                    : null,
+                category: goalCategory.value.name,
+                targetDate: goalTargetDate.value,
               );
+
+              // Save the generated actions
+              for (final action in aiResult.actions) {
+                await goalService.createMicroAction(
+                  goalId: goal.id,
+                  userId: user.uid,
+                  title: action.title,
+                  sortOrder: action.sortOrder,
+                );
+              }
             }
           } catch (e) {
-            // AI generation failed - user can generate manually later
-            Log.w('AI action generation failed during onboarding: $e');
+            // Action creation failed - user can add manually later
+            Log.w('Action creation failed during onboarding: $e');
           }
         }
 
@@ -143,6 +157,7 @@ class OnboardingScreen extends HookConsumerWidget {
         description: goalDescription,
         targetDate: goalTargetDate,
         category: goalCategory,
+        suggestedActions: goalSuggestedActions,
         isLoading: false,
         onNext: nextPage,
         onBack: previousPage,
