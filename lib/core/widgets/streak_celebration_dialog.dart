@@ -1,7 +1,6 @@
 import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/services/share_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 /// Shows a Duolingo-style streak celebration dialog with animated fire
 class StreakCelebrationDialog extends StatefulWidget {
@@ -9,33 +8,12 @@ class StreakCelebrationDialog extends StatefulWidget {
 
   const StreakCelebrationDialog({super.key, required this.streak});
 
-  /// Show the dialog with a nice scale+fade transition
+  /// Show the dialog
   static Future<void> show(BuildContext context, int streak) {
-    HapticFeedback.heavyImpact();
-    return showGeneralDialog(
+    return showDialog(
       context: context,
       barrierDismissible: true,
-      barrierLabel: 'Dismiss',
-      barrierColor: Colors.black54,
-      transitionDuration: const Duration(milliseconds: 500),
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return ScaleTransition(
-          scale: CurvedAnimation(
-            parent: animation,
-            curve: Curves.elasticOut,
-          ),
-          child: FadeTransition(
-            opacity: CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeIn,
-            ),
-            child: child,
-          ),
-        );
-      },
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return StreakCelebrationDialog(streak: streak);
-      },
+      builder: (context) => StreakCelebrationDialog(streak: streak),
     );
   }
 
