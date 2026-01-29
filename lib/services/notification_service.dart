@@ -1,4 +1,5 @@
 import 'package:aspire/services/log_service.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -6,9 +7,16 @@ import 'package:timezone/timezone.dart' as tz;
 
 part 'notification_service.g.dart';
 
+/// Top-level function to handle background FCM messages
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  Log.d('Handling background FCM message: ${message.messageId}');
+}
+
 class NotificationService {
   final FlutterLocalNotificationsPlugin _notifications =
       FlutterLocalNotificationsPlugin();
+  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
 
   bool _initialized = false;
 
@@ -41,13 +49,52 @@ class NotificationService {
         Log.i('Notification tapped: ${response.payload}');
       },
     );
-    Log.d('Notifications initialized: $initialized');
+    Log.d('Local notifications initialized: $initialized');
+
+    // Initialize FCM for foreground support
+    await _initializeFCM();
+
     _initialized = true;
   }
 
-  /// Request all notification permissions (notifications + exact alarms)
+  /// Initialize Firebase Cloud Messaging
+  Future<void> _initializeFCM() async {
+    // Enable foreground notifications on iOS
+    await _fcm.setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    // Handle foreground FCM messages
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      Log.d('Received foreground FCM message: ${message.messageId}');
+    });
+
+    // Handle notification taps when app is in background
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      Log.d('FCM notification tapped (background): ${message.messageId}');
+    });
+
+    Log.d('FCM initialized');
+  }
+
+  /// Request all notification permissions (FCM + local + exact alarms)
   Future<bool> requestPermission() async {
     await initialize();
+
+    // Request FCM permissions first (shows iOS permission dialog)
+    final fcmSettings = await _fcm.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+      provisional: false,
+    );
+
+    final fcmGranted =
+        fcmSettings.authorizationStatus == AuthorizationStatus.authorized ||
+        fcmSettings.authorizationStatus == AuthorizationStatus.provisional;
+    Log.d('FCM permission granted: $fcmGranted');
 
     // Android
     final androidPlugin = _notifications
@@ -64,10 +111,12 @@ class NotificationService {
       final exactAlarmGranted = await androidPlugin.requestExactAlarmsPermission();
       Log.d('Android exact alarm permission granted: $exactAlarmGranted');
 
-      return (notifGranted ?? false) && (exactAlarmGranted ?? true);
+      return fcmGranted &&
+          (notifGranted ?? false) &&
+          (exactAlarmGranted ?? true);
     }
 
-    // iOS permission request
+    // iOS permission request (uses same permission as FCM)
     final iosPlugin = _notifications
         .resolvePlatformSpecificImplementation<
           IOSFlutterLocalNotificationsPlugin
@@ -79,16 +128,22 @@ class NotificationService {
         badge: true,
         sound: true,
       );
-      Log.d('iOS notification permission granted: $granted');
-      return granted ?? false;
+      Log.d('iOS local notification permission granted: $granted');
+      return fcmGranted && (granted ?? false);
     }
 
-    return true;
+    return fcmGranted;
   }
 
   /// Check if notifications are enabled
   Future<bool> areNotificationsEnabled() async {
     await initialize();
+
+    // Check FCM permissions
+    final fcmSettings = await _fcm.getNotificationSettings();
+    final fcmEnabled =
+        fcmSettings.authorizationStatus == AuthorizationStatus.authorized ||
+        fcmSettings.authorizationStatus == AuthorizationStatus.provisional;
 
     final androidPlugin = _notifications
         .resolvePlatformSpecificImplementation<
@@ -97,11 +152,13 @@ class NotificationService {
 
     if (androidPlugin != null) {
       final enabled = await androidPlugin.areNotificationsEnabled() ?? false;
-      Log.d('Notifications enabled: $enabled');
-      return enabled;
+      Log.d('Notifications enabled: FCM=$fcmEnabled, Local=$enabled');
+      return fcmEnabled && enabled;
     }
 
-    return true;
+    // iOS - FCM status is sufficient
+    Log.d('iOS notifications enabled: $fcmEnabled');
+    return fcmEnabled;
   }
 
   /// Show an immediate test notification
@@ -122,7 +179,11 @@ class NotificationService {
           importance: Importance.high,
           priority: Priority.high,
         ),
-        iOS: DarwinNotificationDetails(),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
       ),
     );
   }
@@ -154,7 +215,11 @@ class NotificationService {
           importance: Importance.high,
           priority: Priority.high,
         ),
-        iOS: DarwinNotificationDetails(),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
@@ -215,7 +280,11 @@ class NotificationService {
           importance: Importance.high,
           priority: Priority.high,
         ),
-        iOS: DarwinNotificationDetails(),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
