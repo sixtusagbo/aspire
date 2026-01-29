@@ -2,6 +2,17 @@
 
 All notable changes to Aspire will be documented in this file.
 
+## [0.1.4] - 2026-01-29
+
+### Changed
+- UI/UX overhaul with Packslight.com-inspired design
+- Dark mode now uses warm purple-black tones
+- Improved theme consistency across all screens
+
+### Fixed
+- Scheduled notifications now fire at correct local time (timezone fix)
+- Notifications persist after device reboot
+
 ## [0.1.3] - 2026-01-27
 
 ### Added
