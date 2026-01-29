@@ -1,6 +1,6 @@
 # Testing Checklist
 
-> NOTE: When clearing this file, only clear unchecked/done tasks.
+> NOTE: When cleaning this file, only clear unchecked/done tasks.
 
 ## Day 9: RevenueCat & Paywall
 
@@ -20,8 +20,8 @@
 
 ### Social Sharing
 
-- [ ] Complete an action that increases streak → StreakCelebrationDialog appears with Share button
-- [ ] Tap Share on streak dialog → native share sheet opens with streak message and #Aspire #PacksLight
-- [ ] Complete all actions on a goal → GoalCompletionDialog appears with trophy animation
-- [ ] Tap Share on goal completion → native share sheet opens with goal message and #Aspire #PacksLight
+- [x] Complete an action that increases streak → StreakCelebrationDialog appears with Share button
+- [x] Tap Share on streak dialog → native share sheet opens with streak message and #Aspire #PacksLight
+- [x] Complete all actions on a goal → GoalCompletionDialog appears with trophy animation
+- [x] Tap Share on goal completion → native share sheet opens with goal message and #Aspire #PacksLight
 - [ ] Manually mark goal complete → GoalCompletionDialog appears with Share button

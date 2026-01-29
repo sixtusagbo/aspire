@@ -15,9 +15,11 @@ class ShareService {
 
   /// Share a completed goal
   static Future<void> shareGoalCompletion(String goalTitle) async {
+    // Add exclamation only if title doesn't already end with one
+    final title = goalTitle.endsWith('!') ? goalTitle : '$goalTitle!';
     await SharePlus.instance.share(
       ShareParams(
-        text: "I just completed my goal: \"$goalTitle\" with Aspire! "
+        text: "I just completed my goal: $title "
             "From dreaming to doing, one micro-action at a time.\n\n"
             "#Aspire #PacksLight",
         subject: 'Goal Completed!',
