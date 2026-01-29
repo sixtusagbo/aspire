@@ -1,5 +1,6 @@
 import 'package:aspire/services/log_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -10,8 +11,24 @@ part 'notification_service.g.dart';
 /// Top-level function to handle background FCM messages
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  Log.d('Handling background FCM message: ${message.messageId}');
+  debugPrint('Handling background FCM message: ${message.messageId}');
 }
+
+/// Android notification channel for daily reminders
+const _dailyReminderChannel = AndroidNotificationChannel(
+  'daily_reminder',
+  'Daily Reminders',
+  description: 'Daily micro-action reminders',
+  importance: Importance.high,
+);
+
+/// Android notification channel for goal reminders
+const _goalReminderChannel = AndroidNotificationChannel(
+  'goal_reminder',
+  'Goal Reminders',
+  description: 'Reminders for specific goals',
+  importance: Importance.high,
+);
 
 class NotificationService {
   final FlutterLocalNotificationsPlugin _notifications =
@@ -24,10 +41,23 @@ class NotificationService {
   Future<void> initialize() async {
     if (_initialized) return;
 
-    // Set up timezone
-    final timezoneInfo = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(timezoneInfo.identifier));
-    Log.d('Timezone set to: ${timezoneInfo.identifier}');
+    Log.d('Initializing notification service...');
+
+    // Set up local timezone (critical for scheduled notifications)
+    final timezoneName = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(timezoneName));
+    Log.d('Timezone set to: $timezoneName');
+
+    // Create Android notification channels (required for Android 8+)
+    final androidPlugin = _notifications
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    if (androidPlugin != null) {
+      await androidPlugin.createNotificationChannel(_dailyReminderChannel);
+      await androidPlugin.createNotificationChannel(_goalReminderChannel);
+      Log.d('Android notification channels created');
+    }
 
     const androidSettings = AndroidInitializationSettings(
       '@mipmap/ic_launcher',
@@ -55,6 +85,7 @@ class NotificationService {
     await _initializeFCM();
 
     _initialized = true;
+    Log.d('Notification service initialized successfully');
   }
 
   /// Initialize Firebase Cloud Messaging
@@ -166,26 +197,66 @@ class NotificationService {
     await initialize();
 
     Log.i('Showing test notification...');
+    debugPrint('Showing test notification NOW');
 
     await _notifications.show(
       99,
       'Test Notification',
       'If you see this, notifications are working!',
-      const NotificationDetails(
+      NotificationDetails(
         android: AndroidNotificationDetails(
-          'test_channel',
-          'Test Notifications',
-          channelDescription: 'For testing notifications',
+          _dailyReminderChannel.id,
+          _dailyReminderChannel.name,
+          channelDescription: _dailyReminderChannel.description,
           importance: Importance.high,
           priority: Priority.high,
         ),
-        iOS: DarwinNotificationDetails(
+        iOS: const DarwinNotificationDetails(
           presentAlert: true,
           presentBadge: true,
           presentSound: true,
         ),
       ),
     );
+
+    Log.i('Test notification sent!');
+  }
+
+  /// Show a scheduled test notification (fires in 5 seconds)
+  Future<void> showScheduledTestNotification() async {
+    await initialize();
+
+    final scheduledTime = tz.TZDateTime.now(tz.local).add(
+      const Duration(seconds: 5),
+    );
+    Log.i('Scheduling test notification for: $scheduledTime');
+    debugPrint('Scheduling test notification for 5 seconds from now');
+
+    await _notifications.zonedSchedule(
+      98,
+      'Scheduled Test',
+      'This notification was scheduled 5 seconds ago!',
+      scheduledTime,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          _dailyReminderChannel.id,
+          _dailyReminderChannel.name,
+          channelDescription: _dailyReminderChannel.description,
+          importance: Importance.high,
+          priority: Priority.high,
+        ),
+        iOS: const DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
+
+    Log.i('Scheduled test notification created');
   }
 
   /// Schedule a daily reminder notification
@@ -320,7 +391,7 @@ class NotificationService {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 NotificationService notificationService(Ref ref) {
   return NotificationService();
 }

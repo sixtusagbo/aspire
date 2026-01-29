@@ -288,6 +288,18 @@ class SettingsScreen extends HookConsumerWidget {
               onTap: handleTimeChange,
             ),
 
+          // Test notification button
+          ListTile(
+            leading: const SizedBox(width: 24),
+            title: const Text('Test Notification'),
+            subtitle: const Text('Send a test notification now'),
+            trailing: const Icon(Icons.send),
+            onTap: () async {
+              await notificationService.showTestNotification();
+              ToastHelper.showSuccess('Test notification sent!');
+            },
+          ),
+
           const Divider(),
           ListTile(
             leading: Icon(

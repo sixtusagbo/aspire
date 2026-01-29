@@ -6,7 +6,6 @@
 
 ### Premium Status (after purchase/test)
 
-- [ ] After purchase, verify can create unlimited goals
 - [ ] Verify premium entitlement persists after app restart
 - [ ] Verify premium entitlement persists after user signs out and logs back in
 
@@ -21,7 +20,4 @@
 
 ### Notifications
 
-- [ ] Daily reminder notification fires at scheduled time
-- [ ] Notification appears when app is in foreground
-- [ ] Notification appears when app is in background
-- [ ] Goal-specific reminders fire correctly
+- [x] As premium, goal-specific reminders fire correctly

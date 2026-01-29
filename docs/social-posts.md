@@ -55,13 +55,12 @@ Monetization working. Polish time.
 
 Day 4 of building Aspire for RevenueCat's #Shipyard2026 Hackathon!
 
-UI/UX overhaul day. I've been using a very simple design on the app, I focused on functionalities first. I just decided to retouch the design.
+Yesterday was UI/UX overhaul day. I've been using a very simple design on the app, I focused on functionalities first. I just decided to retouch the design.
 
 What I shipped:
 
 - Redesigned all the screens
-- Dark mode updated
-- New bottom nav theme
+- Updated dark mode
 
 #buildinpublic #flutter #hackathon #revenuecat
 
@@ -71,15 +70,15 @@ What I shipped:
 
 Day 4 of #Shipyard2026!
 
-UI/UX overhaul. I've been using a very simple design on the app, I focused on functionalities first. I just decided to retouch the design.
+Yesterday, I did UI/UX overhaul. I've been using a very simple design on the app, I focused on functionalities first. I just decided to retouch the design.
 
 What I shipped:
 
 - Redesigned all the screens
-- Dark mode updated
-- New bottom nav theme
+- Updated dark mode
 
 #buildinpublic
 
------------
+---
+
 DAY 5 NEXT
