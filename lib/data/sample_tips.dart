@@ -1,31 +1,92 @@
-// Sample tips for seeding Firestore
-// Each tip has: text (required), author (optional), isActive (bool)
+// Tips curated from Gabby Beckford's content and PacksLight.com
 
 const sampleTips = [
-  // Gabby-style motivational tips
+  // Direct Gabby quotes
   {
-    'text': "You don't need permission to chase your dreams. The only approval you need is your own.",
+    'text': "A woman doesn't become a solo female traveler when she's alone—she becomes one when she's free.",
     'author': 'Gabby Beckford',
     'isActive': true,
   },
   {
-    'text': "Confidence isn't built by waiting until you're ready. It's built by starting before you feel prepared.",
+    'text': "Anxiety is just an itch for more information. Do your research, reduce the unknowns, and watch your confidence grow.",
     'author': 'Gabby Beckford',
     'isActive': true,
   },
   {
-    'text': "The gap between where you are and where you want to be? It's closed one micro-action at a time.",
+    'text': "If we wait for people to come with us, we'll never go. Book the trip. You are ready.",
     'author': 'Gabby Beckford',
     'isActive': true,
   },
   {
-    'text': "Your dream life isn't waiting for the perfect moment. It's waiting for you to take imperfect action.",
+    'text': "Half of life is just showing up. The other half is saying yes when opportunity knocks.",
     'author': 'Gabby Beckford',
     'isActive': true,
   },
   {
-    'text': "Solo travel taught me this: you're more capable than you think. Apply that to every goal.",
+    'text': "We can't live our lives in what-ifs. What if you love it? You never know until you do it.",
     'author': 'Gabby Beckford',
+    'isActive': true,
+  },
+  {
+    'text': "While I may have been the 'first' in many spaces, I will not be the last. Neither will you.",
+    'author': 'Gabby Beckford',
+    'isActive': true,
+  },
+  {
+    'text': "If we can't find concrete examples of people we can relate to, how can we feel that it's possible for us? Be that example.",
+    'author': 'Gabby Beckford',
+    'isActive': true,
+  },
+  {
+    'text': "I believe you are capable of anything and inherently deserve everything. Now act like it.",
+    'author': 'Gabby Beckford',
+    'isActive': true,
+  },
+  {
+    'text': "Seek risk, seize opportunity, and see the world. Your dream life is waiting.",
+    'author': 'Gabby Beckford',
+    'isActive': true,
+  },
+
+  // Inspired by Gabby's philosophy
+  {
+    'text': "Solo trips give you complete autonomy over every aspect of your day. That freedom is transformative.",
+    'isActive': true,
+  },
+  {
+    'text': "Don't wait for companions. Solo action teaches self-reliance and opens doors that waiting never will.",
+    'isActive': true,
+  },
+  {
+    'text': "Your nervous excitement isn't a warning—it's a sign you're about to grow. Book the trip anyway.",
+    'isActive': true,
+  },
+  {
+    'text': "Misadventures often become your greatest memories. When plans fail, roll with it.",
+    'isActive': true,
+  },
+  {
+    'text': "Stop making excuses. Financial concerns or career pressures don't have to prevent progress.",
+    'isActive': true,
+  },
+  {
+    'text': "Age shouldn't hold you back. You are ready—many young women achieve their goals every single day.",
+    'isActive': true,
+  },
+  {
+    'text': "Be a 'yes' person today. The best experiences come from spontaneous decisions.",
+    'isActive': true,
+  },
+  {
+    'text': "Focus on genuine presence, not documentation. Your experiences matter more than the photos.",
+    'isActive': true,
+  },
+  {
+    'text': "Start small, think big. Today's micro-action builds tomorrow's major achievement.",
+    'isActive': true,
+  },
+  {
+    'text': "Trust your instincts. In uncomfortable situations, prioritize your wellbeing over politeness.",
     'isActive': true,
   },
 
@@ -83,10 +144,6 @@ const sampleTips = [
     'isActive': true,
   },
   {
-    'text': "Your career is a marathon, not a sprint. But marathons still require you to move your feet.",
-    'isActive': true,
-  },
-  {
     'text': "Apply for the job. Ask for the raise. Send the email. The worst they can say is no.",
     'isActive': true,
   },
@@ -94,29 +151,8 @@ const sampleTips = [
     'text': "Invest in yourself first. Your growth is the best ROI you'll ever get.",
     'isActive': true,
   },
-
-  // Travel & adventure tips
   {
-    'text': "Book the ticket. Figure out the rest later. Some of the best adventures start with a leap.",
-    'author': 'Gabby Beckford',
-    'isActive': true,
-  },
-  {
-    'text': "Travel solo at least once. You'll discover who you are when no one's watching.",
-    'author': 'Gabby Beckford',
-    'isActive': true,
-  },
-  {
-    'text': "The world is too big to stay in one place. What destination is calling your name?",
-    'isActive': true,
-  },
-  {
-    'text': "Experiences over things. Memories over materials. Adventure over comfort zones.",
-    'isActive': true,
-  },
-  {
-    'text': "You don't need a travel buddy to explore the world. You already have the best company: yourself.",
-    'author': 'Gabby Beckford',
+    'text': "Your savings stretch further than you think when you're strategic. Plan, then leap.",
     'isActive': true,
   },
 
@@ -126,7 +162,7 @@ const sampleTips = [
     'isActive': true,
   },
   {
-    'text': "Celebrate your wins, even the tiny ones. You completed an action? That's worth acknowledging.",
+    'text': "Celebrate your wins, even the tiny ones. Completed an action? That's worth acknowledging.",
     'isActive': true,
   },
   {
@@ -134,11 +170,11 @@ const sampleTips = [
     'isActive': true,
   },
   {
-    'text': "Your potential is not fixed. Every action you take expands what's possible for you.",
+    'text': "Dream big, but act small. Big dreams are achieved through tiny, consistent daily actions.",
     'isActive': true,
   },
   {
-    'text': "Dream big, but act small. Big dreams are achieved through tiny, consistent daily actions.",
+    'text': "Expanded worldviews create expanded opportunities. Step outside your comfort zone today.",
     'isActive': true,
   },
 ];

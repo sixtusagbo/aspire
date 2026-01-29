@@ -4,6 +4,7 @@ import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/goal_service.dart';
 import 'package:aspire/services/notification_service.dart';
 import 'package:aspire/services/revenue_cat_service.dart';
+import 'package:aspire/services/tip_service.dart';
 import 'package:aspire/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -351,6 +352,19 @@ class SettingsScreen extends HookConsumerWidget {
                   )
                 : null,
             onTap: isDeleting.value ? null : handleDeleteAccount,
+          ),
+          const Divider(),
+
+          // Developer section (hidden in production)
+          ListTile(
+            leading: const Icon(Icons.developer_mode, color: Colors.grey),
+            title: const Text('Seed Tips', style: TextStyle(color: Colors.grey)),
+            subtitle: const Text('Add sample tips to Firestore'),
+            onTap: () async {
+              final tipService = ref.read(tipServiceProvider);
+              await tipService.seedTipsIfEmpty();
+              ToastHelper.showSuccess('Tips seeded (if empty)');
+            },
           ),
         ],
       ),

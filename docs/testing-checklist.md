@@ -28,8 +28,8 @@
 
 ### Tip Card
 
-- [ ] Home screen shows "Tip of the Day" card instead of stats bar
-- [ ] Tips are seeded on first launch (check Firestore 'tips' collection)
+- [x] Home screen shows "Tip of the Day" card instead of stats bar
+- [x] Tips are seeded on first launch (check Firestore 'tips' collection)
 - [ ] Tip changes daily (same tip throughout the day, different next day)
 - [ ] Pull to refresh on Home screen refreshes the tip
-- [ ] Tips display correctly in dark mode
+- [x] Tips display correctly in dark mode
