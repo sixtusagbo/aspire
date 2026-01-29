@@ -50,18 +50,6 @@ const sampleTips = [
 
   // Inspired by Gabby's philosophy
   {
-    'text': "Solo trips give you complete autonomy over every aspect of your day. That freedom is transformative.",
-    'isActive': true,
-  },
-  {
-    'text': "Don't wait for companions. Solo action teaches self-reliance and opens doors that waiting never will.",
-    'isActive': true,
-  },
-  {
-    'text': "Your nervous excitement isn't a warning—it's a sign you're about to grow. Book the trip anyway.",
-    'isActive': true,
-  },
-  {
     'text': "Misadventures often become your greatest memories. When plans fail, roll with it.",
     'isActive': true,
   },
@@ -75,10 +63,6 @@ const sampleTips = [
   },
   {
     'text': "Be a 'yes' person today. The best experiences come from spontaneous decisions.",
-    'isActive': true,
-  },
-  {
-    'text': "Focus on genuine presence, not documentation. Your experiences matter more than the photos.",
     'isActive': true,
   },
   {
@@ -100,15 +84,7 @@ const sampleTips = [
     'isActive': true,
   },
   {
-    'text': "Break it down until it feels easy. If it still feels hard, break it down more.",
-    'isActive': true,
-  },
-  {
     'text': "Your future self is counting on the action you take today. Don't let her down.",
-    'isActive': true,
-  },
-  {
-    'text': "Consistency beats intensity. Show up for 10 minutes daily rather than 3 hours once a month.",
     'isActive': true,
   },
 
@@ -129,18 +105,10 @@ const sampleTips = [
     'text': "The only person you need to be better than is the person you were yesterday.",
     'isActive': true,
   },
-  {
-    'text': "Fear is just excitement without breath. Take a deep breath and transform that fear into fuel.",
-    'isActive': true,
-  },
 
   // Career & finance tips
   {
     'text': "Negotiate like you belong at the table, because you do. Your skills have value.",
-    'isActive': true,
-  },
-  {
-    'text': "Financial freedom starts with knowing your numbers. Check your accounts today.",
     'isActive': true,
   },
   {
@@ -149,10 +117,6 @@ const sampleTips = [
   },
   {
     'text': "Invest in yourself first. Your growth is the best ROI you'll ever get.",
-    'isActive': true,
-  },
-  {
-    'text': "Your savings stretch further than you think when you're strategic. Plan, then leap.",
     'isActive': true,
   },
 
@@ -175,6 +139,33 @@ const sampleTips = [
   },
   {
     'text': "Expanded worldviews create expanded opportunities. Step outside your comfort zone today.",
+    'isActive': true,
+  },
+
+  // From Gabby's X/Twitter
+  {
+    'text': "Solo dinner last night and I just want to share: no one asked why I was alone, the waiter didn't laugh, no one pointed at the empty chair. These fears used to keep me from eating alone... seeing a new movie... taking a bucket list trip solo. Now I just live my life.",
+    'author': 'Gabby Beckford',
+    'isActive': true,
+  },
+  {
+    'text': "May all of our vision boards become scrapbooks.",
+    'author': 'Gabby Beckford',
+    'isActive': true,
+  },
+  {
+    'text': "Be nothing else than exactly what you are, or you rob yourself of the chance to be loved for everything you could want to be.",
+    'author': 'Gabby Beckford',
+    'isActive': true,
+  },
+  {
+    'text': "People only tend to value things when they invest a lot into them. Give someone a Lambo for free and they'll crash it. Make them pay for it and they worship it.",
+    'author': 'Gabby Beckford',
+    'isActive': true,
+  },
+  {
+    'text': "Bring back routines! A lot of people's lives are wayward because they're rawdogging life. Routines bring consistency and consistency brings progress.",
+    'author': 'Gabby Beckford',
     'isActive': true,
   },
 ];

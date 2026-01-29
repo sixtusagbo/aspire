@@ -24,17 +24,40 @@ class TipService {
         return;
       }
 
-      Log.i('Seeding tips collection with ${sampleTips.length} tips...');
-      final batch = _firestore.batch();
-      for (final tip in sampleTips) {
-        final docRef = _tipsCollection.doc();
-        batch.set(docRef, tip);
-      }
-      await batch.commit();
-      Log.i('Tips seeded successfully');
+      await _seedTips();
     } catch (e) {
       Log.e('Failed to seed tips: $e');
     }
+  }
+
+  /// Clear and reseed tips (for updates)
+  Future<void> reseedTips() async {
+    try {
+      Log.i('Clearing tips collection...');
+      final snapshot = await _tipsCollection.get();
+      final batch = _firestore.batch();
+      for (final doc in snapshot.docs) {
+        batch.delete(doc.reference);
+      }
+      await batch.commit();
+      Log.i('Tips cleared');
+
+      await _seedTips();
+    } catch (e) {
+      Log.e('Failed to reseed tips: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> _seedTips() async {
+    Log.i('Seeding tips collection with ${sampleTips.length} tips...');
+    final batch = _firestore.batch();
+    for (final tip in sampleTips) {
+      final docRef = _tipsCollection.doc();
+      batch.set(docRef, tip);
+    }
+    await batch.commit();
+    Log.i('Tips seeded successfully');
   }
 
   /// Get a random tip for today (deterministic based on date)

@@ -1,5 +1,6 @@
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
+import 'package:aspire/data/sample_tips.dart';
 import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/goal_service.dart';
 import 'package:aspire/services/notification_service.dart';
@@ -358,12 +359,18 @@ class SettingsScreen extends HookConsumerWidget {
           // Developer section (hidden in production)
           ListTile(
             leading: const Icon(Icons.developer_mode, color: Colors.grey),
-            title: const Text('Seed Tips', style: TextStyle(color: Colors.grey)),
-            subtitle: const Text('Add sample tips to Firestore'),
+            title:
+                const Text('Reseed Tips', style: TextStyle(color: Colors.grey)),
+            subtitle: const Text('Clear and reseed all tips'),
             onTap: () async {
               final tipService = ref.read(tipServiceProvider);
-              await tipService.seedTipsIfEmpty();
-              ToastHelper.showSuccess('Tips seeded (if empty)');
+              try {
+                await tipService.reseedTips();
+                ref.invalidate(tipOfTheDayProvider);
+                ToastHelper.showSuccess('Tips reseeded (${sampleTips.length})');
+              } catch (e) {
+                ToastHelper.showError('Failed to reseed tips');
+              }
             },
           ),
         ],
