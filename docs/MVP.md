@@ -304,11 +304,9 @@ class DailyLog {
 - [x] App update alerts (prompt user when new version available)
 - [x] Empty states with encouraging messages
 - [x] Loading states and error handling
-- [ ] UI/UX improvements
-  - [ ] App UI/UX redesign
-  - [ ] Dark mode polish (improve colors)
-  - [ ] Review UX again as an expert UX analyst, could use a subagent here...
-- [ ] Accessibility improvements
+- [x] UI/UX improvements
+  - [x] App UI/UX redesign (Packslight.com-inspired)
+  - [x] Dark mode polish (warm purple-black tones)
 
 **Deliverable:** Monetization works, app is feature-complete
 
@@ -318,8 +316,12 @@ class DailyLog {
 
 Add before deadline after core MVP polish:
 
-- [ ] **Celebration Sound Effects** - Audio feedback for confetti and streak increases
+- [ ] **Social Sharing** - Share wins to social media with #Aspire hashtag
+- [ ] **Tips Card** - Replace gamification card on Home with daily tips from Gabby
 - [ ] **Goal Templates** - Pre-made goals for common dreams (travel, career, finance)
+- [ ] **Celebration Sound Effects** - Audio feedback for confetti and streak increases
+- [ ] **Accessibility** - Screen reader support, contrast ratios, reduced motion
+- [ ] **Custom Categories (Premium)** - Allow premium users to create custom goal categories (name only, uses default icon/color)
 
 ---
 
@@ -382,8 +384,8 @@ Add before deadline after core MVP polish:
 
 - Unlimited goals
 - 10 micro-actions per goal
-- Custom reminder times per goal
-- Custom categories (create your own with custom name, icon, and color)
+- Goal-specific reminders (set different times per goal)
+- Custom categories (create your own category name)
 
 ---
 
@@ -432,22 +434,18 @@ Add before deadline after core MVP polish:
 
 ---
 
-## Post-Hackathon Features
+## Possible Future Improvements
 
-Features to add after submission to improve the app:
+Ideas to consider after hackathon submission:
 
 ### Premium Enhancements
 
-- **Goal-Specific Reminders** - Set different reminder times for each goal
 - **Priority Support** - Direct support channel for premium users
-- **Export Data** - Export goals and progress as PDF/CSV
-- **Goal Templates Library** - Curated templates for common goals
 
 ### Community Features
 
 - **Challenges** - Weekly community challenges
 - **Joint Goals** - Partner with a friend on shared goals
-- **Social Sharing** - Share wins to social media
 
 ### AI Features
 
@@ -456,8 +454,7 @@ Features to add after submission to improve the app:
 
 ### Platform Features
 
-- **Home Screen Widget** - Android/iOS widget showing goals at a glance
-- **Daily Inspiration** - Quotes, affirmations, or tips from Gabby
+- **Home Screen Widget** - Android widget showing goals at a glance
 - **Events** - Admin-posted events and announcements
 
 ---
