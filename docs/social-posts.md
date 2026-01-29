@@ -55,18 +55,13 @@ Monetization working. Polish time.
 
 Day 4 of building Aspire for RevenueCat's #Shipyard2026 Hackathon!
 
-UX overhaul day. The app was looking too generic, so I redesigned it to match Gabby's brand (packslight.com).
+UI/UX overhaul day. I've been using a very simple design on the app, I focused on functionalities first. I just decided to retouch the design.
 
 What I shipped:
 
-- Warm color palette inspired by packslight.com
-- Dark mode fixes across all screens
-- Gradient buttons with glow effect
-- Centralized category colors/icons
-- Gamification bar redesign
-- New bottom navigation theme
-
-The app feels like her world now.
+- Redesigned all the screens
+- Dark mode updated
+- New bottom nav theme
 
 #buildinpublic #flutter #hackathon #revenuecat
 
@@ -76,14 +71,12 @@ The app feels like her world now.
 
 Day 4 of #Shipyard2026!
 
-UX overhaul. App was too generic, redesigned to match the creator's brand.
+UI/UX overhaul. I've been using a very simple design on the app, I focused on functionalities first. I just decided to retouch the design.
 
 What I shipped:
 
-- Warm color palette (packslight.com inspired)
-- Dark mode fixes everywhere
-- Gradient buttons
-- Gamification bar redesign
+- Redesigned all the screens
+- Dark mode updated
 - New bottom nav theme
 
 #buildinpublic
