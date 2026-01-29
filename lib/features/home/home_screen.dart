@@ -53,9 +53,12 @@ class HomeScreen extends HookConsumerWidget {
       }
     }
 
+    final userName = authService.currentUser?.displayName?.split(' ').first;
+    final greeting = _getGreeting(userName);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Today'),
+        title: Text(greeting),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings_outlined),
@@ -546,5 +549,23 @@ class _EmptyState extends StatelessWidget {
       ),
     );
   }
+}
+
+String _getGreeting(String? name) {
+  final hour = DateTime.now().hour;
+  String timeGreeting;
+
+  if (hour < 12) {
+    timeGreeting = 'Good morning';
+  } else if (hour < 17) {
+    timeGreeting = 'Good afternoon';
+  } else {
+    timeGreeting = 'Good evening';
+  }
+
+  if (name != null && name.isNotEmpty) {
+    return '$timeGreeting, $name';
+  }
+  return timeGreeting;
 }
 

@@ -234,14 +234,86 @@ class SettingsScreen extends HookConsumerWidget {
       }
     }
 
+    final user = authService.currentUser;
+    final displayName = useState(user?.displayName ?? '');
+
+    Future<void> handleEditAccount() async {
+      final controller = TextEditingController(text: displayName.value);
+      final result = await showModalBottomSheet<String>(
+        context: context,
+        isScrollControlled: true,
+        builder: (context) => Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 24,
+            right: 24,
+            top: 24,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Edit Profile',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                user?.email ?? '',
+                style: TextStyle(color: Colors.grey.shade600),
+              ),
+              const SizedBox(height: 24),
+              TextField(
+                controller: controller,
+                decoration: const InputDecoration(
+                  labelText: 'Display Name',
+                  border: OutlineInputBorder(),
+                ),
+                textCapitalization: TextCapitalization.words,
+                autofocus: true,
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context, controller.text),
+                  child: const Text('Save'),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
+      );
+
+      if (result != null && result.isNotEmpty && result != displayName.value) {
+        try {
+          // Update Firebase Auth
+          await user?.updateDisplayName(result);
+          // Update Firestore
+          if (userId != null) {
+            await userService.updateUser(userId, {'name': result});
+          }
+          displayName.value = result;
+          ToastHelper.showSuccess('Name updated');
+        } catch (e) {
+          ToastHelper.showError('Failed to update name');
+        }
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
         children: [
-          const ListTile(
-            leading: Icon(Icons.person_outline),
-            title: Text('Account'),
-            subtitle: Text('Manage your account'),
+          ListTile(
+            leading: const Icon(Icons.person_outline),
+            title: Text(displayName.value.isNotEmpty
+                ? displayName.value
+                : 'Add your name'),
+            subtitle: Text(user?.email ?? 'Manage your account'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: handleEditAccount,
           ),
           const Divider(),
 
