@@ -1373,12 +1373,9 @@ class _AIActionsReviewSheetState extends State<_AIActionsReviewSheet> {
     if (_replaceMode == replaceMode) return;
     setState(() {
       _replaceMode = replaceMode;
-      // Re-trim actions to new available slots
-      final slotsAvailable =
-          replaceMode ? widget.actionLimit : _availableSlots;
-      if (_editableActions.length > slotsAvailable) {
-        _editableActions = _editableActions.take(slotsAvailable).toList();
-      }
+      // Don't trim actions - let _isOverLimit handle disabling submit button
+      // and showing upgrade prompt. User can see all actions but excess ones
+      // are marked as disabled/greyed out.
     });
   }
 

@@ -10,19 +10,17 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends HookConsumerWidget {
   const SettingsScreen({super.key});
 
-  static const _reminderHourKey = 'reminder_hour';
-  static const _reminderMinuteKey = 'reminder_minute';
-  static const _reminderEnabledKey = 'daily_reminder_enabled';
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final authService = ref.read(authServiceProvider);
+    final userService = ref.read(userServiceProvider);
     final notificationService = ref.read(notificationServiceProvider);
     final revenueCatService = ref.read(revenueCatServiceProvider);
+    final userId = authService.currentUser?.uid;
     final notificationsEnabled = useState<bool?>(null);
     final reminderEnabled = useState<bool>(false);
     final reminderTime = useState<TimeOfDay>(
@@ -36,6 +34,8 @@ class SettingsScreen extends HookConsumerWidget {
     useEffect(() {
       _loadSettings(
         notificationService,
+        userService,
+        userId,
         notificationsEnabled,
         reminderEnabled,
         reminderTime,
@@ -48,6 +48,27 @@ class SettingsScreen extends HookConsumerWidget {
     }, []);
 
     Future<void> handleSignOut() async {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Sign Out'),
+          content: const Text('Are you sure you want to sign out?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: const Text('Sign Out'),
+            ),
+          ],
+        ),
+      );
+
+      if (confirmed != true) return;
+
       try {
         final authService = ref.read(authServiceProvider);
         final revenueCatService = ref.read(revenueCatServiceProvider);
@@ -90,8 +111,11 @@ class SettingsScreen extends HookConsumerWidget {
       }
 
       reminderEnabled.value = value;
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(_reminderEnabledKey, value);
+
+      // Save to Firebase
+      if (userId != null) {
+        await userService.updateUser(userId, {'dailyReminderEnabled': value});
+      }
 
       if (value) {
         // Schedule the reminder
@@ -115,9 +139,14 @@ class SettingsScreen extends HookConsumerWidget {
 
       if (picked != null) {
         reminderTime.value = picked;
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setInt(_reminderHourKey, picked.hour);
-        await prefs.setInt(_reminderMinuteKey, picked.minute);
+
+        // Save to Firebase
+        if (userId != null) {
+          await userService.updateUser(userId, {
+            'reminderHour': picked.hour,
+            'reminderMinute': picked.minute,
+          });
+        }
 
         if (reminderEnabled.value) {
           // Reschedule with new time
@@ -330,6 +359,8 @@ class SettingsScreen extends HookConsumerWidget {
 
   Future<void> _loadSettings(
     NotificationService notificationService,
+    UserService userService,
+    String? userId,
     ValueNotifier<bool?> notificationsEnabled,
     ValueNotifier<bool> reminderEnabled,
     ValueNotifier<TimeOfDay> reminderTime,
@@ -338,11 +369,16 @@ class SettingsScreen extends HookConsumerWidget {
     final enabled = await notificationService.areNotificationsEnabled();
     notificationsEnabled.value = enabled;
 
-    // Load saved preferences
-    final prefs = await SharedPreferences.getInstance();
-    reminderEnabled.value = prefs.getBool(_reminderEnabledKey) ?? true;
-    final hour = prefs.getInt(_reminderHourKey) ?? 9;
-    final minute = prefs.getInt(_reminderMinuteKey) ?? 0;
-    reminderTime.value = TimeOfDay(hour: hour, minute: minute);
+    // Load from Firebase
+    if (userId != null) {
+      final user = await userService.getUser(userId);
+      if (user != null) {
+        reminderEnabled.value = user.dailyReminderEnabled;
+        reminderTime.value = TimeOfDay(
+          hour: user.reminderHour,
+          minute: user.reminderMinute,
+        );
+      }
+    }
   }
 }

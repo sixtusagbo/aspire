@@ -91,6 +91,27 @@ class AppUserMapper extends ClassMapperBase<AppUser> {
     opt: true,
     hook: NullableDateTimeHook(),
   );
+  static bool _$dailyReminderEnabled(AppUser v) => v.dailyReminderEnabled;
+  static const Field<AppUser, bool> _f$dailyReminderEnabled = Field(
+    'dailyReminderEnabled',
+    _$dailyReminderEnabled,
+    opt: true,
+    def: false,
+  );
+  static int _$reminderHour(AppUser v) => v.reminderHour;
+  static const Field<AppUser, int> _f$reminderHour = Field(
+    'reminderHour',
+    _$reminderHour,
+    opt: true,
+    def: 9,
+  );
+  static int _$reminderMinute(AppUser v) => v.reminderMinute;
+  static const Field<AppUser, int> _f$reminderMinute = Field(
+    'reminderMinute',
+    _$reminderMinute,
+    opt: true,
+    def: 0,
+  );
 
   @override
   final MappableFields<AppUser> fields = const {
@@ -107,6 +128,9 @@ class AppUserMapper extends ClassMapperBase<AppUser> {
     #lastActivityDate: _f$lastActivityDate,
     #isPremium: _f$isPremium,
     #premiumExpiresAt: _f$premiumExpiresAt,
+    #dailyReminderEnabled: _f$dailyReminderEnabled,
+    #reminderHour: _f$reminderHour,
+    #reminderMinute: _f$reminderMinute,
   };
 
   static AppUser _instantiate(DecodingData data) {
@@ -124,6 +148,9 @@ class AppUserMapper extends ClassMapperBase<AppUser> {
       lastActivityDate: data.dec(_f$lastActivityDate),
       isPremium: data.dec(_f$isPremium),
       premiumExpiresAt: data.dec(_f$premiumExpiresAt),
+      dailyReminderEnabled: data.dec(_f$dailyReminderEnabled),
+      reminderHour: data.dec(_f$reminderHour),
+      reminderMinute: data.dec(_f$reminderMinute),
     );
   }
 
@@ -198,6 +225,9 @@ abstract class AppUserCopyWith<$R, $In extends AppUser, $Out>
     DateTime? lastActivityDate,
     bool? isPremium,
     DateTime? premiumExpiresAt,
+    bool? dailyReminderEnabled,
+    int? reminderHour,
+    int? reminderMinute,
   });
   AppUserCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
@@ -225,6 +255,9 @@ class _AppUserCopyWithImpl<$R, $Out>
     Object? lastActivityDate = $none,
     bool? isPremium,
     Object? premiumExpiresAt = $none,
+    bool? dailyReminderEnabled,
+    int? reminderHour,
+    int? reminderMinute,
   }) => $apply(
     FieldCopyWithData({
       if (id != null) #id: id,
@@ -241,6 +274,10 @@ class _AppUserCopyWithImpl<$R, $Out>
       if (lastActivityDate != $none) #lastActivityDate: lastActivityDate,
       if (isPremium != null) #isPremium: isPremium,
       if (premiumExpiresAt != $none) #premiumExpiresAt: premiumExpiresAt,
+      if (dailyReminderEnabled != null)
+        #dailyReminderEnabled: dailyReminderEnabled,
+      if (reminderHour != null) #reminderHour: reminderHour,
+      if (reminderMinute != null) #reminderMinute: reminderMinute,
     }),
   );
   @override
@@ -264,6 +301,12 @@ class _AppUserCopyWithImpl<$R, $Out>
     lastActivityDate: data.get(#lastActivityDate, or: $value.lastActivityDate),
     isPremium: data.get(#isPremium, or: $value.isPremium),
     premiumExpiresAt: data.get(#premiumExpiresAt, or: $value.premiumExpiresAt),
+    dailyReminderEnabled: data.get(
+      #dailyReminderEnabled,
+      or: $value.dailyReminderEnabled,
+    ),
+    reminderHour: data.get(#reminderHour, or: $value.reminderHour),
+    reminderMinute: data.get(#reminderMinute, or: $value.reminderMinute),
   );
 
   @override

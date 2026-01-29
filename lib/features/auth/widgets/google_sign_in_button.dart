@@ -1,3 +1,4 @@
+import 'package:aspire/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class GoogleSignInButton extends StatelessWidget {
@@ -14,19 +15,15 @@ class GoogleSignInButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return SizedBox(
       height: 56,
       child: OutlinedButton(
         onPressed: isLoading ? null : onPressed,
         style: OutlinedButton.styleFrom(
-          backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-          side: BorderSide(
-            color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
-          ),
+          backgroundColor: context.surface,
+          side: BorderSide(color: context.borderColor),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppTheme.radiusPill),
           ),
           elevation: 0,
         ),
@@ -36,9 +33,8 @@ class GoogleSignInButton extends StatelessWidget {
                 width: 20,
                 child: CircularProgressIndicator.adaptive(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    isDark ? Colors.white : Colors.black,
-                  ),
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(context.textPrimary),
                 ),
               )
             : Row(
@@ -55,7 +51,7 @@ class GoogleSignInButton extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white : Colors.black87,
+                      color: context.textPrimary,
                     ),
                   ),
                 ],

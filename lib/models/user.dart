@@ -29,6 +29,11 @@ class AppUser with AppUserMappable {
   @MappableField(hook: NullableDateTimeHook())
   final DateTime? premiumExpiresAt;
 
+  // Daily reminder settings (synced to Firebase)
+  final bool dailyReminderEnabled;
+  final int reminderHour;
+  final int reminderMinute;
+
   AppUser({
     required this.id,
     required this.name,
@@ -43,6 +48,9 @@ class AppUser with AppUserMappable {
     this.lastActivityDate,
     this.isPremium = false,
     this.premiumExpiresAt,
+    this.dailyReminderEnabled = false,
+    this.reminderHour = 9,
+    this.reminderMinute = 0,
   });
 }
 
