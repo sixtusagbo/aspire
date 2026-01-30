@@ -108,9 +108,6 @@ class CategorySelector extends HookConsumerWidget {
               color: CustomCategoryStyle.defaultColor,
               isSelected: selected.isCustom && selected.customCategoryName == name,
               onTap: () => onChanged(CategorySelection.custom(name)),
-              onLongPress: isPremium.value
-                  ? () => _showDeleteDialog(context, ref, name, localCustomCategories)
-                  : null,
             )),
         // Add custom category button (premium only)
         if (isPremium.value)
@@ -213,43 +210,6 @@ class CategorySelector extends HookConsumerWidget {
     }
   }
 
-  Future<void> _showDeleteDialog(
-    BuildContext context,
-    WidgetRef ref,
-    String name,
-    ValueNotifier<List<String>> localCustomCategories,
-  ) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Category'),
-        content: Text('Remove "$name" from your custom categories?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true && user != null) {
-      // Update local state immediately for instant UI feedback
-      localCustomCategories.value =
-          localCustomCategories.value.where((c) => c != name).toList();
-      // If deleted category was selected, reset to personal
-      if (selected.isCustom && selected.customCategoryName == name) {
-        onChanged(CategorySelection.preset(GoalCategory.personal));
-      }
-      // Persist to Firestore in background
-      final userService = ref.read(userServiceProvider);
-      await userService.removeCustomCategory(user!.id, name);
-    }
-  }
 }
 
 class _CategoryChip extends StatelessWidget {
@@ -258,7 +218,6 @@ class _CategoryChip extends StatelessWidget {
   final Color color;
   final bool isSelected;
   final VoidCallback onTap;
-  final VoidCallback? onLongPress;
 
   const _CategoryChip({
     required this.label,
@@ -266,14 +225,12 @@ class _CategoryChip extends StatelessWidget {
     required this.color,
     required this.isSelected,
     required this.onTap,
-    this.onLongPress,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      onLongPress: onLongPress,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(

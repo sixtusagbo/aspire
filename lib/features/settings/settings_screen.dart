@@ -1,5 +1,8 @@
+import 'package:aspire/core/theme/app_theme.dart';
+import 'package:aspire/core/theme/category_colors.dart';
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
+import 'package:aspire/models/user.dart';
 import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/goal_service.dart';
 import 'package:aspire/services/notification_service.dart';
@@ -29,6 +32,7 @@ class SettingsScreen extends HookConsumerWidget {
     final isPremium = useState<bool?>(null);
     final appVersion = useState<String>('');
     final isDeleting = useState<bool>(false);
+    final customCategories = useState<List<String>>([]);
 
     // Load settings on mount
     useEffect(() {
@@ -39,6 +43,7 @@ class SettingsScreen extends HookConsumerWidget {
         notificationsEnabled,
         reminderEnabled,
         reminderTime,
+        customCategories,
       );
       revenueCatService.isPremium().then((value) => isPremium.value = value);
       PackageInfo.fromPlatform().then((info) {
@@ -172,6 +177,24 @@ class SettingsScreen extends HookConsumerWidget {
       } catch (e) {
         ToastHelper.showError('Could not open subscription settings');
       }
+    }
+
+    Future<void> handleManageCategories() async {
+      await showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (context) => _ManageCategoriesSheet(
+          categories: customCategories.value,
+          onDelete: (name) async {
+            if (userId != null) {
+              customCategories.value =
+                  customCategories.value.where((c) => c != name).toList();
+              await userService.removeCustomCategory(userId, name);
+              ToastHelper.showSuccess('Category deleted');
+            }
+          },
+        ),
+      );
     }
 
     Future<void> handleDeleteAccount() async {
@@ -389,6 +412,14 @@ class SettingsScreen extends HookConsumerWidget {
               trailing: const Icon(Icons.chevron_right),
               onTap: handleManageSubscription,
             ),
+          if (isPremium.value == true && customCategories.value.isNotEmpty)
+            ListTile(
+              leading: const SizedBox(width: 24),
+              title: const Text('Custom Categories'),
+              subtitle: Text('${customCategories.value.length} custom categories'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: handleManageCategories,
+            ),
           const Divider(),
 
           // About section
@@ -436,6 +467,7 @@ class SettingsScreen extends HookConsumerWidget {
     ValueNotifier<bool?> notificationsEnabled,
     ValueNotifier<bool> reminderEnabled,
     ValueNotifier<TimeOfDay> reminderTime,
+    ValueNotifier<List<String>> customCategories,
   ) async {
     // Check notification permission
     final enabled = await notificationService.areNotificationsEnabled();
@@ -450,7 +482,143 @@ class SettingsScreen extends HookConsumerWidget {
           hour: user.reminderHour,
           minute: user.reminderMinute,
         );
+        customCategories.value = user.customCategories;
       }
     }
+  }
+}
+
+class _ManageCategoriesSheet extends StatelessWidget {
+  final List<String> categories;
+  final Function(String) onDelete;
+
+  const _ManageCategoriesSheet({
+    required this.categories,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                CustomCategoryStyle.defaultIcon,
+                color: CustomCategoryStyle.defaultColor,
+              ),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Text(
+                  'Custom Categories',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ),
+              IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.close),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Tap the delete button to remove a category',
+            style: TextStyle(color: context.textSecondary),
+          ),
+          const SizedBox(height: 16),
+          if (categories.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24),
+              child: Center(
+                child: Text(
+                  'No custom categories yet',
+                  style: TextStyle(color: context.textSecondary),
+                ),
+              ),
+            )
+          else
+            ...categories.map((name) => _CategoryTile(
+                  name: name,
+                  onDelete: () => _confirmDelete(context, name),
+                )),
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _confirmDelete(BuildContext context, String name) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Category'),
+        content: Text(
+          'Remove "$name" from your custom categories?\n\n'
+          'Goals using this category will keep their category name.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && context.mounted) {
+      onDelete(name);
+      Navigator.pop(context);
+    }
+  }
+}
+
+class _CategoryTile extends StatelessWidget {
+  final String name;
+  final VoidCallback onDelete;
+
+  const _CategoryTile({required this.name, required this.onDelete});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: context.surfaceSubtle,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: context.borderColor),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            CustomCategoryStyle.defaultIcon,
+            color: CustomCategoryStyle.defaultColor,
+            size: 20,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              name,
+              style: const TextStyle(fontWeight: FontWeight.w500),
+            ),
+          ),
+          IconButton(
+            onPressed: onDelete,
+            icon: const Icon(Icons.delete_outline, color: Colors.red),
+            tooltip: 'Delete category',
+            visualDensity: VisualDensity.compact,
+          ),
+        ],
+      ),
+    );
   }
 }
