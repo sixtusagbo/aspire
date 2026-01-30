@@ -62,6 +62,7 @@ class HomeScreen extends HookConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings_outlined),
+            tooltip: 'Settings',
             onPressed: () => context.push(AppRoutes.settings),
           ),
         ],

@@ -44,10 +44,12 @@ class GoalDetailScreen extends HookConsumerWidget {
           actions: [
             IconButton(
               icon: const Icon(Icons.edit_outlined),
+              tooltip: 'Edit goal',
               onPressed: () => _showEditGoalDialog(context, ref, userId),
             ),
             IconButton(
               icon: const Icon(Icons.delete_outline),
+              tooltip: 'Delete goal',
               onPressed: () => _showDeleteDialog(context, ref, goalService, userId),
             ),
           ],
@@ -1552,11 +1554,13 @@ class _AIActionTile extends StatelessWidget {
             if (!isDisabled)
               IconButton(
                 icon: Icon(Icons.edit_outlined, color: context.textSecondary),
+                tooltip: 'Edit action',
                 onPressed: onEdit,
                 visualDensity: VisualDensity.compact,
               ),
             IconButton(
               icon: Icon(Icons.delete_outline, color: Colors.red.shade400),
+              tooltip: 'Delete action',
               onPressed: onDelete,
               visualDensity: VisualDensity.compact,
             ),
