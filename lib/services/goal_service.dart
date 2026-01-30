@@ -400,6 +400,57 @@ class GoalService {
     return snapshot.count ?? 0;
   }
 
+  /// Count goals using a custom category
+  Future<int> countGoalsByCustomCategory(
+      String userId, String customCategoryName) async {
+    final snapshot = await _goalsRef
+        .where('userId', isEqualTo: userId)
+        .where('customCategoryName', isEqualTo: customCategoryName)
+        .count()
+        .get();
+    return snapshot.count ?? 0;
+  }
+
+  /// Move all goals from a custom category to Personal
+  Future<void> moveGoalsToPersonal(
+      String userId, String customCategoryName) async {
+    final goals = await _goalsRef
+        .where('userId', isEqualTo: userId)
+        .where('customCategoryName', isEqualTo: customCategoryName)
+        .get();
+
+    if (goals.docs.isEmpty) return;
+
+    final batch = _firestore.batch();
+    for (final doc in goals.docs) {
+      batch.update(doc.reference, {
+        'category': GoalCategory.personal.name,
+        'customCategoryName': FieldValue.delete(),
+      });
+    }
+    await batch.commit();
+  }
+
+  /// Rename a custom category across all goals
+  Future<void> renameCustomCategory(
+    String userId,
+    String oldName,
+    String newName,
+  ) async {
+    final goals = await _goalsRef
+        .where('userId', isEqualTo: userId)
+        .where('customCategoryName', isEqualTo: oldName)
+        .get();
+
+    if (goals.docs.isEmpty) return;
+
+    final batch = _firestore.batch();
+    for (final doc in goals.docs) {
+      batch.update(doc.reference, {'customCategoryName': newName});
+    }
+    await batch.commit();
+  }
+
   /// Delete all data for a user (goals, micro-actions, daily logs)
   Future<void> deleteAllUserData(String userId) async {
     final batch = _firestore.batch();

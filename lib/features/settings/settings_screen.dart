@@ -180,18 +180,17 @@ class SettingsScreen extends HookConsumerWidget {
     }
 
     Future<void> handleManageCategories() async {
+      final goalService = ref.read(goalServiceProvider);
       await showModalBottomSheet(
         context: context,
         isScrollControlled: true,
         builder: (context) => _ManageCategoriesSheet(
+          userId: userId!,
           categories: customCategories.value,
-          onDelete: (name) async {
-            if (userId != null) {
-              customCategories.value =
-                  customCategories.value.where((c) => c != name).toList();
-              await userService.removeCustomCategory(userId, name);
-              ToastHelper.showSuccess('Category deleted');
-            }
+          userService: userService,
+          goalService: goalService,
+          onCategoriesChanged: (newList) {
+            customCategories.value = newList;
           },
         ),
       );
@@ -412,15 +411,27 @@ class SettingsScreen extends HookConsumerWidget {
               trailing: const Icon(Icons.chevron_right),
               onTap: handleManageSubscription,
             ),
-          if (isPremium.value == true && customCategories.value.isNotEmpty)
-            ListTile(
-              leading: const SizedBox(width: 24),
-              title: const Text('Custom Categories'),
-              subtitle: Text('${customCategories.value.length} custom categories'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: handleManageCategories,
-            ),
           const Divider(),
+
+          // Custom Categories section (premium only)
+          if (isPremium.value == true)
+            ListTile(
+              leading: Icon(
+                CustomCategoryStyle.defaultIcon,
+                color: CustomCategoryStyle.defaultColor,
+              ),
+              title: const Text('Custom Categories'),
+              subtitle: Text(
+                customCategories.value.isEmpty
+                    ? 'Create categories when adding goals'
+                    : '${customCategories.value.length} ${customCategories.value.length == 1 ? 'category' : 'categories'}',
+              ),
+              trailing: customCategories.value.isEmpty
+                  ? null
+                  : const Icon(Icons.chevron_right),
+              onTap: customCategories.value.isEmpty ? null : handleManageCategories,
+            ),
+          if (isPremium.value == true) const Divider(),
 
           // About section
           ListTile(
@@ -488,14 +499,156 @@ class SettingsScreen extends HookConsumerWidget {
   }
 }
 
-class _ManageCategoriesSheet extends StatelessWidget {
+class _ManageCategoriesSheet extends StatefulWidget {
+  final String userId;
   final List<String> categories;
-  final Function(String) onDelete;
+  final UserService userService;
+  final GoalService goalService;
+  final ValueChanged<List<String>> onCategoriesChanged;
 
   const _ManageCategoriesSheet({
+    required this.userId,
     required this.categories,
-    required this.onDelete,
+    required this.userService,
+    required this.goalService,
+    required this.onCategoriesChanged,
   });
+
+  @override
+  State<_ManageCategoriesSheet> createState() => _ManageCategoriesSheetState();
+}
+
+class _ManageCategoriesSheetState extends State<_ManageCategoriesSheet> {
+  late List<String> _categories;
+  Map<String, int> _goalCounts = {};
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _categories = List.from(widget.categories);
+    _loadGoalCounts();
+  }
+
+  Future<void> _loadGoalCounts() async {
+    final counts = <String, int>{};
+    for (final name in _categories) {
+      counts[name] = await widget.goalService
+          .countGoalsByCustomCategory(widget.userId, name);
+    }
+    if (mounted) {
+      setState(() {
+        _goalCounts = counts;
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _handleEdit(String oldName) async {
+    final controller = TextEditingController(text: oldName);
+    final newName = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Rename Category'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          textCapitalization: TextCapitalization.words,
+          decoration: const InputDecoration(
+            hintText: 'Category name',
+            border: OutlineInputBorder(),
+          ),
+          onSubmitted: (value) {
+            if (value.trim().isNotEmpty) {
+              Navigator.pop(context, value.trim());
+            }
+          },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              final value = controller.text.trim();
+              if (value.isNotEmpty && value != oldName) {
+                Navigator.pop(context, value);
+              }
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+
+    if (newName != null && newName != oldName) {
+      // Update goals first
+      await widget.goalService.renameCustomCategory(
+        widget.userId,
+        oldName,
+        newName,
+      );
+      // Update user's category list
+      await widget.userService.removeCustomCategory(widget.userId, oldName);
+      await widget.userService.addCustomCategory(widget.userId, newName);
+
+      setState(() {
+        final index = _categories.indexOf(oldName);
+        if (index != -1) {
+          _categories[index] = newName;
+          _goalCounts[newName] = _goalCounts.remove(oldName) ?? 0;
+        }
+      });
+      widget.onCategoriesChanged(_categories);
+      ToastHelper.showSuccess('Category renamed');
+    }
+  }
+
+  Future<void> _handleDelete(String name) async {
+    final goalCount = _goalCounts[name] ?? 0;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Category'),
+        content: Text(
+          goalCount > 0
+              ? '$goalCount ${goalCount == 1 ? 'goal uses' : 'goals use'} this category.\n\n'
+                  'They will be moved to "Personal".'
+              : 'Remove "$name" from your custom categories?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: Text(goalCount > 0 ? 'Move & Delete' : 'Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      // Move goals to Personal if any
+      if (goalCount > 0) {
+        await widget.goalService.moveGoalsToPersonal(widget.userId, name);
+      }
+      // Remove category from user
+      await widget.userService.removeCustomCategory(widget.userId, name);
+
+      setState(() {
+        _categories.remove(name);
+        _goalCounts.remove(name);
+      });
+      widget.onCategoriesChanged(_categories);
+      ToastHelper.showSuccess(
+        goalCount > 0 ? 'Goals moved to Personal' : 'Category deleted',
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -526,98 +679,105 @@ class _ManageCategoriesSheet extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Tap the delete button to remove a category',
+            'Tap to edit, or delete categories',
             style: TextStyle(color: context.textSecondary),
           ),
           const SizedBox(height: 16),
-          if (categories.isEmpty)
+          if (_isLoading)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 24),
+              child: Center(child: CircularProgressIndicator()),
+            )
+          else if (_categories.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 24),
               child: Center(
                 child: Text(
-                  'No custom categories yet',
+                  'No custom categories',
                   style: TextStyle(color: context.textSecondary),
                 ),
               ),
             )
           else
-            ...categories.map((name) => _CategoryTile(
+            ..._categories.map((name) => _CategoryTile(
                   name: name,
-                  onDelete: () => _confirmDelete(context, name),
+                  goalCount: _goalCounts[name] ?? 0,
+                  onEdit: () => _handleEdit(name),
+                  onDelete: () => _handleDelete(name),
                 )),
           const SizedBox(height: 16),
         ],
       ),
     );
   }
-
-  Future<void> _confirmDelete(BuildContext context, String name) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Category'),
-        content: Text(
-          'Remove "$name" from your custom categories?\n\n'
-          'Goals using this category will keep their category name.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true && context.mounted) {
-      onDelete(name);
-      Navigator.pop(context);
-    }
-  }
 }
 
 class _CategoryTile extends StatelessWidget {
   final String name;
+  final int goalCount;
+  final VoidCallback onEdit;
   final VoidCallback onDelete;
 
-  const _CategoryTile({required this.name, required this.onDelete});
+  const _CategoryTile({
+    required this.name,
+    required this.goalCount,
+    required this.onEdit,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: context.surfaceSubtle,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: context.borderColor),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            CustomCategoryStyle.defaultIcon,
-            color: CustomCategoryStyle.defaultColor,
-            size: 20,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              name,
-              style: const TextStyle(fontWeight: FontWeight.w500),
+    return GestureDetector(
+      onTap: onEdit,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: context.surfaceSubtle,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: context.borderColor),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              CustomCategoryStyle.defaultIcon,
+              color: CustomCategoryStyle.defaultColor,
+              size: 20,
             ),
-          ),
-          IconButton(
-            onPressed: onDelete,
-            icon: const Icon(Icons.delete_outline, color: Colors.red),
-            tooltip: 'Delete category',
-            visualDensity: VisualDensity.compact,
-          ),
-        ],
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: const TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  if (goalCount > 0)
+                    Text(
+                      '$goalCount ${goalCount == 1 ? 'goal' : 'goals'}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: context.textSecondary,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            IconButton(
+              onPressed: onEdit,
+              icon: const Icon(Icons.edit_outlined),
+              tooltip: 'Edit category',
+              visualDensity: VisualDensity.compact,
+            ),
+            IconButton(
+              onPressed: onDelete,
+              icon: const Icon(Icons.delete_outline, color: Colors.red),
+              tooltip: 'Delete category',
+              visualDensity: VisualDensity.compact,
+            ),
+          ],
+        ),
       ),
     );
   }

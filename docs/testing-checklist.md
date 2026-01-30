@@ -40,8 +40,8 @@
 #### Manage Custom Categories in Settings
 
 - [ ] Settings shows "Custom Categories" option under Premium section (only if has categories)
-- [ ] Tap → opens bottom sheet with list of custom categories
-- [ ] Each category shows delete button
+- [x] Tap → opens bottom sheet with list of custom categories
+- [x] Each category shows delete button
 - [ ] Tap delete → shows confirmation dialog
 - [ ] Confirm delete → category removed and sheet closes
 
