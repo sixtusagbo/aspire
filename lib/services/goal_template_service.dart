@@ -8,7 +8,7 @@ part 'goal_template_service.g.dart';
 @riverpod
 GoalTemplateService goalTemplateService(ref) => GoalTemplateService();
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<List<GoalTemplate>> goalTemplates(ref) {
   final service = ref.watch(goalTemplateServiceProvider);
   return service.getTemplates();

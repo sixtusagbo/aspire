@@ -76,7 +76,7 @@ final class GoalTemplatesProvider
         argument: null,
         retry: null,
         name: r'goalTemplatesProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -96,4 +96,4 @@ final class GoalTemplatesProvider
   }
 }
 
-String _$goalTemplatesHash() => r'668a60fc7a7c5403e66d2680a8904fde391c1e16';
+String _$goalTemplatesHash() => r'bc004339f9e46383cfc9d196c70036786babbe21';
