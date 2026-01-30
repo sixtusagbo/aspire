@@ -614,7 +614,7 @@ class _ManageCategoriesSheetState extends State<_ManageCategoriesSheet> {
         content: Text(
           goalCount > 0
               ? '$goalCount ${goalCount == 1 ? 'goal uses' : 'goals use'} this category.\n\n'
-                  'Goals will keep displaying "$name" but you won\'t be able to assign new goals to it.'
+                  '${goalCount == 1 ? 'That goal' : 'Those goals'} will keep displaying "$name" but you won\'t be able to assign new goals to it.'
               : 'Remove "$name" from your custom categories?',
         ),
         actions: [
