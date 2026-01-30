@@ -21,8 +21,8 @@
 ### Goal Templates
 
 #### Seeding (do first)
-- [ ] Go to Settings → Developer → "Seed Goal Templates"
-- [ ] Verify toast shows "Goal templates seeded!"
+- [x] Go to Settings → Developer → "Seed Goal Templates"
+- [x] Verify toast shows "Goal templates seeded!"
 
 #### Template Selection (Goals screen)
 - [ ] Tap "New Goal" → "Choose from templates" button visible

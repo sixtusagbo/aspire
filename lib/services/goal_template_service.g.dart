@@ -57,44 +57,43 @@ final class GoalTemplateServiceProvider
 String _$goalTemplateServiceHash() =>
     r'6cc73dcfefddc56163aac17023fcc910e3e4dc4c';
 
-@ProviderFor(goalTemplatesStream)
-const goalTemplatesStreamProvider = GoalTemplatesStreamProvider._();
+@ProviderFor(goalTemplates)
+const goalTemplatesProvider = GoalTemplatesProvider._();
 
-final class GoalTemplatesStreamProvider
+final class GoalTemplatesProvider
     extends
         $FunctionalProvider<
           AsyncValue<List<GoalTemplate>>,
           List<GoalTemplate>,
-          Stream<List<GoalTemplate>>
+          FutureOr<List<GoalTemplate>>
         >
     with
         $FutureModifier<List<GoalTemplate>>,
-        $StreamProvider<List<GoalTemplate>> {
-  const GoalTemplatesStreamProvider._()
+        $FutureProvider<List<GoalTemplate>> {
+  const GoalTemplatesProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'goalTemplatesStreamProvider',
+        name: r'goalTemplatesProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$goalTemplatesStreamHash();
+  String debugGetCreateSourceHash() => _$goalTemplatesHash();
 
   @$internal
   @override
-  $StreamProviderElement<List<GoalTemplate>> $createElement(
+  $FutureProviderElement<List<GoalTemplate>> $createElement(
     $ProviderPointer pointer,
-  ) => $StreamProviderElement(pointer);
+  ) => $FutureProviderElement(pointer);
 
   @override
-  Stream<List<GoalTemplate>> create(Ref ref) {
-    return goalTemplatesStream(ref);
+  FutureOr<List<GoalTemplate>> create(Ref ref) {
+    return goalTemplates(ref);
   }
 }
 
-String _$goalTemplatesStreamHash() =>
-    r'71e49d78b051d3086fb697c4eb266ed74e46a9da';
+String _$goalTemplatesHash() => r'668a60fc7a7c5403e66d2680a8904fde391c1e16';

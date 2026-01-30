@@ -563,7 +563,7 @@ class _TemplateSelectorSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final templatesAsync = ref.watch(goalTemplatesStreamProvider);
+    final templatesAsync = ref.watch(goalTemplatesProvider);
 
     return templatesAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
