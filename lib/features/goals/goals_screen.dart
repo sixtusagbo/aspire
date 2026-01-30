@@ -1,5 +1,4 @@
 import 'package:aspire/core/theme/app_theme.dart';
-import 'package:aspire/core/theme/category_colors.dart';
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/features/goals/widgets/create_goal_sheet.dart';
 import 'package:aspire/models/goal.dart';
@@ -102,13 +101,13 @@ class _GoalCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: goal.category.color.withValues(alpha: 0.1),
+                      color: goal.categoryColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
-                      goal.category.icon,
+                      goal.categoryIcon,
                       size: 20,
-                      color: goal.category.color,
+                      color: goal.categoryColor,
                     ),
                   ),
                   const SizedBox(width: 12),

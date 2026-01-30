@@ -112,6 +112,13 @@ class AppUserMapper extends ClassMapperBase<AppUser> {
     opt: true,
     def: 0,
   );
+  static List<String> _$customCategories(AppUser v) => v.customCategories;
+  static const Field<AppUser, List<String>> _f$customCategories = Field(
+    'customCategories',
+    _$customCategories,
+    opt: true,
+    def: const [],
+  );
 
   @override
   final MappableFields<AppUser> fields = const {
@@ -131,6 +138,7 @@ class AppUserMapper extends ClassMapperBase<AppUser> {
     #dailyReminderEnabled: _f$dailyReminderEnabled,
     #reminderHour: _f$reminderHour,
     #reminderMinute: _f$reminderMinute,
+    #customCategories: _f$customCategories,
   };
 
   static AppUser _instantiate(DecodingData data) {
@@ -151,6 +159,7 @@ class AppUserMapper extends ClassMapperBase<AppUser> {
       dailyReminderEnabled: data.dec(_f$dailyReminderEnabled),
       reminderHour: data.dec(_f$reminderHour),
       reminderMinute: data.dec(_f$reminderMinute),
+      customCategories: data.dec(_f$customCategories),
     );
   }
 
@@ -211,6 +220,8 @@ extension AppUserValueCopy<$R, $Out> on ObjectCopyWith<$R, AppUser, $Out> {
 
 abstract class AppUserCopyWith<$R, $In extends AppUser, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
+  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>
+  get customCategories;
   $R call({
     String? id,
     String? name,
@@ -228,6 +239,7 @@ abstract class AppUserCopyWith<$R, $In extends AppUser, $Out>
     bool? dailyReminderEnabled,
     int? reminderHour,
     int? reminderMinute,
+    List<String>? customCategories,
   });
   AppUserCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
@@ -240,6 +252,13 @@ class _AppUserCopyWithImpl<$R, $Out>
   @override
   late final ClassMapperBase<AppUser> $mapper =
       AppUserMapper.ensureInitialized();
+  @override
+  ListCopyWith<$R, String, ObjectCopyWith<$R, String, String>>
+  get customCategories => ListCopyWith(
+    $value.customCategories,
+    (v, t) => ObjectCopyWith(v, $identity, t),
+    (v) => call(customCategories: v),
+  );
   @override
   $R call({
     String? id,
@@ -258,6 +277,7 @@ class _AppUserCopyWithImpl<$R, $Out>
     bool? dailyReminderEnabled,
     int? reminderHour,
     int? reminderMinute,
+    List<String>? customCategories,
   }) => $apply(
     FieldCopyWithData({
       if (id != null) #id: id,
@@ -278,6 +298,7 @@ class _AppUserCopyWithImpl<$R, $Out>
         #dailyReminderEnabled: dailyReminderEnabled,
       if (reminderHour != null) #reminderHour: reminderHour,
       if (reminderMinute != null) #reminderMinute: reminderMinute,
+      if (customCategories != null) #customCategories: customCategories,
     }),
   );
   @override
@@ -307,6 +328,7 @@ class _AppUserCopyWithImpl<$R, $Out>
     ),
     reminderHour: data.get(#reminderHour, or: $value.reminderHour),
     reminderMinute: data.get(#reminderMinute, or: $value.reminderMinute),
+    customCategories: data.get(#customCategories, or: $value.customCategories),
   );
 
   @override

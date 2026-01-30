@@ -1,4 +1,6 @@
+import 'package:aspire/core/theme/category_colors.dart';
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:flutter/material.dart';
 
 import 'user.dart'; // For DateTimeHook, NullableDateTimeHook
 
@@ -28,6 +30,9 @@ class Goal with GoalMappable {
 
   final GoalCategory category;
 
+  /// Custom category name (premium feature) - when set, displays this instead of enum label
+  final String? customCategoryName;
+
   /// Number of micro-actions completed (denormalized for quick access)
   final int completedActionsCount;
 
@@ -53,6 +58,7 @@ class Goal with GoalMappable {
     this.isCompleted = false,
     this.completedAt,
     this.category = GoalCategory.personal,
+    this.customCategoryName,
     this.completedActionsCount = 0,
     this.totalActionsCount = 0,
     this.reminderEnabled = false,
@@ -74,4 +80,19 @@ class Goal with GoalMappable {
 
   /// Whether a valid reminder time is set
   bool get hasReminderTime => reminderHour != null && reminderMinute != null;
+
+  /// Whether this goal uses a custom category
+  bool get hasCustomCategory => customCategoryName != null;
+
+  /// Display label for the category (custom name or enum label)
+  String get categoryLabel =>
+      customCategoryName ?? category.label;
+
+  /// Display color for the category
+  Color get categoryColor =>
+      hasCustomCategory ? CustomCategoryStyle.defaultColor : category.color;
+
+  /// Display icon for the category
+  IconData get categoryIcon =>
+      hasCustomCategory ? CustomCategoryStyle.defaultIcon : category.icon;
 }

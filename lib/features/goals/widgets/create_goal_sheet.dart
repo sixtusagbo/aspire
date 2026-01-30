@@ -1,13 +1,16 @@
 import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/core/theme/category_colors.dart';
 import 'package:aspire/core/utils/app_router.dart';
+import 'package:aspire/core/widgets/category_selector.dart';
 import 'package:aspire/core/widgets/gradient_button.dart';
 import 'package:aspire/features/goals/goals_screen.dart';
 import 'package:aspire/models/goal.dart';
 import 'package:aspire/models/goal_template.dart';
+import 'package:aspire/models/user.dart';
 import 'package:aspire/services/goal_service.dart';
 import 'package:aspire/services/goal_template_service.dart';
 import 'package:aspire/services/revenue_cat_service.dart';
+import 'package:aspire/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -22,6 +25,7 @@ Future<bool> showCreateGoalSheet(
   // Check if user can create more goals
   final revenueCatService = ref.read(revenueCatServiceProvider);
   final goalService = ref.read(goalServiceProvider);
+  final userService = ref.read(userServiceProvider);
   final isPremium = await revenueCatService.isPremium();
 
   if (!isPremium) {
@@ -35,6 +39,9 @@ Future<bool> showCreateGoalSheet(
     }
   }
 
+  // Fetch user for custom categories
+  final user = await userService.getUser(userId);
+
   if (!context.mounted) return false;
 
   final createdGoalId = await showModalBottomSheet<String>(
@@ -45,6 +52,7 @@ Future<bool> showCreateGoalSheet(
       userId: userId,
       goalService: goalService,
       isPremium: isPremium,
+      user: user,
     ),
   );
 
@@ -100,11 +108,13 @@ class _CreateGoalSheetContent extends StatefulWidget {
   final String userId;
   final GoalService goalService;
   final bool isPremium;
+  final AppUser? user;
 
   const _CreateGoalSheetContent({
     required this.userId,
     required this.goalService,
     required this.isPremium,
+    required this.user,
   });
 
   @override
@@ -116,7 +126,8 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
   final _titleFocusNode = FocusNode();
-  GoalCategory _selectedCategory = GoalCategory.personal;
+  CategorySelection _selectedCategory =
+      CategorySelection.preset(GoalCategory.personal);
   DateTime? _targetDate;
   bool _isCreating = false;
   GoalTemplate? _selectedTemplate;
@@ -137,7 +148,7 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
       _selectedTemplate = template;
       _titleController.text = template.title;
       _descController.text = template.description;
-      _selectedCategory = template.category;
+      _selectedCategory = CategorySelection.preset(template.category);
       _targetDate = template.targetDateType.toDateTime();
       _suggestedActions = List.from(template.suggestedActions);
     });
@@ -185,7 +196,8 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
             ? _descController.text.trim()
             : null,
         targetDate: _targetDate,
-        category: _selectedCategory,
+        category: _selectedCategory.presetCategory ?? GoalCategory.personal,
+        customCategoryName: _selectedCategory.customCategoryName,
       );
 
       // Create micro actions from template if available
@@ -305,35 +317,10 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
             // Category
             Text('Category', style: Theme.of(context).textTheme.titleSmall),
             const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: GoalCategory.values.map((cat) {
-                final isSelected = _selectedCategory == cat;
-                return GestureDetector(
-                  onTap: () => setState(() => _selectedCategory = cat),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? AppTheme.primaryPink
-                          : context.surfaceSubtle,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      cat.name[0].toUpperCase() + cat.name.substring(1),
-                      style: TextStyle(
-                        color: isSelected ? Colors.white : context.textPrimary,
-                        fontWeight:
-                            isSelected ? FontWeight.w600 : FontWeight.normal,
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
+            CategorySelector(
+              selected: _selectedCategory,
+              onChanged: (cat) => setState(() => _selectedCategory = cat),
+              user: widget.user,
             ),
             const SizedBox(height: 20),
 

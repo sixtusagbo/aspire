@@ -1,6 +1,12 @@
 import 'package:aspire/models/goal.dart';
 import 'package:flutter/material.dart';
 
+/// Default styling for custom categories (premium feature)
+class CustomCategoryStyle {
+  static const Color defaultColor = Color(0xFF8B7355); // Warm brown
+  static const IconData defaultIcon = Icons.category_rounded;
+}
+
 /// Centralized category colors, icons, and labels.
 /// Design direction: warm, travel-inspired palette.
 extension GoalCategoryStyle on GoalCategory {

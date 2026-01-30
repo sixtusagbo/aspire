@@ -1,17 +1,19 @@
 import 'package:aspire/core/theme/app_theme.dart';
-import 'package:aspire/core/theme/category_colors.dart';
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
+import 'package:aspire/core/widgets/category_selector.dart';
 import 'package:aspire/core/widgets/celebration_overlay.dart';
 import 'package:aspire/core/widgets/goal_completion_dialog.dart';
 import 'package:aspire/core/widgets/streak_celebration_dialog.dart';
 import 'package:aspire/models/goal.dart';
 import 'package:aspire/models/micro_action.dart';
+import 'package:aspire/models/user.dart';
 import 'package:aspire/services/ai_service.dart';
 import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/goal_service.dart';
 import 'package:aspire/services/notification_service.dart';
 import 'package:aspire/services/revenue_cat_service.dart';
+import 'package:aspire/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -130,183 +132,21 @@ class GoalDetailScreen extends HookConsumerWidget {
     String userId,
   ) async {
     final goalService = ref.read(goalServiceProvider);
+    final userService = ref.read(userServiceProvider);
     final goal = await goalService.getGoal(goalId);
+    final user = await userService.getUser(userId);
 
     if (goal == null || !context.mounted) return;
 
-    final titleController = TextEditingController(text: goal.title);
-    final descController = TextEditingController(text: goal.description ?? '');
-    GoalCategory selectedCategory = goal.category;
-    DateTime? targetDate = goal.targetDate;
-
-    final result = await showModalBottomSheet<bool>(
+    final result = await showModalBottomSheet<Goal>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Edit Goal',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.pop(context, false),
-                      icon: const Icon(Icons.close),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-
-                // Title
-                TextField(
-                  controller: titleController,
-                  autofocus: true,
-                  textCapitalization: TextCapitalization.sentences,
-                  decoration: InputDecoration(
-                    labelText: 'Goal title',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Description
-                TextField(
-                  controller: descController,
-                  textCapitalization: TextCapitalization.sentences,
-                  maxLines: 2,
-                  decoration: InputDecoration(
-                    labelText: 'Description (optional)',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // Category
-                Text('Category', style: Theme.of(context).textTheme.titleSmall),
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: GoalCategory.values.map((cat) {
-                    final isSelected = selectedCategory == cat;
-                    return GestureDetector(
-                      onTap: () => setState(() => selectedCategory = cat),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? AppTheme.primaryPink
-                              : context.surfaceSubtle,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          cat.name[0].toUpperCase() + cat.name.substring(1),
-                          style: TextStyle(
-                            color: isSelected
-                                ? Colors.white
-                                : context.textPrimary,
-                            fontWeight: isSelected
-                                ? FontWeight.w600
-                                : FontWeight.normal,
-                          ),
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-                const SizedBox(height: 20),
-
-                // Target date
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.calendar_today_outlined),
-                  title: Text(
-                    targetDate != null
-                        ? '${targetDate!.day}/${targetDate!.month}/${targetDate!.year}'
-                        : 'Set target date (optional)',
-                  ),
-                  trailing: targetDate != null
-                      ? IconButton(
-                          icon: const Icon(Icons.close),
-                          onPressed: () => setState(() => targetDate = null),
-                        )
-                      : null,
-                  onTap: () async {
-                    final picked = await showDatePicker(
-                      context: context,
-                      initialDate:
-                          targetDate ??
-                          DateTime.now().add(const Duration(days: 30)),
-                      firstDate: DateTime.now(),
-                      lastDate: DateTime.now().add(
-                        const Duration(days: 365 * 5),
-                      ),
-                    );
-                    if (picked != null) {
-                      setState(() => targetDate = picked);
-                    }
-                  },
-                ),
-                const SizedBox(height: 24),
-
-                // Save button
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.pop(context, true),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primaryPink,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text(
-                      'Save Changes',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-              ],
-            ),
-          ),
-        ),
-      ),
+      builder: (context) => _EditGoalSheet(goal: goal, user: user),
     );
 
-    if (result == true && titleController.text.trim().isNotEmpty) {
-      final updatedGoal = goal.copyWith(
-        title: titleController.text.trim(),
-        description: descController.text.trim().isNotEmpty
-            ? descController.text.trim()
-            : null,
-        category: selectedCategory,
-        targetDate: targetDate,
-      );
-      await goalService.updateGoal(updatedGoal);
+    if (result != null) {
+      await goalService.updateGoal(result);
       ToastHelper.showSuccess('Goal updated');
     }
   }
@@ -680,7 +520,7 @@ class _GoalDetailContent extends HookConsumerWidget {
       final aiResult = await aiService.generateMicroActions(
         goalTitle: goal.title,
         goalDescription: goal.description,
-        category: goal.category.name,
+        category: goal.categoryLabel,
         targetDate: goal.targetDate,
         existingActions: existingActionInfo,
         actionLimit: actionLimit,
@@ -765,22 +605,22 @@ class _GoalHeader extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: goal.category.color.withValues(alpha: 0.1),
+              color: goal.categoryColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
-                  goal.category.icon,
+                  goal.categoryIcon,
                   size: 16,
-                  color: goal.category.color,
+                  color: goal.categoryColor,
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  goal.category.label,
+                  goal.categoryLabel,
                   style: TextStyle(
-                    color: goal.category.color,
+                    color: goal.categoryColor,
                     fontWeight: FontWeight.w600,
                     fontSize: 12,
                   ),
@@ -1872,6 +1712,178 @@ class _GoalReminderSection extends HookConsumerWidget {
             child: const Text('Upgrade'),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Bottom sheet for editing a goal
+class _EditGoalSheet extends ConsumerStatefulWidget {
+  final Goal goal;
+  final AppUser? user;
+
+  const _EditGoalSheet({required this.goal, required this.user});
+
+  @override
+  ConsumerState<_EditGoalSheet> createState() => _EditGoalSheetState();
+}
+
+class _EditGoalSheetState extends ConsumerState<_EditGoalSheet> {
+  late TextEditingController _titleController;
+  late TextEditingController _descController;
+  late CategorySelection _selectedCategory;
+  DateTime? _targetDate;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(text: widget.goal.title);
+    _descController = TextEditingController(text: widget.goal.description ?? '');
+    _selectedCategory = CategorySelection.fromGoal(widget.goal);
+    _targetDate = widget.goal.targetDate;
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descController.dispose();
+    super.dispose();
+  }
+
+  void _save() {
+    if (_titleController.text.trim().isEmpty) return;
+
+    final updatedGoal = widget.goal.copyWith(
+      title: _titleController.text.trim(),
+      description: _descController.text.trim().isNotEmpty
+          ? _descController.text.trim()
+          : null,
+      category: _selectedCategory.presetCategory ?? GoalCategory.personal,
+      customCategoryName: _selectedCategory.customCategoryName,
+      targetDate: _targetDate,
+    );
+    Navigator.pop(context, updatedGoal);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Edit Goal',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.close),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+
+            // Title
+            TextField(
+              controller: _titleController,
+              autofocus: true,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: InputDecoration(
+                labelText: 'Goal title',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Description
+            TextField(
+              controller: _descController,
+              textCapitalization: TextCapitalization.sentences,
+              maxLines: 2,
+              decoration: InputDecoration(
+                labelText: 'Description (optional)',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Category
+            Text('Category', style: Theme.of(context).textTheme.titleSmall),
+            const SizedBox(height: 8),
+            CategorySelector(
+              selected: _selectedCategory,
+              onChanged: (cat) => setState(() => _selectedCategory = cat),
+              user: widget.user,
+            ),
+            const SizedBox(height: 20),
+
+            // Target date
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.calendar_today_outlined),
+              title: Text(
+                _targetDate != null
+                    ? '${_targetDate!.day}/${_targetDate!.month}/${_targetDate!.year}'
+                    : 'Set target date (optional)',
+              ),
+              trailing: _targetDate != null
+                  ? IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => setState(() => _targetDate = null),
+                    )
+                  : null,
+              onTap: () async {
+                final picked = await showDatePicker(
+                  context: context,
+                  initialDate:
+                      _targetDate ?? DateTime.now().add(const Duration(days: 30)),
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+                );
+                if (picked != null) {
+                  setState(() => _targetDate = picked);
+                }
+              },
+            ),
+            const SizedBox(height: 24),
+
+            // Save button
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: _save,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primaryPink,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  'Save Changes',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
       ),
     );
   }

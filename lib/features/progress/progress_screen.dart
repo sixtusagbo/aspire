@@ -1,5 +1,4 @@
 import 'package:aspire/core/theme/app_theme.dart';
-import 'package:aspire/core/theme/category_colors.dart';
 import 'package:aspire/features/home/widgets/stats_bar.dart';
 import 'package:aspire/models/goal.dart';
 import 'package:aspire/models/user.dart';
@@ -400,8 +399,8 @@ class _GoalProgressCard extends StatelessWidget {
           Row(
             children: [
               Icon(
-                goal.category.icon,
-                color: goal.category.color,
+                goal.categoryIcon,
+                color: goal.categoryColor,
                 size: 20,
               ),
               const SizedBox(width: 8),
@@ -429,7 +428,7 @@ class _GoalProgressCard extends StatelessWidget {
               value: goal.progress,
               backgroundColor: context.borderColor,
               valueColor:
-                  AlwaysStoppedAnimation(goal.category.color),
+                  AlwaysStoppedAnimation(goal.categoryColor),
               minHeight: 6,
             ),
           ),

@@ -1,5 +1,4 @@
 import 'package:aspire/core/theme/app_theme.dart';
-import 'package:aspire/core/theme/category_colors.dart';
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
 import 'package:aspire/core/widgets/celebration_overlay.dart';
@@ -201,9 +200,9 @@ class _GoalActionsSection extends HookConsumerWidget {
                 child: Row(
                   children: [
                     Icon(
-                      goal.category.icon,
+                      goal.categoryIcon,
                       size: 16,
-                      color: goal.category.color,
+                      color: goal.categoryColor,
                     ),
                     const SizedBox(width: 6),
                     Expanded(

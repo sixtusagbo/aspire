@@ -46,6 +46,20 @@ class UserService {
       return AppUserMapper.fromMap(data);
     });
   }
+
+  /// Add a custom category (premium feature)
+  Future<void> addCustomCategory(String userId, String categoryName) async {
+    await _firestore.collection('users').doc(userId).update({
+      'customCategories': FieldValue.arrayUnion([categoryName]),
+    });
+  }
+
+  /// Remove a custom category (premium feature)
+  Future<void> removeCustomCategory(String userId, String categoryName) async {
+    await _firestore.collection('users').doc(userId).update({
+      'customCategories': FieldValue.arrayRemove([categoryName]),
+    });
+  }
 }
 
 @riverpod

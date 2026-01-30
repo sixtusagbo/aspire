@@ -34,6 +34,9 @@ class AppUser with AppUserMappable {
   final int reminderHour;
   final int reminderMinute;
 
+  // Custom categories (premium feature)
+  final List<String> customCategories;
+
   AppUser({
     required this.id,
     required this.name,
@@ -51,6 +54,7 @@ class AppUser with AppUserMappable {
     this.dailyReminderEnabled = false,
     this.reminderHour = 9,
     this.reminderMinute = 0,
+    this.customCategories = const [],
   });
 }
 

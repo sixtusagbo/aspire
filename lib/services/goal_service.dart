@@ -83,6 +83,7 @@ class GoalService {
     String? description,
     DateTime? targetDate,
     GoalCategory category = GoalCategory.personal,
+    String? customCategoryName,
   }) async {
     final docRef = _goalsRef.doc();
     final goal = Goal(
@@ -93,6 +94,7 @@ class GoalService {
       targetDate: targetDate,
       createdAt: DateTime.now(),
       category: category,
+      customCategoryName: customCategoryName,
     );
 
     await docRef.set(goal.toMap()..remove('id'));

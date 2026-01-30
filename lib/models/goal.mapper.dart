@@ -126,6 +126,12 @@ class GoalMapper extends ClassMapperBase<Goal> {
     opt: true,
     def: GoalCategory.personal,
   );
+  static String? _$customCategoryName(Goal v) => v.customCategoryName;
+  static const Field<Goal, String> _f$customCategoryName = Field(
+    'customCategoryName',
+    _$customCategoryName,
+    opt: true,
+  );
   static int _$completedActionsCount(Goal v) => v.completedActionsCount;
   static const Field<Goal, int> _f$completedActionsCount = Field(
     'completedActionsCount',
@@ -171,6 +177,7 @@ class GoalMapper extends ClassMapperBase<Goal> {
     #isCompleted: _f$isCompleted,
     #completedAt: _f$completedAt,
     #category: _f$category,
+    #customCategoryName: _f$customCategoryName,
     #completedActionsCount: _f$completedActionsCount,
     #totalActionsCount: _f$totalActionsCount,
     #reminderEnabled: _f$reminderEnabled,
@@ -189,6 +196,7 @@ class GoalMapper extends ClassMapperBase<Goal> {
       isCompleted: data.dec(_f$isCompleted),
       completedAt: data.dec(_f$completedAt),
       category: data.dec(_f$category),
+      customCategoryName: data.dec(_f$customCategoryName),
       completedActionsCount: data.dec(_f$completedActionsCount),
       totalActionsCount: data.dec(_f$totalActionsCount),
       reminderEnabled: data.dec(_f$reminderEnabled),
@@ -253,6 +261,7 @@ abstract class GoalCopyWith<$R, $In extends Goal, $Out>
     bool? isCompleted,
     DateTime? completedAt,
     GoalCategory? category,
+    String? customCategoryName,
     int? completedActionsCount,
     int? totalActionsCount,
     bool? reminderEnabled,
@@ -279,6 +288,7 @@ class _GoalCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Goal, $Out>
     bool? isCompleted,
     Object? completedAt = $none,
     GoalCategory? category,
+    Object? customCategoryName = $none,
     int? completedActionsCount,
     int? totalActionsCount,
     bool? reminderEnabled,
@@ -295,6 +305,7 @@ class _GoalCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Goal, $Out>
       if (isCompleted != null) #isCompleted: isCompleted,
       if (completedAt != $none) #completedAt: completedAt,
       if (category != null) #category: category,
+      if (customCategoryName != $none) #customCategoryName: customCategoryName,
       if (completedActionsCount != null)
         #completedActionsCount: completedActionsCount,
       if (totalActionsCount != null) #totalActionsCount: totalActionsCount,
@@ -314,6 +325,10 @@ class _GoalCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Goal, $Out>
     isCompleted: data.get(#isCompleted, or: $value.isCompleted),
     completedAt: data.get(#completedAt, or: $value.completedAt),
     category: data.get(#category, or: $value.category),
+    customCategoryName: data.get(
+      #customCategoryName,
+      or: $value.customCategoryName,
+    ),
     completedActionsCount: data.get(
       #completedActionsCount,
       or: $value.completedActionsCount,
