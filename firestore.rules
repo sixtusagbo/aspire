@@ -47,10 +47,9 @@ service cloud.firestore {
       allow update, delete: if false; // Admin only
     }
 
-    // Goal templates collection - read for all authenticated, write for seeding
+    // Goal templates collection - read only
     match /goal_templates/{templateId} {
       allow read: if isAuthenticated();
-      allow write: if isAuthenticated(); // For seeding (remove after)
     }
   }
 }

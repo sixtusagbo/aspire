@@ -2,7 +2,6 @@ import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
 import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/goal_service.dart';
-import 'package:aspire/services/goal_template_service.dart';
 import 'package:aspire/services/notification_service.dart';
 import 'package:aspire/services/revenue_cat_service.dart';
 import 'package:aspire/services/user_service.dart';
@@ -30,7 +29,6 @@ class SettingsScreen extends HookConsumerWidget {
     final isPremium = useState<bool?>(null);
     final appVersion = useState<String>('');
     final isDeleting = useState<bool>(false);
-    final isSeeding = useState<bool>(false);
 
     // Load settings on mount
     useEffect(() {
@@ -234,18 +232,6 @@ class SettingsScreen extends HookConsumerWidget {
       }
     }
 
-    Future<void> handleSeedTemplates() async {
-      isSeeding.value = true;
-      try {
-        await GoalTemplateService().reseedTemplates();
-        ToastHelper.showSuccess('Goal templates seeded!');
-      } catch (e) {
-        ToastHelper.showError('Failed to seed templates: $e');
-      } finally {
-        isSeeding.value = false;
-      }
-    }
-
     final user = authService.currentUser;
     final displayName = useState(user?.displayName ?? '');
 
@@ -414,27 +400,6 @@ class SettingsScreen extends HookConsumerWidget {
                   ? 'Loading...'
                   : 'Version ${appVersion.value}',
             ),
-          ),
-          const Divider(),
-
-          // Developer section
-          ListTile(
-            leading: const Icon(Icons.developer_mode),
-            title: const Text('Developer'),
-            subtitle: const Text('Development tools'),
-          ),
-          ListTile(
-            leading: const SizedBox(width: 24),
-            title: const Text('Seed Goal Templates'),
-            subtitle: const Text('Clear and reseed from sample data'),
-            trailing: isSeeding.value
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : null,
-            onTap: isSeeding.value ? null : handleSeedTemplates,
           ),
           const Divider(),
 
