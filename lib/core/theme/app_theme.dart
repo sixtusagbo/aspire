@@ -38,7 +38,7 @@ class AppTheme {
   static const Color lightSurfaceSubtle = Color(0xFFF5F0ED); // Warm grey
   static const Color lightBorder = Color(0xFFE8E0DB); // Warm border
   static const Color lightTextPrimary = Color(0xFF2D2A28); // Warm black
-  static const Color lightTextSecondary = Color(0xFF6B6560); // Warm grey
+  static const Color lightTextSecondary = Color(0xFF524D49); // WCAG AA compliant
 
   // Dark theme - deep purple-black, not cold grey
   static const Color darkBackground = Color(0xFF150114); // Deep purple-black
@@ -46,7 +46,7 @@ class AppTheme {
   static const Color darkSurfaceSubtle = Color(0xFF251318); // Elevated surface
   static const Color darkBorder = Color(0xFF3D2833); // Warm border
   static const Color darkTextPrimary = Color(0xFFF5F0ED); // Warm white
-  static const Color darkTextSecondary = Color(0xFFB8A8AD); // Muted warm
+  static const Color darkTextSecondary = Color(0xFFD0C4C8); // WCAG AA compliant
 
   // ============================================================
   // DESIGN TOKENS
