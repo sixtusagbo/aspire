@@ -522,17 +522,46 @@ class _SuggestedActionsSheetState extends State<_SuggestedActionsSheet> {
                 itemBuilder: (context, index) {
                   if (index == _controllers.length) {
                     if (!_canAddMore) {
+                      if (widget.isPremium) {
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: Text(
+                            'Maximum $_premiumActionLimit actions reached',
+                            style: TextStyle(
+                              color: context.textSecondary,
+                              fontSize: 13,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      }
                       return Padding(
                         padding: const EdgeInsets.only(top: 8),
-                        child: Text(
-                          widget.isPremium
-                              ? 'Maximum $_premiumActionLimit actions reached'
-                              : 'Free plan: $_freeActionLimit actions. Upgrade for more!',
-                          style: TextStyle(
-                            color: context.textSecondary,
-                            fontSize: 13,
-                          ),
-                          textAlign: TextAlign.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Free plan: $_freeActionLimit actions. ',
+                              style: TextStyle(
+                                color: context.textSecondary,
+                                fontSize: 13,
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                                context.push(AppRoutes.paywall);
+                              },
+                              child: Text(
+                                'Upgrade for more!',
+                                style: TextStyle(
+                                  color: AppTheme.primaryPink,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       );
                     }
