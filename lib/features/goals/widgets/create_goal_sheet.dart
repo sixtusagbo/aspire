@@ -44,6 +44,7 @@ Future<bool> showCreateGoalSheet(
     builder: (context) => _CreateGoalSheetContent(
       userId: userId,
       goalService: goalService,
+      isPremium: isPremium,
     ),
   );
 
@@ -98,10 +99,12 @@ void _showUpgradeDialog(BuildContext context) {
 class _CreateGoalSheetContent extends StatefulWidget {
   final String userId;
   final GoalService goalService;
+  final bool isPremium;
 
   const _CreateGoalSheetContent({
     required this.userId,
     required this.goalService,
+    required this.isPremium,
   });
 
   @override
@@ -158,6 +161,7 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
       useSafeArea: true,
       builder: (context) => _SuggestedActionsSheet(
         actions: _suggestedActions,
+        isPremium: widget.isPremium,
       ),
     );
 
@@ -392,11 +396,18 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
   }
 }
 
+const int _freeActionLimit = 5;
+const int _premiumActionLimit = 10;
+
 /// Bottom sheet for editing suggested actions
 class _SuggestedActionsSheet extends StatefulWidget {
   final List<String> actions;
+  final bool isPremium;
 
-  const _SuggestedActionsSheet({required this.actions});
+  const _SuggestedActionsSheet({
+    required this.actions,
+    required this.isPremium,
+  });
 
   @override
   State<_SuggestedActionsSheet> createState() => _SuggestedActionsSheetState();
@@ -405,10 +416,17 @@ class _SuggestedActionsSheet extends StatefulWidget {
 class _SuggestedActionsSheetState extends State<_SuggestedActionsSheet> {
   late List<TextEditingController> _controllers;
 
+  int get _actionLimit =>
+      widget.isPremium ? _premiumActionLimit : _freeActionLimit;
+
+  bool get _canAddMore => _controllers.length < _actionLimit;
+
   @override
   void initState() {
     super.initState();
-    _controllers = widget.actions
+    // Limit initial actions to the user's limit
+    final limitedActions = widget.actions.take(_actionLimit).toList();
+    _controllers = limitedActions
         .map((action) => TextEditingController(text: action))
         .toList();
   }
@@ -422,6 +440,7 @@ class _SuggestedActionsSheetState extends State<_SuggestedActionsSheet> {
   }
 
   void _addAction() {
+    if (!_canAddMore) return;
     setState(() {
       _controllers.add(TextEditingController());
     });
@@ -488,7 +507,7 @@ class _SuggestedActionsSheetState extends State<_SuggestedActionsSheet> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Edit the actions that will be created with your goal',
+                    'Edit the actions that will be created with your goal (${_controllers.length}/$_actionLimit)',
                     style: TextStyle(color: context.textSecondary),
                   ),
                   const SizedBox(height: 16),
@@ -502,6 +521,21 @@ class _SuggestedActionsSheetState extends State<_SuggestedActionsSheet> {
                 itemCount: _controllers.length + 1,
                 itemBuilder: (context, index) {
                   if (index == _controllers.length) {
+                    if (!_canAddMore) {
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text(
+                          widget.isPremium
+                              ? 'Maximum $_premiumActionLimit actions reached'
+                              : 'Free plan: $_freeActionLimit actions. Upgrade for more!',
+                          style: TextStyle(
+                            color: context.textSecondary,
+                            fontSize: 13,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      );
+                    }
                     return TextButton.icon(
                       onPressed: _addAction,
                       icon: const Icon(Icons.add),
