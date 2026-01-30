@@ -614,7 +614,7 @@ class _ManageCategoriesSheetState extends State<_ManageCategoriesSheet> {
         content: Text(
           goalCount > 0
               ? '$goalCount ${goalCount == 1 ? 'goal uses' : 'goals use'} this category.\n\n'
-                  'They will be moved to "Personal".'
+                  'Goals will keep displaying "$name" but you won\'t be able to assign new goals to it.'
               : 'Remove "$name" from your custom categories?',
         ),
         actions: [
@@ -625,18 +625,14 @@ class _ManageCategoriesSheetState extends State<_ManageCategoriesSheet> {
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: Text(goalCount > 0 ? 'Move & Delete' : 'Delete'),
+            child: const Text('Delete'),
           ),
         ],
       ),
     );
 
     if (confirmed == true) {
-      // Move goals to Personal if any
-      if (goalCount > 0) {
-        await widget.goalService.moveGoalsToPersonal(widget.userId, name);
-      }
-      // Remove category from user
+      // Just remove category from user's list - goals keep their customCategoryName
       await widget.userService.removeCustomCategory(widget.userId, name);
 
       setState(() {
@@ -644,9 +640,7 @@ class _ManageCategoriesSheetState extends State<_ManageCategoriesSheet> {
         _goalCounts.remove(name);
       });
       widget.onCategoriesChanged(_categories);
-      ToastHelper.showSuccess(
-        goalCount > 0 ? 'Goals moved to Personal' : 'Category deleted',
-      );
+      ToastHelper.showSuccess('Category deleted');
     }
   }
 
