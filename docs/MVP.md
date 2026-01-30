@@ -329,10 +329,10 @@ Add before deadline after core MVP polish:
 
 **Day 11: Testing**
 
+- [ ] Review the app one more time based on the judging criteria esp UX
 - [ ] Full flow testing
 - [ ] Edge cases and bug fixes
 - [ ] Performance optimization
-- [ ] Review the app one more time based on the judging criteria esp UX
 
 **Day 12: Submission**
 
