@@ -166,6 +166,11 @@ class _PremiumActiveContent extends StatelessWidget {
             title: 'Custom Reminders',
             description: 'Set different reminder times per goal',
           ),
+          _FeatureItem(
+            icon: Icons.check_circle,
+            title: 'Custom Categories',
+            description: 'Create your own goal categories',
+          ),
 
           const Spacer(flex: 2),
         ],
@@ -265,6 +270,11 @@ class _PaywallContent extends StatelessWidget {
                 icon: Icons.schedule,
                 title: 'Custom Reminders',
                 description: 'Set different reminder times per goal',
+              ),
+              _FeatureItem(
+                icon: Icons.category,
+                title: 'Custom Categories',
+                description: 'Create your own goal categories',
               ),
 
               const SizedBox(height: 32),
