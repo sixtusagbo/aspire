@@ -3,8 +3,10 @@ import 'package:aspire/core/theme/category_colors.dart';
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/models/goal.dart';
 import 'package:aspire/models/user.dart';
+import 'package:aspire/services/revenue_cat_service.dart';
 import 'package:aspire/services/user_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -53,7 +55,7 @@ class CategorySelection {
 }
 
 /// Category selector supporting both preset and custom categories
-class CategorySelector extends ConsumerWidget {
+class CategorySelector extends HookConsumerWidget {
   final CategorySelection selected;
   final ValueChanged<CategorySelection> onChanged;
   final AppUser? user;
@@ -68,7 +70,15 @@ class CategorySelector extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final customCategories = user?.customCategories ?? [];
-    final isPremium = user?.isPremium ?? false;
+    final isPremium = useState<bool>(false);
+
+    // Check premium status from RevenueCat
+    useEffect(() {
+      ref.read(revenueCatServiceProvider).isPremium().then((value) {
+        isPremium.value = value;
+      });
+      return null;
+    }, []);
 
     return Wrap(
       spacing: 8,
@@ -89,17 +99,17 @@ class CategorySelector extends ConsumerWidget {
               color: CustomCategoryStyle.defaultColor,
               isSelected: selected.isCustom && selected.customCategoryName == name,
               onTap: () => onChanged(CategorySelection.custom(name)),
-              onLongPress: isPremium
+              onLongPress: isPremium.value
                   ? () => _showDeleteDialog(context, ref, name)
                   : null,
             )),
         // Add custom category button (premium only)
-        if (isPremium)
+        if (isPremium.value)
           _AddCategoryChip(
             onTap: () => _showAddCategoryDialog(context, ref),
           ),
         // Show upgrade prompt for non-premium users
-        if (!isPremium && customCategories.isEmpty)
+        if (!isPremium.value && customCategories.isEmpty)
           GestureDetector(
             onTap: () => context.push(AppRoutes.paywall),
             child: Container(

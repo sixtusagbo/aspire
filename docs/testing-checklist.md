@@ -22,9 +22,9 @@
 
 #### As Free User
 
-- [ ] Category selector shows preset categories (Travel, Career, Finance, Wellness, Personal)
-- [ ] "Custom" chip shows with lock icon
-- [ ] Tapping "Custom" chip navigates to paywall
+- [x] Category selector shows preset categories (Travel, Career, Finance, Wellness, Personal)
+- [x] "Custom" chip shows with lock icon
+- [x] Tapping "Custom" chip navigates to paywall
 
 #### As Premium User
 

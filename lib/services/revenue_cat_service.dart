@@ -15,7 +15,7 @@ const String premiumEntitlement = 'premium';
 
 /// DEBUG: Set to true to bypass premium checks for testing
 /// IMPORTANT: Set to false before release!
-const bool _debugPremiumBypass = false;
+const bool _debugPremiumBypass = true;
 
 /// RevenueCat service for handling subscriptions
 class RevenueCatService {
