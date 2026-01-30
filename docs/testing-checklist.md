@@ -39,11 +39,16 @@
 
 #### Manage Custom Categories in Settings
 
-- [ ] Settings shows "Custom Categories" option under Premium section (only if has categories)
-- [x] Tap → opens bottom sheet with list of custom categories
-- [x] Each category shows delete button
-- [ ] Tap delete → shows confirmation dialog
-- [ ] Confirm delete → category removed and sheet closes
+- [ ] Settings shows "Custom Categories" as its own section (premium users only)
+- [ ] Shows "Create categories when adding goals" if no categories exist
+- [ ] Shows category count if categories exist
+- [ ] Tap → opens bottom sheet with loading indicator
+- [ ] Shows list of categories with goal counts
+- [ ] Tap category row → shows rename dialog
+- [ ] Rename a category → updates category name and all goals using it
+- [ ] Tap delete button → shows confirmation with goal count
+- [ ] If category has goals, confirms "Move & Delete" → goals moved to Personal
+- [ ] After delete, category removed from list
 
 ### Accessibility
 
