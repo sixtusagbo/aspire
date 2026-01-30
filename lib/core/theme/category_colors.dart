@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 /// Default styling for custom categories (premium feature)
 class CustomCategoryStyle {
-  static const Color defaultColor = Color(0xFF8B7355); // Warm brown
+  static const Color defaultColor = Color(0xFFE07B91); // Warm rose
   static const IconData defaultIcon = Icons.category_rounded;
 }
 

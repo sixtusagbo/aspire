@@ -69,8 +69,17 @@ class CategorySelector extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final customCategories = user?.customCategories ?? [];
     final isPremium = useState<bool>(false);
+    // Local state for custom categories to avoid stale data issues
+    final localCustomCategories = useState<List<String>>(
+      user?.customCategories ?? [],
+    );
+
+    // Sync with user data when it changes
+    useEffect(() {
+      localCustomCategories.value = user?.customCategories ?? [];
+      return null;
+    }, [user?.customCategories]);
 
     // Check premium status from RevenueCat
     useEffect(() {
@@ -93,23 +102,23 @@ class CategorySelector extends HookConsumerWidget {
               onTap: () => onChanged(CategorySelection.preset(cat)),
             )),
         // Custom categories (premium)
-        ...customCategories.map((name) => _CategoryChip(
+        ...localCustomCategories.value.map((name) => _CategoryChip(
               label: name,
               icon: CustomCategoryStyle.defaultIcon,
               color: CustomCategoryStyle.defaultColor,
               isSelected: selected.isCustom && selected.customCategoryName == name,
               onTap: () => onChanged(CategorySelection.custom(name)),
               onLongPress: isPremium.value
-                  ? () => _showDeleteDialog(context, ref, name)
+                  ? () => _showDeleteDialog(context, ref, name, localCustomCategories)
                   : null,
             )),
         // Add custom category button (premium only)
         if (isPremium.value)
           _AddCategoryChip(
-            onTap: () => _showAddCategoryDialog(context, ref),
+            onTap: () => _showAddCategoryDialog(context, ref, localCustomCategories),
           ),
         // Show upgrade prompt for non-premium users
-        if (!isPremium.value && customCategories.isEmpty)
+        if (!isPremium.value && localCustomCategories.value.isEmpty)
           GestureDetector(
             onTap: () => context.push(AppRoutes.paywall),
             child: Container(
@@ -151,7 +160,11 @@ class CategorySelector extends HookConsumerWidget {
     );
   }
 
-  Future<void> _showAddCategoryDialog(BuildContext context, WidgetRef ref) async {
+  Future<void> _showAddCategoryDialog(
+    BuildContext context,
+    WidgetRef ref,
+    ValueNotifier<List<String>> localCustomCategories,
+  ) async {
     final controller = TextEditingController();
     final result = await showDialog<String>(
       context: context,
@@ -190,14 +203,22 @@ class CategorySelector extends HookConsumerWidget {
     );
 
     if (result != null && user != null) {
+      // Update local state immediately for instant UI feedback
+      localCustomCategories.value = [...localCustomCategories.value, result];
+      // Select the newly created category
+      onChanged(CategorySelection.custom(result));
+      // Persist to Firestore in background
       final userService = ref.read(userServiceProvider);
       await userService.addCustomCategory(user!.id, result);
-      onChanged(CategorySelection.custom(result));
     }
   }
 
   Future<void> _showDeleteDialog(
-      BuildContext context, WidgetRef ref, String name) async {
+    BuildContext context,
+    WidgetRef ref,
+    String name,
+    ValueNotifier<List<String>> localCustomCategories,
+  ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -217,12 +238,16 @@ class CategorySelector extends HookConsumerWidget {
     );
 
     if (confirmed == true && user != null) {
-      final userService = ref.read(userServiceProvider);
-      await userService.removeCustomCategory(user!.id, name);
+      // Update local state immediately for instant UI feedback
+      localCustomCategories.value =
+          localCustomCategories.value.where((c) => c != name).toList();
       // If deleted category was selected, reset to personal
       if (selected.isCustom && selected.customCategoryName == name) {
         onChanged(CategorySelection.preset(GoalCategory.personal));
       }
+      // Persist to Firestore in background
+      final userService = ref.read(userServiceProvider);
+      await userService.removeCustomCategory(user!.id, name);
     }
   }
 }
