@@ -48,9 +48,9 @@
 
 #### Cleanup (after testing)
 
-- [ ] Remove Developer section from settings_screen.dart
-- [ ] Remove write permission from goal_templates in firestore.rules
-- [ ] Deploy updated Firestore rules
+- [x] Remove Developer section from settings_screen.dart
+- [x] Remove write permission from goal_templates in firestore.rules
+- [x] Deploy updated Firestore rules
 
 ### Celebration Sound Effects
 
