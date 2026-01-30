@@ -18,6 +18,27 @@
 
 ## Bonus Features
 
+### Custom Categories (Premium)
+
+#### As Free User
+
+- [ ] Category selector shows preset categories (Travel, Career, Finance, Wellness, Personal)
+- [ ] "Custom" chip shows with lock icon
+- [ ] Tapping "Custom" chip navigates to paywall
+
+#### As Premium User
+
+- [ ] Category selector shows "Add" button in pink
+- [ ] Tap "Add" → shows dialog to enter custom category name
+- [ ] Enter name and tap "Add" → custom category appears in selector
+- [ ] Custom category chip shows with default icon (category icon)
+- [ ] Custom category uses default brown color
+- [ ] Can select custom category when creating a goal
+- [ ] Goal displays with custom category name in all screens (Home, Goals, Progress, Detail)
+- [ ] Can edit goal and change to/from custom category
+- [ ] Long press custom category chip → shows delete confirmation
+- [ ] Delete custom category → chip removed from selector
+
 ### Accessibility
 
 - [ ] Enable "Reduce motion" in device settings → confetti/animations should be skipped

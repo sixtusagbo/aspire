@@ -320,7 +320,7 @@ Add before deadline after core MVP polish:
 - [x] **Tips Card** - Replace gamification card on Home with daily tips from Gabby
 - [x] **Goal Templates** - Pre-made goals for common dreams (travel, career, finance)
 - [x] **Celebration Sound Effects** - Audio feedback for goal completion
-- [ ] **Custom Categories (Premium)** - Allow premium users to create custom goal categories (name only, uses default icon/color)
+- [x] **Custom Categories (Premium)** - Allow premium users to create custom goal categories (name only, uses default icon/color)
 - [x] **Accessibility** - Screen reader support, contrast ratios, reduced motion
 
 ---
