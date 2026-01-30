@@ -81,4 +81,38 @@ What I shipped:
 
 ---
 
-DAY 5 NEXT
+## Day 5
+
+### LinkedIn
+
+Day 5 of building Aspire for RevenueCat's #Shipyard2026 Hackathon!
+
+Packed day. I was multitasking in the morning, cooking and coding 😂
+
+At night, I slept off while working 😮‍💨
+
+The app is really coming together.
+
+Today, I shipped a new premium feature and 5 new features for both free and premium.
+
+Today, I'll try to involve more people to test the app and I'll start preparing for submission.
+
+#buildinpublic #flutter #hackathon #revenuecat
+
+---
+
+### Twitter/X
+
+Day 5 of #Shipyard2026!
+
+Packed day. I was multitasking in the morning, cooking and coding 😂
+
+At night, I slept off while working 😮‍💨
+
+The app is really coming together.
+
+Yesterday, I shipped a new premium feature and 5 new features for both free and premium.
+
+Today, I'll try to involve more people to test the app and I'll start preparing for submission.
+
+#buildinpublic

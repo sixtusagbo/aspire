@@ -2,6 +2,23 @@
 
 All notable changes to Aspire will be documented in this file.
 
+## [0.1.5] - 2026-01-30
+
+### Added
+- Tip of the Day card on home screen with Gabby quotes
+- Social sharing for streaks and goal completions
+- Goal templates to help users get started
+- Celebration sound effect for goal completion
+- Custom categories (premium) - create your own goal categories
+- Manage custom categories in Settings (edit/rename/delete)
+- Personalized greeting on home screen
+- Edit account name in Settings
+
+### Improved
+- Accessibility: reduced motion support for animations
+- Accessibility: improved contrast ratios (WCAG AA)
+- Accessibility: tooltips on icon buttons
+
 ## [0.1.4] - 2026-01-29
 
 ### Changed
