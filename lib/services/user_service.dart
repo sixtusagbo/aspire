@@ -60,6 +60,26 @@ class UserService {
       'customCategories': FieldValue.arrayRemove([categoryName]),
     });
   }
+
+  /// Rename a custom category (premium feature)
+  Future<void> renameCustomCategory(
+    String userId,
+    String oldName,
+    String newName,
+  ) async {
+    final doc = await _firestore.collection('users').doc(userId).get();
+    if (!doc.exists) return;
+
+    final data = doc.data()!;
+    final categories = List<String>.from(data['customCategories'] ?? []);
+    final index = categories.indexOf(oldName);
+    if (index != -1) {
+      categories[index] = newName;
+      await _firestore.collection('users').doc(userId).update({
+        'customCategories': categories,
+      });
+    }
+  }
 }
 
 @riverpod

@@ -2,7 +2,6 @@ import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/core/theme/category_colors.dart';
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
-import 'package:aspire/models/user.dart';
 import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/goal_service.dart';
 import 'package:aspire/services/notification_service.dart';
@@ -328,9 +327,11 @@ class SettingsScreen extends HookConsumerWidget {
         children: [
           ListTile(
             leading: const Icon(Icons.person_outline),
-            title: Text(displayName.value.isNotEmpty
-                ? displayName.value
-                : 'Add your name'),
+            title: Text(
+              displayName.value.isNotEmpty
+                  ? displayName.value
+                  : 'Add your name',
+            ),
             subtitle: Text(user?.email ?? 'Manage your account'),
             trailing: const Icon(Icons.chevron_right),
             onTap: handleEditAccount,
@@ -345,8 +346,8 @@ class SettingsScreen extends HookConsumerWidget {
               notificationsEnabled.value == null
                   ? 'Checking...'
                   : notificationsEnabled.value!
-                      ? 'Enabled'
-                      : 'Tap to enable',
+                  ? 'Enabled'
+                  : 'Tap to enable',
             ),
             trailing: notificationsEnabled.value == null
                 ? const SizedBox(
@@ -397,8 +398,8 @@ class SettingsScreen extends HookConsumerWidget {
               isPremium.value == null
                   ? 'Checking...'
                   : isPremium.value!
-                      ? 'You have premium access'
-                      : 'Upgrade to unlock unlimited goals',
+                  ? 'You have premium access'
+                  : 'Upgrade to unlock unlimited goals',
             ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(AppRoutes.paywall),
@@ -429,7 +430,9 @@ class SettingsScreen extends HookConsumerWidget {
               trailing: customCategories.value.isEmpty
                   ? null
                   : const Icon(Icons.chevron_right),
-              onTap: customCategories.value.isEmpty ? null : handleManageCategories,
+              onTap: customCategories.value.isEmpty
+                  ? null
+                  : handleManageCategories,
             ),
           if (isPremium.value == true) const Divider(),
 
@@ -533,8 +536,10 @@ class _ManageCategoriesSheetState extends State<_ManageCategoriesSheet> {
   Future<void> _loadGoalCounts() async {
     final counts = <String, int>{};
     for (final name in _categories) {
-      counts[name] = await widget.goalService
-          .countGoalsByCustomCategory(widget.userId, name);
+      counts[name] = await widget.goalService.countGoalsByCustomCategory(
+        widget.userId,
+        name,
+      );
     }
     if (mounted) {
       setState(() {
@@ -583,15 +588,17 @@ class _ManageCategoriesSheetState extends State<_ManageCategoriesSheet> {
     );
 
     if (newName != null && newName != oldName) {
-      // Update goals first
+      // Update goals and user's category list
       await widget.goalService.renameCustomCategory(
         widget.userId,
         oldName,
         newName,
       );
-      // Update user's category list
-      await widget.userService.removeCustomCategory(widget.userId, oldName);
-      await widget.userService.addCustomCategory(widget.userId, newName);
+      await widget.userService.renameCustomCategory(
+        widget.userId,
+        oldName,
+        newName,
+      );
 
       setState(() {
         final index = _categories.indexOf(oldName);
@@ -614,7 +621,7 @@ class _ManageCategoriesSheetState extends State<_ManageCategoriesSheet> {
         content: Text(
           goalCount > 0
               ? '$goalCount ${goalCount == 1 ? 'goal uses' : 'goals use'} this category.\n\n'
-                  '${goalCount == 1 ? 'That goal' : 'Those goals'} will keep displaying "$name" but you won\'t be able to assign new goals to it.'
+                    '${goalCount == 1 ? 'That goal' : 'Those goals'} will keep displaying "$name" but you won\'t be able to assign new goals to this category anymore.'
               : 'Remove "$name" from your custom categories?',
         ),
         actions: [
@@ -693,12 +700,14 @@ class _ManageCategoriesSheetState extends State<_ManageCategoriesSheet> {
               ),
             )
           else
-            ..._categories.map((name) => _CategoryTile(
-                  name: name,
-                  goalCount: _goalCounts[name] ?? 0,
-                  onEdit: () => _handleEdit(name),
-                  onDelete: () => _handleDelete(name),
-                )),
+            ..._categories.map(
+              (name) => _CategoryTile(
+                name: name,
+                goalCount: _goalCounts[name] ?? 0,
+                onEdit: () => _handleEdit(name),
+                onDelete: () => _handleDelete(name),
+              ),
+            ),
           const SizedBox(height: 16),
         ],
       ),
