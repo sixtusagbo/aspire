@@ -56,3 +56,11 @@
 
 - [x] Mark goal as complete → celebration sound plays
 - [x] Sound plays with goal completion dialog
+
+### Accessibility
+
+- [ ] Enable "Reduce motion" in device settings → confetti/animations should be skipped
+- [ ] Goal completion dialog shows static trophy (no pulse animation) with reduce motion
+- [ ] Streak celebration dialog shows static fire (no pulse animation) with reduce motion
+- [ ] Secondary text is readable (improved contrast)
+- [ ] Icon buttons show tooltips on long press

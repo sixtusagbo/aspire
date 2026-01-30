@@ -321,7 +321,7 @@ Add before deadline after core MVP polish:
 - [x] **Goal Templates** - Pre-made goals for common dreams (travel, career, finance)
 - [x] **Celebration Sound Effects** - Audio feedback for goal completion
 - [ ] **Custom Categories (Premium)** - Allow premium users to create custom goal categories (name only, uses default icon/color)
-- [ ] **Accessibility** - Screen reader support, contrast ratios, reduced motion
+- [x] **Accessibility** - Screen reader support, contrast ratios, reduced motion
 
 ---
 
