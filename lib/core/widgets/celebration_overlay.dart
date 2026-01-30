@@ -55,6 +55,12 @@ class CelebrationOverlayState extends State<CelebrationOverlay> {
   }
 
   void celebrate(CelebrationType type) {
+    // Respect reduced motion accessibility setting
+    if (MediaQuery.of(context).disableAnimations) {
+      Log.i('Celebration skipped (reduced motion): ${type.name}');
+      return;
+    }
+
     Log.i('Celebration triggered: ${type.name}');
     switch (type) {
       case CelebrationType.actionComplete:

@@ -24,40 +24,44 @@ class StreakCelebrationDialog extends StatefulWidget {
 
 class _StreakCelebrationDialogState extends State<StreakCelebrationDialog>
     with TickerProviderStateMixin {
-  late final AnimationController _pulseController;
-  late final AnimationController _glowController;
-  late final Animation<double> _pulseAnimation;
-  late final Animation<double> _glowAnimation;
+  AnimationController? _pulseController;
+  AnimationController? _glowController;
+  Animation<double>? _pulseAnimation;
+  Animation<double>? _glowAnimation;
+  bool _reduceMotion = false;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _reduceMotion = MediaQuery.of(context).disableAnimations;
 
-    // Pulse animation for the fire emoji
-    _pulseController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    );
-    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
-      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
-    );
-    _pulseController.repeat(reverse: true);
+    if (!_reduceMotion && _pulseController == null) {
+      // Pulse animation for the fire emoji
+      _pulseController = AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 600),
+      );
+      _pulseAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
+        CurvedAnimation(parent: _pulseController!, curve: Curves.easeInOut),
+      );
+      _pulseController!.repeat(reverse: true);
 
-    // Glow animation for the background
-    _glowController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1000),
-    );
-    _glowAnimation = Tween<double>(begin: 0.2, end: 0.5).animate(
-      CurvedAnimation(parent: _glowController, curve: Curves.easeInOut),
-    );
-    _glowController.repeat(reverse: true);
+      // Glow animation for the background
+      _glowController = AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 1000),
+      );
+      _glowAnimation = Tween<double>(begin: 0.2, end: 0.5).animate(
+        CurvedAnimation(parent: _glowController!, curve: Curves.easeInOut),
+      );
+      _glowController!.repeat(reverse: true);
+    }
   }
 
   @override
   void dispose() {
-    _pulseController.dispose();
-    _glowController.dispose();
+    _pulseController?.dispose();
+    _glowController?.dispose();
     super.dispose();
   }
 
@@ -98,48 +102,69 @@ class _StreakCelebrationDialogState extends State<StreakCelebrationDialog>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Animated fire emoji with pulsing glow
-                AnimatedBuilder(
-                  animation:
-                      Listenable.merge([_pulseAnimation, _glowAnimation]),
-                  builder: (context, child) {
-                    return Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: RadialGradient(
-                          colors: [
-                            streakColor.withValues(alpha: _glowAnimation.value),
-                            streakColor.withValues(
-                              alpha: _glowAnimation.value * 0.3,
-                            ),
-                            Colors.transparent,
-                          ],
-                          stops: const [0.3, 0.6, 1.0],
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: streakColor.withValues(
-                              alpha: _glowAnimation.value * 0.6,
-                            ),
-                            blurRadius: 25,
-                            spreadRadius: 8,
-                          ),
+                // Fire emoji with optional pulsing glow animation
+                if (_reduceMotion)
+                  Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(
+                        colors: [
+                          streakColor.withValues(alpha: 0.35),
+                          streakColor.withValues(alpha: 0.1),
+                          Colors.transparent,
                         ],
+                        stops: const [0.3, 0.6, 1.0],
                       ),
-                      child: Center(
-                        child: Transform.scale(
-                          scale: _pulseAnimation.value,
-                          child: const Text(
-                            '🔥',
-                            style: TextStyle(fontSize: 48),
+                    ),
+                    child: const Center(
+                      child: Text('🔥', style: TextStyle(fontSize: 48)),
+                    ),
+                  )
+                else
+                  AnimatedBuilder(
+                    animation:
+                        Listenable.merge([_pulseAnimation!, _glowAnimation!]),
+                    builder: (context, child) {
+                      return Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: RadialGradient(
+                            colors: [
+                              streakColor.withValues(
+                                  alpha: _glowAnimation!.value),
+                              streakColor.withValues(
+                                alpha: _glowAnimation!.value * 0.3,
+                              ),
+                              Colors.transparent,
+                            ],
+                            stops: const [0.3, 0.6, 1.0],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: streakColor.withValues(
+                                alpha: _glowAnimation!.value * 0.6,
+                              ),
+                              blurRadius: 25,
+                              spreadRadius: 8,
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Transform.scale(
+                            scale: _pulseAnimation!.value,
+                            child: const Text(
+                              '🔥',
+                              style: TextStyle(fontSize: 48),
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
+                      );
+                    },
+                  ),
                 const SizedBox(height: 12),
 
                 // Streak count
