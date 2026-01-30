@@ -115,24 +115,26 @@ class _CreateGoalSheetContent extends StatefulWidget {
 class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
+  final _titleFocusNode = FocusNode();
   GoalCategory _selectedCategory = GoalCategory.personal;
   DateTime? _targetDate;
   bool _isCreating = false;
   GoalTemplate? _selectedTemplate;
   List<String> _suggestedActions = [];
-  bool _hasSelectedTemplate = false;
 
   @override
   void dispose() {
     _titleController.dispose();
     _descController.dispose();
+    _titleFocusNode.dispose();
     super.dispose();
   }
 
   void _applyTemplate(GoalTemplate template) {
+    // Unfocus title field when template is applied
+    _titleFocusNode.unfocus();
     setState(() {
       _selectedTemplate = template;
-      _hasSelectedTemplate = true;
       _titleController.text = template.title;
       _descController.text = template.description;
       _selectedCategory = template.category;
@@ -274,7 +276,7 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
             // Title
             TextField(
               controller: _titleController,
-              autofocus: !_hasSelectedTemplate,
+              focusNode: _titleFocusNode,
               textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(
                 labelText: 'What\'s your goal?',
