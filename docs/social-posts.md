@@ -116,3 +116,33 @@ Yesterday, I shipped a new premium feature and 5 new features for both free and 
 Today, I'll try to involve more people to test the app and I'll start preparing for submission.
 
 #buildinpublic
+
+---
+
+## Day 6 & 7 (Weekend Update)
+
+### LinkedIn
+
+Days 6 & 7 of building Aspire for RevenueCat's #Shipyard2026 Hackathon!
+
+Weekend update:
+
+I got a few ladies to join internal testing and the feedback has been valuable.
+
+Deadline is getting close. After today, I'll start preparing for submission.
+
+#buildinpublic #flutter #hackathon #revenuecat
+
+---
+
+### Twitter/X
+
+Days 6 & 7 of #Shipyard2026!
+
+Weekend update:
+
+I got a few ladies to join internal testing and the feedback has been valuable.
+
+Deadline is getting close. After today, I'll start preparing for submission.
+
+#buildinpublic
