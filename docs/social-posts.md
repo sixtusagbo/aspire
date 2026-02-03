@@ -146,3 +146,29 @@ I got a few ladies to join internal testing and the feedback has been valuable.
 Deadline is getting close. After today, I'll start preparing for submission.
 
 #buildinpublic
+
+---
+
+## Day 8
+
+### LinkedIn
+
+Day 8 of building Aspire for RevenueCat's #Shipyard2026 Hackathon!
+
+Still testing and getting feedback from users. Making small refinements based on what they're finding.
+
+The deadline is approaching fast. Time to focus on polishing and preparing for submission.
+
+#buildinpublic #flutter #hackathon #revenuecat
+
+---
+
+### Twitter/X
+
+Day 8 of #Shipyard2026!
+
+Still testing and getting feedback. Making refinements based on what users are finding.
+
+Deadline approaching fast. Time to polish and prepare for submission.
+
+#buildinpublic
