@@ -12,6 +12,17 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+const _termsOfServiceUrl = 'https://aspire.sixtusagbo.dev/terms';
+const _privacyPolicyUrl = 'https://aspire.sixtusagbo.dev/privacy';
+
+Future<void> _launchUrl(String url) async {
+  final uri = Uri.parse(url);
+  if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+    ToastHelper.showError('Could not open link');
+  }
+}
 
 class SettingsScreen extends HookConsumerWidget {
   const SettingsScreen({super.key});
@@ -445,6 +456,18 @@ class SettingsScreen extends HookConsumerWidget {
                   ? 'Loading...'
                   : 'Version ${appVersion.value}',
             ),
+          ),
+          ListTile(
+            leading: const SizedBox(width: 24),
+            title: const Text('Terms of Service'),
+            trailing: const Icon(Icons.open_in_new, size: 18),
+            onTap: () => _launchUrl(_termsOfServiceUrl),
+          ),
+          ListTile(
+            leading: const SizedBox(width: 24),
+            title: const Text('Privacy Policy'),
+            trailing: const Icon(Icons.open_in_new, size: 18),
+            onTap: () => _launchUrl(_privacyPolicyUrl),
           ),
           const Divider(),
 

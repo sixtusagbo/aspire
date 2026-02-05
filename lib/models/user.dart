@@ -23,6 +23,13 @@ class AppUser with AppUserMappable {
   @MappableField(hook: NullableDateTimeHook())
   final DateTime? lastActivityDate;
 
+  @MappableField(hook: NullableDateTimeHook())
+  final DateTime? lastLoginAt;
+
+  // Track when user declined notification prompt (to not ask again too soon)
+  @MappableField(hook: NullableDateTimeHook())
+  final DateTime? notificationPromptDeclinedAt;
+
   // Premium status
   final bool isPremium;
 
@@ -49,6 +56,8 @@ class AppUser with AppUserMappable {
     this.currentStreak = 0,
     this.longestStreak = 0,
     this.lastActivityDate,
+    this.lastLoginAt,
+    this.notificationPromptDeclinedAt,
     this.isPremium = false,
     this.premiumExpiresAt,
     this.dailyReminderEnabled = false,

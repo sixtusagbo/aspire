@@ -9,6 +9,7 @@ import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/log_service.dart';
 import 'package:aspire/services/revenue_cat_service.dart';
 import 'package:aspire/services/user_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -49,6 +50,11 @@ class SignInScreen extends HookConsumerWidget {
           final userService = ref.read(userServiceProvider);
           final profile = await userService.getUser(user.uid);
 
+          // Update last login time
+          await userService.updateUser(user.uid, {
+            'lastLoginAt': Timestamp.now(),
+          });
+
           if (profile != null && context.mounted) {
             if (profile.onboardingComplete) {
               context.go(AppRoutes.home);
@@ -88,6 +94,11 @@ class SignInScreen extends HookConsumerWidget {
 
           final userService = ref.read(userServiceProvider);
           final profile = await userService.getUser(userCredential.user!.uid);
+
+          // Update last login time
+          await userService.updateUser(userCredential.user!.uid, {
+            'lastLoginAt': Timestamp.now(),
+          });
 
           if (profile != null && context.mounted) {
             if (profile.onboardingComplete) {
@@ -197,8 +208,7 @@ class SignInScreen extends HookConsumerWidget {
                 // Sign In Button
                 GradientButton(
                   text: 'Continue',
-                  onPressed:
-                      isLoading.value ? null : handleEmailSignIn,
+                  onPressed: isLoading.value ? null : handleEmailSignIn,
                   isLoading: isLoading.value,
                 ),
                 const SizedBox(height: 24),

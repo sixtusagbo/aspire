@@ -77,6 +77,21 @@ class AppUserMapper extends ClassMapperBase<AppUser> {
     opt: true,
     hook: NullableDateTimeHook(),
   );
+  static DateTime? _$lastLoginAt(AppUser v) => v.lastLoginAt;
+  static const Field<AppUser, DateTime> _f$lastLoginAt = Field(
+    'lastLoginAt',
+    _$lastLoginAt,
+    opt: true,
+    hook: NullableDateTimeHook(),
+  );
+  static DateTime? _$notificationPromptDeclinedAt(AppUser v) =>
+      v.notificationPromptDeclinedAt;
+  static const Field<AppUser, DateTime> _f$notificationPromptDeclinedAt = Field(
+    'notificationPromptDeclinedAt',
+    _$notificationPromptDeclinedAt,
+    opt: true,
+    hook: NullableDateTimeHook(),
+  );
   static bool _$isPremium(AppUser v) => v.isPremium;
   static const Field<AppUser, bool> _f$isPremium = Field(
     'isPremium',
@@ -133,6 +148,8 @@ class AppUserMapper extends ClassMapperBase<AppUser> {
     #currentStreak: _f$currentStreak,
     #longestStreak: _f$longestStreak,
     #lastActivityDate: _f$lastActivityDate,
+    #lastLoginAt: _f$lastLoginAt,
+    #notificationPromptDeclinedAt: _f$notificationPromptDeclinedAt,
     #isPremium: _f$isPremium,
     #premiumExpiresAt: _f$premiumExpiresAt,
     #dailyReminderEnabled: _f$dailyReminderEnabled,
@@ -154,6 +171,8 @@ class AppUserMapper extends ClassMapperBase<AppUser> {
       currentStreak: data.dec(_f$currentStreak),
       longestStreak: data.dec(_f$longestStreak),
       lastActivityDate: data.dec(_f$lastActivityDate),
+      lastLoginAt: data.dec(_f$lastLoginAt),
+      notificationPromptDeclinedAt: data.dec(_f$notificationPromptDeclinedAt),
       isPremium: data.dec(_f$isPremium),
       premiumExpiresAt: data.dec(_f$premiumExpiresAt),
       dailyReminderEnabled: data.dec(_f$dailyReminderEnabled),
@@ -234,6 +253,8 @@ abstract class AppUserCopyWith<$R, $In extends AppUser, $Out>
     int? currentStreak,
     int? longestStreak,
     DateTime? lastActivityDate,
+    DateTime? lastLoginAt,
+    DateTime? notificationPromptDeclinedAt,
     bool? isPremium,
     DateTime? premiumExpiresAt,
     bool? dailyReminderEnabled,
@@ -272,6 +293,8 @@ class _AppUserCopyWithImpl<$R, $Out>
     int? currentStreak,
     int? longestStreak,
     Object? lastActivityDate = $none,
+    Object? lastLoginAt = $none,
+    Object? notificationPromptDeclinedAt = $none,
     bool? isPremium,
     Object? premiumExpiresAt = $none,
     bool? dailyReminderEnabled,
@@ -292,6 +315,9 @@ class _AppUserCopyWithImpl<$R, $Out>
       if (currentStreak != null) #currentStreak: currentStreak,
       if (longestStreak != null) #longestStreak: longestStreak,
       if (lastActivityDate != $none) #lastActivityDate: lastActivityDate,
+      if (lastLoginAt != $none) #lastLoginAt: lastLoginAt,
+      if (notificationPromptDeclinedAt != $none)
+        #notificationPromptDeclinedAt: notificationPromptDeclinedAt,
       if (isPremium != null) #isPremium: isPremium,
       if (premiumExpiresAt != $none) #premiumExpiresAt: premiumExpiresAt,
       if (dailyReminderEnabled != null)
@@ -320,6 +346,11 @@ class _AppUserCopyWithImpl<$R, $Out>
     currentStreak: data.get(#currentStreak, or: $value.currentStreak),
     longestStreak: data.get(#longestStreak, or: $value.longestStreak),
     lastActivityDate: data.get(#lastActivityDate, or: $value.lastActivityDate),
+    lastLoginAt: data.get(#lastLoginAt, or: $value.lastLoginAt),
+    notificationPromptDeclinedAt: data.get(
+      #notificationPromptDeclinedAt,
+      or: $value.notificationPromptDeclinedAt,
+    ),
     isPremium: data.get(#isPremium, or: $value.isPremium),
     premiumExpiresAt: data.get(#premiumExpiresAt, or: $value.premiumExpiresAt),
     dailyReminderEnabled: data.get(

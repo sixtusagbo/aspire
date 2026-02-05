@@ -8,10 +8,15 @@ import 'package:aspire/features/auth/widgets/or_divider.dart';
 import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/log_service.dart';
 import 'package:aspire/services/revenue_cat_service.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+const _termsOfServiceUrl = 'https://aspire.sixtusagbo.dev/terms';
+const _privacyPolicyUrl = 'https://aspire.sixtusagbo.dev/privacy';
 
 class SignUpScreen extends HookConsumerWidget {
   const SignUpScreen({super.key});
@@ -24,6 +29,7 @@ class SignUpScreen extends HookConsumerWidget {
     final obscurePassword = useState(true);
     final obscureConfirmPassword = useState(true);
     final isLoading = useState(false);
+    final agreedToTerms = useState(false);
 
     Future<void> handleSignUp() async {
       if (isLoading.value) return;
@@ -44,6 +50,11 @@ class SignUpScreen extends HookConsumerWidget {
 
       if (password.length < 6) {
         ToastHelper.showWarning('Password must be at least 6 characters');
+        return;
+      }
+
+      if (!agreedToTerms.value) {
+        ToastHelper.showWarning('Please agree to the Terms and Privacy Policy');
         return;
       }
 
@@ -81,6 +92,11 @@ class SignUpScreen extends HookConsumerWidget {
 
     Future<void> handleGoogleSignUp() async {
       if (isLoading.value) return;
+
+      if (!agreedToTerms.value) {
+        ToastHelper.showWarning('Please agree to the Terms and Privacy Policy');
+        return;
+      }
 
       isLoading.value = true;
       try {
@@ -191,12 +207,17 @@ class SignUpScreen extends HookConsumerWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 24),
+                // Terms and Privacy Policy agreement
+                _TermsCheckbox(
+                  value: agreedToTerms.value,
+                  onChanged: (value) => agreedToTerms.value = value ?? false,
+                ),
+                const SizedBox(height: 24),
                 // Sign Up Button
                 GradientButton(
                   text: 'Continue',
-                  onPressed:
-                      isLoading.value ? null : handleSignUp,
+                  onPressed: isLoading.value ? null : handleSignUp,
                   isLoading: isLoading.value,
                 ),
                 const SizedBox(height: 24),
@@ -244,6 +265,76 @@ class SignUpScreen extends HookConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _TermsCheckbox extends StatelessWidget {
+  final bool value;
+  final ValueChanged<bool?> onChanged;
+
+  const _TermsCheckbox({required this.value, required this.onChanged});
+
+  Future<void> _launchUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      ToastHelper.showError('Could not open link');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final textColor = Theme.of(context).brightness == Brightness.dark
+        ? const Color(0xFF9CA3AF)
+        : const Color(0xFF6B7280);
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 24,
+          height: 24,
+          child: Checkbox(
+            value: value,
+            onChanged: onChanged,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: GestureDetector(
+            onTap: () => onChanged(!value),
+            child: RichText(
+              text: TextSpan(
+                style: TextStyle(fontSize: 14, color: textColor, height: 1.4),
+                children: [
+                  const TextSpan(text: 'I agree to the '),
+                  TextSpan(
+                    text: 'Terms of Service',
+                    style: TextStyle(
+                      color: primaryColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () => _launchUrl(_termsOfServiceUrl),
+                  ),
+                  const TextSpan(text: ' and '),
+                  TextSpan(
+                    text: 'Privacy Policy',
+                    style: TextStyle(
+                      color: primaryColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () => _launchUrl(_privacyPolicyUrl),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

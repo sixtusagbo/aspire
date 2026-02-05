@@ -12,6 +12,8 @@ import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/goal_service.dart';
 import 'package:aspire/services/notification_service.dart';
 import 'package:aspire/services/tip_service.dart';
+import 'package:aspire/services/user_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -26,19 +28,65 @@ class HomeScreen extends HookConsumerWidget {
     final authService = ref.read(authServiceProvider);
     final goalService = ref.read(goalServiceProvider);
     final notificationService = ref.read(notificationServiceProvider);
+    final userService = ref.read(userServiceProvider);
     final userId = authService.currentUser?.uid;
 
     // Track notification permission state
     final notificationsEnabled = useState<bool?>(null);
     final bannerDismissed = useState(false);
+    final promptShown = useState(false);
 
-    // Check notification permission on mount
+    // Check notification permission and prompt returning users
     useEffect(() {
-      notificationService.areNotificationsEnabled().then((enabled) {
+      if (userId == null) return null;
+
+      Future<void> checkNotifications() async {
+        final enabled = await notificationService.areNotificationsEnabled();
         notificationsEnabled.value = enabled;
-      });
+
+        // If already enabled, no need to prompt
+        if (enabled) return;
+
+        // Check if this is a returning user who should be prompted
+        final user = await userService.getUser(userId);
+        if (user == null) return;
+
+        final now = DateTime.now();
+        final lastLogin = user.lastLoginAt;
+        final lastDeclined = user.notificationPromptDeclinedAt;
+
+        // Determine if we should show the prompt:
+        // 1. User has logged in before (has lastLogin) and it's been > 1 day
+        // 2. OR user has lastActivityDate > 1 day ago (fallback for existing users)
+        // 3. AND hasn't declined in the past 7 days
+        final isReturning =
+            (lastLogin != null && now.difference(lastLogin).inDays >= 1) ||
+            (lastLogin == null &&
+                user.lastActivityDate != null &&
+                now.difference(user.lastActivityDate!).inDays >= 1);
+
+        final canPrompt =
+            lastDeclined == null || now.difference(lastDeclined).inDays >= 7;
+
+        if (isReturning && canPrompt && !promptShown.value) {
+          promptShown.value = true;
+          // Small delay to let UI settle, then show dialog
+          await Future.delayed(const Duration(milliseconds: 500));
+          if (!context.mounted) return;
+          _showNotificationPromptDialog(
+            context,
+            notificationService,
+            userService,
+            userId,
+            notificationsEnabled,
+            bannerDismissed,
+          );
+        }
+      }
+
+      checkNotifications();
       return null;
-    }, []);
+    }, [userId]);
 
     if (userId == null) {
       return const Scaffold(body: Center(child: Text('Please sign in')));
@@ -49,6 +97,11 @@ class HomeScreen extends HookConsumerWidget {
       notificationsEnabled.value = granted;
       if (granted) {
         ToastHelper.showSuccess('Notifications enabled!');
+      } else {
+        // User declined system permission, save the decline timestamp
+        await userService.updateUser(userId, {
+          'notificationPromptDeclinedAt': Timestamp.now(),
+        });
       }
     }
 
@@ -83,10 +136,7 @@ class HomeScreen extends HookConsumerWidget {
 
             // Tip of the day
             const SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.all(16),
-                child: TipCard(),
-              ),
+              child: Padding(padding: EdgeInsets.all(16), child: TipCard()),
             ),
 
             // Section header
@@ -450,10 +500,7 @@ class _NotificationBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.notifications_outlined,
-            color: theme.colorScheme.primary,
-          ),
+          Icon(Icons.notifications_outlined, color: theme.colorScheme.primary),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -469,10 +516,7 @@ class _NotificationBanner extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   'Enable notifications for daily reminders',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: context.textSecondary,
-                  ),
+                  style: TextStyle(fontSize: 12, color: context.textSecondary),
                 ),
               ],
             ),
@@ -485,11 +529,7 @@ class _NotificationBanner extends StatelessWidget {
             child: const Text('Enable'),
           ),
           IconButton(
-            icon: Icon(
-              Icons.close,
-              size: 18,
-              color: context.textSecondary,
-            ),
+            icon: Icon(Icons.close, size: 18, color: context.textSecondary),
             onPressed: onDismiss,
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
@@ -569,3 +609,60 @@ String _getGreeting(String? name) {
   return timeGreeting;
 }
 
+Future<void> _showNotificationPromptDialog(
+  BuildContext context,
+  NotificationService notificationService,
+  UserService userService,
+  String userId,
+  ValueNotifier<bool?> notificationsEnabled,
+  ValueNotifier<bool> bannerDismissed,
+) async {
+  final result = await showDialog<bool>(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => AlertDialog(
+      title: const Row(
+        children: [
+          Icon(Icons.notifications_active_outlined),
+          SizedBox(width: 12),
+          Text('Welcome back!'),
+        ],
+      ),
+      content: const Text(
+        'Stay on track with your goals! Enable notifications to get daily '
+        'reminders and celebrate your progress.',
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: const Text('Not now'),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: const Text('Enable'),
+        ),
+      ],
+    ),
+  );
+
+  if (result == true) {
+    // User wants to enable notifications
+    final granted = await notificationService.requestPermission();
+    notificationsEnabled.value = granted;
+    if (granted) {
+      ToastHelper.showSuccess('Notifications enabled!');
+    } else {
+      // System permission denied, save decline and show banner
+      await userService.updateUser(userId, {
+        'notificationPromptDeclinedAt': Timestamp.now(),
+      });
+    }
+  } else {
+    // User clicked "Not now", save decline timestamp and show banner
+    await userService.updateUser(userId, {
+      'notificationPromptDeclinedAt': Timestamp.now(),
+    });
+    // Don't dismiss the banner so it shows
+    bannerDismissed.value = false;
+  }
+}
