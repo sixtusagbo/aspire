@@ -157,7 +157,7 @@ Day 8 of building Aspire for RevenueCat's #Shipyard2026 Hackathon!
 
 Still testing and getting feedback from users. Making small refinements based on what they're finding.
 
-The deadline is approaching fast. Time to focus on polishing and preparing for submission.
+The deadline is approaching fast...
 
 #buildinpublic #flutter #hackathon #revenuecat
 
@@ -169,6 +169,32 @@ Day 8 of #Shipyard2026!
 
 Still testing and getting feedback. Making refinements based on what users are finding.
 
-Deadline approaching fast. Time to polish and prepare for submission.
+Deadline approaching fast...
+
+#buildinpublic
+
+---
+
+## Day 9
+
+### LinkedIn
+
+Day 9 of building Aspire for RevenueCat's #Shipyard2026 Hackathon!
+
+Fixed 2 bugs from user feedback yesterday.
+
+I'm considering dropping one feature due to a performance bottleneck. Sometimes you have to cut scope to ship something polished. Problem is, I like that feature.
+
+#buildinpublic #flutter #hackathon #revenuecat
+
+---
+
+### Twitter/X
+
+Day 9 of #Shipyard2026!
+
+Fixed 2 bugs from user feedback yesterday.
+
+Considering dropping a feature due to performance issues. Sometimes you have to cut scope to ship something polished. Problem is, I like that feature.
 
 #buildinpublic
