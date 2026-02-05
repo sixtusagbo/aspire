@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -7,18 +9,38 @@ import '../models/daily_log.dart';
 
 part 'goal_service.g.dart';
 
+/// Calculate the XP required to reach a given level
+int xpRequiredForLevel(int level) {
+  if (level <= 1) return 0;
+  return (50 * pow(level - 1, 1.5)).toInt();
+}
+
+/// Calculate what level a user should be at based on their total XP
+int levelFromXp(int xp) {
+  if (xp < 50) return 1;
+  // XP = 50 * (level - 1)^1.5
+  // (level - 1) = (XP / 50)^(2/3)
+  // level = (XP / 50)^(2/3) + 1
+  final level = pow(xp / 50, 2 / 3) + 1;
+  return level.floor();
+}
+
 /// Result of completing a micro-action
 class ActionCompletionResult {
   final int xpEarned;
   final int newStreak;
   final int previousStreak;
   final bool goalCompleted;
+  final int? newLevel;
+  final int? previousLevel;
 
   ActionCompletionResult({
     required this.xpEarned,
     required this.newStreak,
     required this.previousStreak,
     this.goalCompleted = false,
+    this.newLevel,
+    this.previousLevel,
   });
 
   /// Check if a streak milestone was just reached
@@ -26,6 +48,10 @@ class ActionCompletionResult {
     const milestones = [7, 14, 30, 60, 100, 365];
     return milestones.contains(newStreak) && newStreak > previousStreak;
   }
+
+  /// Check if a level up occurred
+  bool get isLevelUp =>
+      newLevel != null && previousLevel != null && newLevel! > previousLevel!;
 }
 
 class GoalService {
@@ -256,21 +282,30 @@ class GoalService {
       'completedActionIds': FieldValue.arrayUnion([actionId]),
     }, SetOptions(merge: true));
 
-    // Update user XP and streak
+    // Update user XP, level, and streak
     final userRef = _firestore.collection('users').doc(userId);
     final userDoc = await userRef.get();
 
     int previousStreak = 0;
     int newStreak = 1;
+    int? previousLevel;
+    int? newLevel;
 
     if (userDoc.exists) {
       final userData = userDoc.data()!;
       final lastActivity = userData['lastActivityDate'] as Timestamp?;
       final currentStreak = userData['currentStreak'] as int? ?? 0;
       final longestStreak = userData['longestStreak'] as int? ?? 0;
+      final currentXp = userData['xp'] as int? ?? 0;
+      final currentLevel = userData['level'] as int? ?? 1;
 
       previousStreak = currentStreak;
       newStreak = currentStreak;
+      previousLevel = currentLevel;
+
+      // Calculate new level based on new XP
+      final newXp = currentXp + xpReward;
+      newLevel = levelFromXp(newXp);
 
       if (lastActivity != null) {
         final lastDate = lastActivity.toDate();
@@ -294,6 +329,7 @@ class GoalService {
 
       batch.update(userRef, {
         'xp': FieldValue.increment(xpReward),
+        'level': newLevel,
         'lastActivityDate': Timestamp.fromDate(today),
         'currentStreak': newStreak,
         'longestStreak': newLongest,
@@ -324,6 +360,8 @@ class GoalService {
       newStreak: newStreak,
       previousStreak: previousStreak,
       goalCompleted: goalCompleted,
+      newLevel: newLevel,
+      previousLevel: previousLevel,
     );
   }
 
@@ -402,7 +440,9 @@ class GoalService {
 
   /// Count goals using a custom category
   Future<int> countGoalsByCustomCategory(
-      String userId, String customCategoryName) async {
+    String userId,
+    String customCategoryName,
+  ) async {
     final snapshot = await _goalsRef
         .where('userId', isEqualTo: userId)
         .where('customCategoryName', isEqualTo: customCategoryName)
@@ -413,7 +453,9 @@ class GoalService {
 
   /// Move all goals from a custom category to Personal
   Future<void> moveGoalsToPersonal(
-      String userId, String customCategoryName) async {
+    String userId,
+    String customCategoryName,
+  ) async {
     final goals = await _goalsRef
         .where('userId', isEqualTo: userId)
         .where('customCategoryName', isEqualTo: customCategoryName)

@@ -16,6 +16,9 @@ enum CelebrationType {
 
   /// Full-screen celebration for completing a goal
   goalComplete,
+
+  /// Big celebration for leveling up
+  levelUp,
 }
 
 class CelebrationOverlay extends StatefulWidget {
@@ -73,6 +76,7 @@ class CelebrationOverlayState extends State<CelebrationOverlay> {
         });
       case CelebrationType.streakMilestone:
       case CelebrationType.goalComplete:
+      case CelebrationType.levelUp:
         _centerController.play();
         _leftController.play();
         _rightController.play();

@@ -3,6 +3,7 @@ import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
 import 'package:aspire/core/widgets/celebration_overlay.dart';
 import 'package:aspire/core/widgets/goal_completion_dialog.dart';
+import 'package:aspire/core/widgets/level_up_dialog.dart';
 import 'package:aspire/core/widgets/streak_celebration_dialog.dart';
 import 'package:aspire/features/goals/widgets/create_goal_sheet.dart';
 import 'package:aspire/features/home/widgets/tip_card.dart';
@@ -393,6 +394,8 @@ class _ActionTile extends HookConsumerWidget {
       final CelebrationType celebrationType;
       if (result.goalCompleted) {
         celebrationType = CelebrationType.goalComplete;
+      } else if (result.isLevelUp) {
+        celebrationType = CelebrationType.levelUp;
       } else if (result.isStreakMilestone) {
         celebrationType = CelebrationType.streakMilestone;
       } else {
@@ -410,10 +413,20 @@ class _ActionTile extends HookConsumerWidget {
         });
       }
 
-      // Show streak increase dialog if streak went up (and goal not completed)
+      // Show level up dialog (if not showing goal dialog)
+      final newLevel = result.newLevel;
+      if (result.isLevelUp && !result.goalCompleted && newLevel != null) {
+        Future.delayed(const Duration(milliseconds: 400), () {
+          if (overlay != null && overlay.mounted) {
+            LevelUpDialog.show(overlay.context, newLevel);
+          }
+        });
+      }
+
+      // Show streak increase dialog if streak went up (and no other dialog)
       final streakIncreased = result.newStreak > result.previousStreak;
       final newStreak = result.newStreak;
-      if (streakIncreased && !result.goalCompleted) {
+      if (streakIncreased && !result.goalCompleted && !result.isLevelUp) {
         // Small delay so confetti starts first
         Future.delayed(const Duration(milliseconds: 400), () {
           // Use overlay's context which stays mounted (it's at the root)
@@ -424,7 +437,7 @@ class _ActionTile extends HookConsumerWidget {
       }
 
       // Show appropriate toast (skip if showing dialog)
-      if (!result.goalCompleted && !streakIncreased) {
+      if (!result.goalCompleted && !result.isLevelUp && !streakIncreased) {
         ToastHelper.showSuccess('+${result.xpEarned} XP earned!');
       }
     } catch (e) {
