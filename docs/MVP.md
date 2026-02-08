@@ -333,8 +333,6 @@ Add before deadline after core MVP polish:
 - [x] Full flow testing
 - [x] Edge cases and bug fixes
 - [x] Performance optimization
-- [ ] Replace some of the loading states with skeleton loading  where we can?? (possible or scope screep?)
-- [ ] i18n/l10n???? is it possible or scope creep?
 
 **Day 12: Submission**
 
@@ -422,7 +420,7 @@ Add before deadline after core MVP polish:
 | ----------------- | ----------------------------- |
 | Time crunch       | Borrow heavily from FoodPilot |
 | RevenueCat issues | Set up early, test on Day 14  |
-| Scope creep       | Strict MVP   |
+| Scope creep       | Strict MVP                    |
 | Platform issues   | Test on both Android and iOS  |
 
 ---

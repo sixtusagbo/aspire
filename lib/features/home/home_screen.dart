@@ -547,9 +547,9 @@ class _NotificationBanner extends StatelessWidget {
           ),
           IconButton(
             icon: Icon(Icons.close, size: 18, color: context.textSecondary),
+            tooltip: 'Dismiss',
             onPressed: onDismiss,
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
+            visualDensity: VisualDensity.compact,
           ),
         ],
       ),

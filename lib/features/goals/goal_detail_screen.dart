@@ -891,9 +891,12 @@ class _ActionTile extends HookConsumerWidget {
             color: action.isCompleted ? Colors.grey : null,
           ),
         ),
-        trailing: ReorderableDragStartListener(
-          index: index,
-          child: const Icon(Icons.drag_handle, color: Colors.grey),
+        trailing: Tooltip(
+          message: 'Drag to reorder',
+          child: ReorderableDragStartListener(
+            index: index,
+            child: const Icon(Icons.drag_handle, color: Colors.grey),
+          ),
         ),
       ),
     );
