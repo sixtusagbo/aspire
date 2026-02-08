@@ -82,7 +82,7 @@ Based on the Shipyard judging criteria and Gabby's brief.
 
 ### Suggestions
 
-- [ ] Show savings more clearly ("Save $17.89/year" vs just "Save 50%") [Yep, this would make sense, perhaps best value could become save 50% and save 50% vs monthly will now be save $X/year or the country's currency equiv, is that possible?]
+- [x] Show savings more clearly ("Save $17.89/year" vs just "Save 50%") [Yep, this would make sense, perhaps best value could become save 50% and save 50% vs monthly will now be save $X/year or the country's currency equiv, is that possible?]
 
 ---
 
