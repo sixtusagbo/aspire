@@ -405,7 +405,8 @@ class SettingsScreen extends HookConsumerWidget {
                   : 'Get a nudge to complete your actions',
             ),
             trailing: Switch(
-              value: reminderEnabled.value,
+              // Show as off when system notifications are off
+              value: notificationsEnabled.value == true && reminderEnabled.value,
               onChanged: notificationsEnabled.value == true
                   ? handleReminderToggle
                   : null,
