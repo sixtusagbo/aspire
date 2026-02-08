@@ -336,11 +336,12 @@ Add before deadline after core MVP polish:
 
 **Day 12: Submission**
 
-- [ ] Record 2-3 minute demo video
+- [ ] Bump version and update changelog
+- [ ] Build and upload to Google Play Internal Testing
 - [ ] Write proposal (problem, solution, monetization, roadmap)
 - [ ] Technical documentation
 - [ ] Screenshots
-- [x] Upload to Google Play Internal Testing
+- [ ] Record 2-3 minute demo video
 - [ ] Submit on DevPost
 
 **Deliverable:** App submitted to hackathon
