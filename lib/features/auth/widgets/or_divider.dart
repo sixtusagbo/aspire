@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class OrDivider extends StatelessWidget {
   final String text;
 
-  const OrDivider({super.key, this.text = 'Or'});
+  const OrDivider({super.key, this.text = 'OR'});
 
   @override
   Widget build(BuildContext context) {

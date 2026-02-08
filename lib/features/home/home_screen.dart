@@ -37,7 +37,7 @@ class HomeScreen extends HookConsumerWidget {
     final bannerDismissed = useState(false);
     final promptShown = useState(false);
 
-    // Check notification permission and prompt returning users
+    // Check notification permission and prompt user if not enabled
     useEffect(() {
       if (userId == null) return null;
 
@@ -48,28 +48,17 @@ class HomeScreen extends HookConsumerWidget {
         // If already enabled, no need to prompt
         if (enabled) return;
 
-        // Check if this is a returning user who should be prompted
+        // Get user to check decline status
         final user = await userService.getUser(userId);
         if (user == null) return;
 
+        // Check if user declined recently (within 7 days)
         final now = DateTime.now();
-        final lastLogin = user.lastLoginAt;
         final lastDeclined = user.notificationPromptDeclinedAt;
-
-        // Determine if we should show the prompt:
-        // 1. User has logged in before (has lastLogin) and it's been > 1 day
-        // 2. OR user has lastActivityDate > 1 day ago (fallback for existing users)
-        // 3. AND hasn't declined in the past 7 days
-        final isReturning =
-            (lastLogin != null && now.difference(lastLogin).inDays >= 1) ||
-            (lastLogin == null &&
-                user.lastActivityDate != null &&
-                now.difference(user.lastActivityDate!).inDays >= 1);
-
         final canPrompt =
             lastDeclined == null || now.difference(lastDeclined).inDays >= 7;
 
-        if (isReturning && canPrompt && !promptShown.value) {
+        if (canPrompt && !promptShown.value) {
           promptShown.value = true;
           // Small delay to let UI settle, then show dialog
           await Future.delayed(const Duration(milliseconds: 500));
@@ -638,12 +627,12 @@ Future<void> _showNotificationPromptDialog(
         children: [
           Icon(Icons.notifications_active_outlined),
           SizedBox(width: 12),
-          Text('Welcome back!'),
+          Text('Stay on track'),
         ],
       ),
       content: const Text(
-        'Stay on track with your goals! Enable notifications to get daily '
-        'reminders and celebrate your progress.',
+        'Enable notifications to get daily reminders and celebrate your '
+        'progress.',
       ),
       actions: [
         TextButton(
