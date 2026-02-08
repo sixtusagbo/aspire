@@ -60,6 +60,7 @@ dependencies:
   firebase_messaging: ^15.2.10
   share_plus: ^12.0.1
   audioplayers: ^6.1.0
+  app_settings: ^7.0.0
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,4 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:aspire/services/log_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -190,6 +191,11 @@ class NotificationService {
     // iOS - FCM status is sufficient
     Log.d('iOS notifications enabled: $fcmEnabled');
     return fcmEnabled;
+  }
+
+  /// Open system notification settings for this app
+  Future<void> openSettings() async {
+    await AppSettings.openAppSettings(type: AppSettingsType.notification);
   }
 
   /// Show an immediate test notification

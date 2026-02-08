@@ -99,8 +99,11 @@ class SettingsScreen extends HookConsumerWidget {
 
     Future<void> handleNotificationToggle() async {
       if (notificationsEnabled.value == true) {
-        // Already enabled, can't disable from app
-        ToastHelper.showInfo('Disable notifications in system settings');
+        // Already enabled, open settings to disable
+        await notificationService.openSettings();
+        // Recheck after returning from settings
+        notificationsEnabled.value =
+            await notificationService.areNotificationsEnabled();
         return;
       }
 
