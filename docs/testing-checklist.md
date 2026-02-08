@@ -27,12 +27,19 @@
 
 ## Streak Section Updates
 
-- [ ] For 0-day streak, shows "None" instead of "0 days"
-- [ ] For 0-day streak, no next milestone badge appears
-- [ ] Milestones are scrollable horizontally
-- [ ] More milestones appear (up to 20k)
-- [ ] Large milestones show as "1k", "5k", etc.
+- [x] For 0-day streak, shows "None" instead of "0 days"
+- [x] For 0-day streak, no next milestone badge appears
+- [x] Milestones are scrollable horizontally
+- [x] More milestones appear (up to 20k)
+- [x] Large milestones show as "1k", "5k", etc.
 
 ## Swipe Actions (No Labels)
 
-- [ ] Swipe left on micro-action shows icons only (no Edit/Delete text)
+- [x] Swipe left on micro-action shows icons only (no Edit/Delete text)
+
+## Swipe Hint Tooltip
+
+- [ ] On first visit to a goal with actions, shows "Swipe left for more options" hint below first action
+- [ ] Tapping the hint dismisses it
+- [ ] Swiping or using edit/delete dismisses it
+- [ ] Hint doesn't appear on subsequent visits (stored locally)
