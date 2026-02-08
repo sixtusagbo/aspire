@@ -108,8 +108,8 @@ class SettingsScreen extends HookConsumerWidget {
         // Already enabled, open settings to disable
         await notificationService.openSettings();
         // Recheck after returning from settings
-        notificationsEnabled.value =
-            await notificationService.areNotificationsEnabled();
+        notificationsEnabled.value = await notificationService
+            .areNotificationsEnabled();
         return;
       }
 
@@ -122,8 +122,8 @@ class SettingsScreen extends HookConsumerWidget {
         // Permission denied - open settings so user can enable manually
         await notificationService.openSettings();
         // Recheck after returning from settings
-        notificationsEnabled.value =
-            await notificationService.areNotificationsEnabled();
+        notificationsEnabled.value = await notificationService
+            .areNotificationsEnabled();
       }
     }
 
@@ -488,7 +488,6 @@ class SettingsScreen extends HookConsumerWidget {
           ListTile(
             leading: const Icon(Icons.favorite_outline),
             title: const Text('Follow Gabby Beckford'),
-            subtitle: const Text('The inspiration behind Aspire'),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -496,18 +495,18 @@ class SettingsScreen extends HookConsumerWidget {
               children: [
                 const SizedBox(width: 40),
                 _SocialButton(
-                  icon: Icons.camera_alt_outlined,
+                  assetPath: 'assets/images/instagram.png',
                   label: 'Instagram',
                   onTap: () => _launchUrl(_gabbyInstagram),
                 ),
                 _SocialButton(
-                  icon: Icons.music_note_outlined,
+                  assetPath: 'assets/images/tiktok.png',
                   label: 'TikTok',
                   onTap: () => _launchUrl(_gabbyTikTok),
                 ),
                 _SocialButton(
-                  icon: Icons.alternate_email,
-                  label: 'Twitter',
+                  assetPath: 'assets/images/twitterX.png',
+                  label: 'X',
                   onTap: () => _launchUrl(_gabbyTwitter),
                 ),
                 _SocialButton(
@@ -522,10 +521,11 @@ class SettingsScreen extends HookConsumerWidget {
           const Divider(),
 
           ListTile(
-            leading: const Icon(Icons.logout, color: Colors.red),
-            title: const Text('Sign Out', style: TextStyle(color: Colors.red)),
+            leading: const Icon(Icons.logout),
+            title: const Text('Sign Out'),
             onTap: handleSignOut,
           ),
+          const Divider(),
           ListTile(
             leading: const Icon(Icons.delete_forever, color: Colors.red),
             title: const Text(
@@ -860,12 +860,14 @@ class _CategoryTile extends StatelessWidget {
 }
 
 class _SocialButton extends StatelessWidget {
-  final IconData icon;
+  final IconData? icon;
+  final String? assetPath;
   final String label;
   final VoidCallback onTap;
 
   const _SocialButton({
-    required this.icon,
+    this.icon,
+    this.assetPath,
     required this.label,
     required this.onTap,
   });
@@ -880,14 +882,14 @@ class _SocialButton extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Column(
             children: [
-              Icon(icon, color: AppTheme.primaryPink),
+              if (assetPath != null)
+                Image.asset(assetPath!, width: 24, height: 24)
+              else
+                Icon(icon, color: AppTheme.primaryPink),
               const SizedBox(height: 4),
               Text(
                 label,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: context.textSecondary,
-                ),
+                style: TextStyle(fontSize: 11, color: context.textSecondary),
               ),
             ],
           ),
