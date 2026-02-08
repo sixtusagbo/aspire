@@ -62,7 +62,6 @@ Based on the Shipyard judging criteria and Gabby's brief.
 #### Progress Screen
 
 - [x] The streak milestones (7, 14, 30, 60, 100) are good but could show the next milestone more prominently
-- [ ] Consider adding a "next achievement" preview to motivate users (achievements??? can we implement acheivements?)
 
 #### Settings Screen
 
@@ -83,7 +82,6 @@ Based on the Shipyard judging criteria and Gabby's brief.
 
 ### Suggestions
 
-- [ ] Add a "Try Premium Free" trial option if supported by RevenueCat
 - [ ] Show savings more clearly ("Save $17.89/year" vs just "Save 50%") [Yep, this would make sense, perhaps best value could become save 50% and save 50% vs monthly will now be save $X/year or the country's currency equiv, is that possible?]
 
 ---
@@ -144,7 +142,6 @@ Based on the Shipyard judging criteria and Gabby's brief.
 ### Nice to Have (If Time)
 
 5. [ ] Implement passport stamp visual for completed goals
-6. [ ] Add next achievement preview on progress screen (mmm... I'll try adding it, if I don't like it,w e'll get rid of it)
 
 ---
 
