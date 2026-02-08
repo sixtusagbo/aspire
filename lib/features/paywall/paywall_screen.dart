@@ -573,10 +573,7 @@ class _PricingCard extends StatelessWidget {
       final perMonth = annualPrice / 12;
 
       // Format per-month price with proper currency formatting
-      final formatter = NumberFormat.currency(
-        symbol: _getCurrencySymbol(product.currencyCode),
-        decimalDigits: 2,
-      );
+      final formatter = NumberFormat.simpleCurrency(name: product.currencyCode);
       perMonthPrice = formatter.format(perMonth);
 
       // Calculate savings percentage
@@ -673,19 +670,5 @@ class _PricingCard extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _getCurrencySymbol(String currencyCode) {
-    const symbols = {
-      'USD': '\$',
-      'EUR': '€',
-      'GBP': '£',
-      'JPY': '¥',
-      'NGN': '₦',
-      'INR': '₹',
-      'CAD': '\$',
-      'AUD': '\$',
-    };
-    return symbols[currencyCode] ?? currencyCode;
   }
 }
