@@ -597,7 +597,7 @@ class _PricingCard extends StatelessWidget {
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: AppTheme.goldAchievement,
+                            color: AppTheme.primaryPink,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: const Text(

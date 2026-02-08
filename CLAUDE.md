@@ -171,10 +171,6 @@ const Color(0xFFFF6D99)         // Secondary hot pink
 // Secondary (Cyan/Teal)
 const Color(0xFF6EC1E4)         // Cyan accent
 const Color(0xFF00C1CF)         // Deeper teal
-
-// Achievement
-const Color(0xFFBFA35A)         // Gold for achievements
-const Color(0xFFDDC995)         // Lighter gold
 ```
 
 ### Celebrations

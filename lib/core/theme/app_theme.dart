@@ -19,10 +19,6 @@ class AppTheme {
   static const Color accentCyan = Color(0xFF00C1CF);
   static const Color accentTeal = Color(0xFF6EC1E4);
 
-  // Achievement (Gold family)
-  static const Color goldAchievement = Color(0xFFBFA35A);
-  static const Color goldLight = Color(0xFFDDC995);
-
   // Semantic
   static const Color successGreen = Color(0xFF4CAF50);
   static const Color errorRed = Color(0xFFE53935);
@@ -76,12 +72,6 @@ class AppTheme {
     end: Alignment.centerRight,
   );
 
-  static const LinearGradient goldGradient = LinearGradient(
-    colors: [goldAchievement, goldLight],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
   // Shadows
   static List<BoxShadow> cardShadow(bool isDark) => isDark
       ? [] // Dark mode uses borders, not shadows
@@ -116,7 +106,7 @@ class AppTheme {
     colorScheme: ColorScheme.light(
       primary: primaryPink,
       secondary: accentCyan,
-      tertiary: goldAchievement,
+      tertiary: coralSunset,
       surface: lightSurface,
       error: errorRed,
       onPrimary: Colors.white,
@@ -231,7 +221,7 @@ class AppTheme {
     colorScheme: ColorScheme.dark(
       primary: primaryPink,
       secondary: accentCyan,
-      tertiary: goldAchievement,
+      tertiary: coralSunset,
       surface: darkSurface,
       error: errorRed,
       onPrimary: Colors.white,

@@ -351,7 +351,7 @@ Add before deadline after core MVP polish:
 
 ### Vibe: "Ambitious, worldly, warm"
 
-- **Colors:** Warm purples/magentas (empowering), soft golds (achievement), clean whites
+- **Colors:** Warm purples/magentas (empowering), coral accents (achievement), clean whites
 - **Typography:** Modern, confident, readable
 - **Imagery:** Travel, success, celebration
 - **Tone:** Encouraging but not patronizing, action-oriented

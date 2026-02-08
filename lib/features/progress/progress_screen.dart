@@ -90,7 +90,7 @@ class _StatsOverview extends StatelessWidget {
             Expanded(
               child: _StatCard(
                 icon: Icons.emoji_events_rounded,
-                iconColor: AppTheme.goldAchievement,
+                iconColor: AppTheme.primaryPink,
                 label: 'Goals Done',
                 value: '$completedGoals',
               ),
@@ -274,7 +274,7 @@ class _StreakMilestone extends StatelessWidget {
             height: 36,
             decoration: BoxDecoration(
               color: achieved
-                  ? AppTheme.goldAchievement
+                  ? AppTheme.primaryPink
                   : context.borderColor.withValues(alpha: 0.5),
               shape: BoxShape.circle,
             ),
@@ -294,7 +294,7 @@ class _StreakMilestone extends StatelessWidget {
               fontWeight:
                   achieved ? FontWeight.bold : FontWeight.normal,
               color: achieved
-                  ? AppTheme.goldAchievement
+                  ? AppTheme.primaryPink
                   : context.textSecondary,
             ),
           ),

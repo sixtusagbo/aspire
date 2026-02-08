@@ -13,7 +13,7 @@ The app should feel like a premium travel journal coming to life. Not a corporat
 3. **Streak flames** — Consistency burns bright, visual language of fire and warmth
 4. **Dream boards made real** — Pinning dreams that can move, track, celebrate
 5. **Bucket list crossing-off** — The satisfaction of completion as celebration
-6. **Sunrise energy** — Bright beginnings, golden opportunities, warm possibility
+6. **Sunrise energy** — Bright beginnings, warm possibility
 
 ---
 
@@ -23,9 +23,7 @@ The app should feel like a premium travel journal coming to life. Not a corporat
 |------|-----|-------|
 | Magenta (Primary) | `#F82EB3` | Primary actions, brand identity |
 | Deep Magenta | `#D9008E` | Pressed states, emphasis |
-| Coral Sunset | `#F2295B` | Gradient end, energy |
-| Warm Gold | `#BFA35A` | Achievement, completion, streaks |
-| Light Gold | `#DDC995` | Gold highlights, secondary achievement |
+| Coral Sunset | `#F2295B` | Gradient end, energy, achievements |
 | Cyan Accent | `#00C1CF` | Travel category, rare contrast accent |
 | Deep Purple-Black | `#150114` | Dark mode background |
 | Warm Off-White | `#FDF8F5` | Light mode background |
@@ -33,7 +31,6 @@ The app should feel like a premium travel journal coming to life. Not a corporat
 ### Gradients
 
 - **Primary Button**: `#F82EB3` → `#F2295B` (magenta to coral)
-- **Achievement**: `#BFA35A` → `#DDC995` (gold shimmer)
 
 ---
 

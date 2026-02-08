@@ -68,7 +68,7 @@ class _GoalCompletionDialogState extends State<GoalCompletionDialog>
 
   @override
   Widget build(BuildContext context) {
-    const goldColor = Color(0xFFBFA35A);
+    const accentColor = AppTheme.primaryPink;
 
     return Center(
       child: Material(
@@ -92,8 +92,8 @@ class _GoalCompletionDialogState extends State<GoalCompletionDialog>
                     shape: BoxShape.circle,
                     gradient: RadialGradient(
                       colors: [
-                        goldColor.withValues(alpha: 0.35),
-                        goldColor.withValues(alpha: 0.1),
+                        accentColor.withValues(alpha: 0.35),
+                        accentColor.withValues(alpha: 0.1),
                         Colors.transparent,
                       ],
                       stops: const [0.3, 0.6, 1.0],
@@ -115,8 +115,8 @@ class _GoalCompletionDialogState extends State<GoalCompletionDialog>
                         shape: BoxShape.circle,
                         gradient: RadialGradient(
                           colors: [
-                            goldColor.withValues(alpha: _glowAnimation!.value),
-                            goldColor.withValues(
+                            accentColor.withValues(alpha: _glowAnimation!.value),
+                            accentColor.withValues(
                               alpha: _glowAnimation!.value * 0.3,
                             ),
                             Colors.transparent,
@@ -125,7 +125,7 @@ class _GoalCompletionDialogState extends State<GoalCompletionDialog>
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: goldColor.withValues(
+                            color: accentColor.withValues(
                               alpha: _glowAnimation!.value * 0.6,
                             ),
                             blurRadius: 25,
@@ -153,7 +153,7 @@ class _GoalCompletionDialogState extends State<GoalCompletionDialog>
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: goldColor,
+                  color: accentColor,
                 ),
               ),
               const SizedBox(height: 8),
@@ -199,7 +199,7 @@ class _GoalCompletionDialogState extends State<GoalCompletionDialog>
                     },
                     icon: const Icon(Icons.share, size: 18),
                     label: const Text('Share'),
-                    style: FilledButton.styleFrom(backgroundColor: goldColor),
+                    style: FilledButton.styleFrom(backgroundColor: accentColor),
                   ),
                 ],
               ),
