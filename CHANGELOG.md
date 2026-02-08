@@ -2,6 +2,18 @@
 
 All notable changes to Aspire will be documented in this file.
 
+## [0.1.7] - 2026-02-09
+
+### Added
+- Passport stamp visual for completed goals
+- Loading state on "New Goal" button
+- Wider swipe-to-reveal actions on micro-actions
+- Accessibility tooltips on drag handles and password visibility toggle
+
+### Fixed
+- Swipe hint now dismisses when swiping (not just on button click)
+- Notification banner close button touch target size
+
 ## [0.1.6] - 2026-02-08
 
 ### Added

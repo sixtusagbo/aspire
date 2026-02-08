@@ -336,7 +336,7 @@ Add before deadline after core MVP polish:
 
 **Day 12: Submission**
 
-- [ ] Bump version and update changelog
+- [x] Bump version and update changelog
 - [ ] Build and upload to Google Play Internal Testing
 - [ ] Write proposal (problem, solution, monetization, roadmap)
 - [ ] Technical documentation
