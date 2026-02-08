@@ -59,10 +59,10 @@ class _LevelBadge extends StatelessWidget {
 
   String get _title {
     if (level >= 50) return 'Legend';
-    if (level >= 30) return 'Master';
-    if (level >= 20) return 'Expert';
-    if (level >= 10) return 'Achiever';
-    if (level >= 5) return 'Rising Star';
+    if (level >= 30) return 'Visionary';
+    if (level >= 20) return 'Maverick';
+    if (level >= 10) return 'Trailblazer';
+    if (level >= 5) return 'Go-Getter';
     return 'Dreamer';
   }
 

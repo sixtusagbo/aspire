@@ -64,20 +64,20 @@ class _LevelUpDialogState extends State<LevelUpDialog>
   String get _title {
     final level = widget.newLevel;
     if (level >= 50) return 'Legend';
-    if (level >= 30) return 'Master';
-    if (level >= 20) return 'Expert';
-    if (level >= 10) return 'Achiever';
-    if (level >= 5) return 'Rising Star';
+    if (level >= 30) return 'Visionary';
+    if (level >= 20) return 'Maverick';
+    if (level >= 10) return 'Trailblazer';
+    if (level >= 5) return 'Go-Getter';
     return 'Dreamer';
   }
 
   String get _message {
     final level = widget.newLevel;
-    if (level == 5) return "You're a Rising Star now!";
-    if (level == 10) return "You've become an Achiever!";
-    if (level == 20) return "Expert status unlocked!";
-    if (level == 30) return "You've reached Master level!";
-    if (level == 50) return "Legendary achievement!";
+    if (level == 5) return "You're a Go-Getter now!";
+    if (level == 10) return "Trailblazer status unlocked!";
+    if (level == 20) return "You've become a Maverick!";
+    if (level == 30) return "Visionary mode activated!";
+    if (level == 50) return "You've reached Legend status!";
     return "Keep crushing your goals!";
   }
 
