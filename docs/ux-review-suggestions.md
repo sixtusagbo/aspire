@@ -135,7 +135,7 @@ Based on the Shipyard judging criteria and Gabby's brief.
 
 ### Should Consider
 
-3. [ ] Add social proof to paywall (even just "Join 100+ ambitious women" or similar)
+3. [x] Add social proof to paywall (even just "Join 100+ ambitious women" or similar)
 
 ### Nice to Have (If Time)
 
