@@ -61,7 +61,7 @@ Based on the Shipyard judging criteria and Gabby's brief.
 
 #### Progress Screen
 
-- [ ] The streak milestones (7, 14, 30, 60, 100) are good but could show the next milestone more prominently
+- [x] The streak milestones (7, 14, 30, 60, 100) are good but could show the next milestone more prominently
 - [ ] Consider adding a "next achievement" preview to motivate users (achievements??? can we implement acheivements?)
 
 #### Settings Screen
