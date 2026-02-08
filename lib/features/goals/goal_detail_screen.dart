@@ -804,33 +804,40 @@ class _ActionTile extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final goalService = ref.read(goalServiceProvider);
 
-    final slidable = Slidable(
-      key: ValueKey('slidable_${action.id}'),
-      endActionPane: ActionPane(
-        motion: const DrawerMotion(),
-        extentRatio: 0.25,
-        dismissible: DismissiblePane(onDismissed: () {}),
-        children: [
-          SlidableAction(
-            onPressed: (_) {
-              onSwipeHintDismissed?.call();
-              _showEditDialog(context, goalService);
-            },
-            backgroundColor: AppTheme.accentCyan,
-            foregroundColor: Colors.white,
-            icon: Icons.edit,
-          ),
-          SlidableAction(
-            onPressed: (_) {
-              onSwipeHintDismissed?.call();
-              _confirmDelete(context, goalService);
-            },
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
-            icon: Icons.delete,
-          ),
-        ],
-      ),
+    final slidable = NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        // Dismiss hint when user starts swiping
+        if (showSwipeHint && notification is ScrollStartNotification) {
+          onSwipeHintDismissed?.call();
+        }
+        return false;
+      },
+      child: Slidable(
+        key: ValueKey('slidable_${action.id}'),
+        endActionPane: ActionPane(
+          motion: const DrawerMotion(),
+          extentRatio: 0.4,
+          children: [
+            SlidableAction(
+              onPressed: (_) {
+                onSwipeHintDismissed?.call();
+                _showEditDialog(context, goalService);
+              },
+              backgroundColor: AppTheme.accentCyan,
+              foregroundColor: Colors.white,
+              icon: Icons.edit,
+            ),
+            SlidableAction(
+              onPressed: (_) {
+                onSwipeHintDismissed?.call();
+                _confirmDelete(context, goalService);
+              },
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              icon: Icons.delete,
+            ),
+          ],
+        ),
       child: ListTile(
         leading: Checkbox(
           value: action.isCompleted,
@@ -898,6 +905,7 @@ class _ActionTile extends HookConsumerWidget {
             child: const Icon(Icons.drag_handle, color: Colors.grey),
           ),
         ),
+      ),
       ),
     );
 

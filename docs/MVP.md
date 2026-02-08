@@ -340,7 +340,7 @@ Add before deadline after core MVP polish:
 - [ ] Write proposal (problem, solution, monetization, roadmap)
 - [ ] Technical documentation
 - [ ] Screenshots
-- [ ] Upload to Google Play Internal Testing
+- [x] Upload to Google Play Internal Testing
 - [ ] Submit on DevPost
 
 **Deliverable:** App submitted to hackathon
