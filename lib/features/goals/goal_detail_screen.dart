@@ -287,15 +287,50 @@ class _GoalDetailContent extends HookConsumerWidget {
         if (!goal.isCompleted && goal.totalActionsCount > 0)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: SizedBox(
+            child: Container(
               width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () => _showMarkCompleteDialog(context, goalService),
-                icon: const Icon(Icons.check_circle_outline),
-                label: const Text('Mark Goal as Complete'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.goldAchievement,
-                  foregroundColor: Colors.white,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [AppTheme.goldAchievement, AppTheme.goldLight],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.goldAchievement.withValues(alpha: 0.4),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => _showMarkCompleteDialog(context, goalService),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.emoji_events,
+                          color: Colors.white,
+                          size: 22,
+                        ),
+                        const SizedBox(width: 10),
+                        const Text(
+                          'Mark Goal as Complete',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
