@@ -11,7 +11,12 @@
 - [x] Table should have rounded corners and proper styling
 
 ### 2. Mark Goal as Complete Button Styling
-- [ ] Open a goal with actions
-- [ ] Verify "Mark Goal as Complete" button has gold gradient background
-- [ ] Button should have trophy icon and gold shadow/glow effect
-- [ ] Button text should be bold white
+- [x] Open a goal with actions
+- [x] Verify "Mark Goal as Complete" button has gold gradient background
+- [x] Button should have trophy icon and gold shadow/glow effect
+- [x] Button text should be bold white
+
+### 3. Edit Goal Sheet Loading State
+- [ ] Tap edit button on a goal
+- [ ] Sheet should open immediately with loading spinner
+- [ ] After loading, form should appear with goal data pre-filled

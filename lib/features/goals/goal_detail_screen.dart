@@ -133,17 +133,12 @@ class GoalDetailScreen extends HookConsumerWidget {
     String userId,
   ) async {
     final goalService = ref.read(goalServiceProvider);
-    final userService = ref.read(userServiceProvider);
-    final goal = await goalService.getGoal(goalId);
-    final user = await userService.getUser(userId);
-
-    if (goal == null || !context.mounted) return;
 
     final result = await showModalBottomSheet<Goal>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      builder: (context) => _EditGoalSheet(goal: goal, user: user),
+      builder: (context) => _EditGoalSheet(goalId: goalId, userId: userId),
     );
 
     if (result != null) {
@@ -1758,47 +1753,73 @@ class _GoalReminderSection extends HookConsumerWidget {
 
 /// Bottom sheet for editing a goal
 class _EditGoalSheet extends ConsumerStatefulWidget {
-  final Goal goal;
-  final AppUser? user;
+  final String goalId;
+  final String userId;
 
-  const _EditGoalSheet({required this.goal, required this.user});
+  const _EditGoalSheet({required this.goalId, required this.userId});
 
   @override
   ConsumerState<_EditGoalSheet> createState() => _EditGoalSheetState();
 }
 
 class _EditGoalSheetState extends ConsumerState<_EditGoalSheet> {
-  late TextEditingController _titleController;
-  late TextEditingController _descController;
-  late CategorySelection _selectedCategory;
+  TextEditingController? _titleController;
+  TextEditingController? _descController;
+  CategorySelection? _selectedCategory;
   DateTime? _targetDate;
+  Goal? _goal;
+  AppUser? _user;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.goal.title);
-    _descController = TextEditingController(text: widget.goal.description ?? '');
-    _selectedCategory = CategorySelection.fromGoal(widget.goal);
-    _targetDate = widget.goal.targetDate;
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    final goalService = ref.read(goalServiceProvider);
+    final userService = ref.read(userServiceProvider);
+
+    final results = await Future.wait([
+      goalService.getGoal(widget.goalId),
+      userService.getUser(widget.userId),
+    ]);
+
+    final goal = results[0] as Goal?;
+    final user = results[1] as AppUser?;
+
+    if (goal == null || !mounted) return;
+
+    setState(() {
+      _goal = goal;
+      _user = user;
+      _titleController = TextEditingController(text: goal.title);
+      _descController = TextEditingController(text: goal.description ?? '');
+      _selectedCategory = CategorySelection.fromGoal(goal);
+      _targetDate = goal.targetDate;
+      _isLoading = false;
+    });
   }
 
   @override
   void dispose() {
-    _titleController.dispose();
-    _descController.dispose();
+    _titleController?.dispose();
+    _descController?.dispose();
     super.dispose();
   }
 
   void _save() {
-    if (_titleController.text.trim().isEmpty) return;
+    if (_goal == null) return;
+    if (_titleController!.text.trim().isEmpty) return;
 
-    final updatedGoal = widget.goal.copyWith(
-      title: _titleController.text.trim(),
-      description: _descController.text.trim().isNotEmpty
-          ? _descController.text.trim()
+    final updatedGoal = _goal!.copyWith(
+      title: _titleController!.text.trim(),
+      description: _descController!.text.trim().isNotEmpty
+          ? _descController!.text.trim()
           : null,
-      category: _selectedCategory.presetCategory ?? GoalCategory.personal,
-      customCategoryName: _selectedCategory.customCategoryName,
+      category: _selectedCategory?.presetCategory ?? GoalCategory.personal,
+      customCategoryName: _selectedCategory?.customCategoryName,
       targetDate: _targetDate,
     );
     Navigator.pop(context, updatedGoal);
@@ -1806,6 +1827,13 @@ class _EditGoalSheetState extends ConsumerState<_EditGoalSheet> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const SizedBox(
+        height: 300,
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -1865,9 +1893,9 @@ class _EditGoalSheetState extends ConsumerState<_EditGoalSheet> {
             Text('Category', style: Theme.of(context).textTheme.titleSmall),
             const SizedBox(height: 8),
             CategorySelector(
-              selected: _selectedCategory,
+              selected: _selectedCategory!,
               onChanged: (cat) => setState(() => _selectedCategory = cat),
-              user: widget.user,
+              user: _user,
             ),
             const SizedBox(height: 20),
 
