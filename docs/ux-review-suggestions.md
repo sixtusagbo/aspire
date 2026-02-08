@@ -29,8 +29,8 @@ Based on the Shipyard judging criteria and Gabby's brief.
 ### Suggestions
 
 - [ ] Consider adding an "inspiration" or "dream board" view for completed goals (we could put it in the goals screen when you toggle, yk, design it better...)
-- [ ] The welcome screen could reference Gabby more directly ("Inspired by Gabby Beckford" or similar) [More like the splash screen, below, at the bottom of that splash screen]
-- [ ] Add a follow Gabby with facebook, insta, twitter and .... just her socials add it to settings screen with link to them so they can open. it (wdyt??)
+- [x] The welcome screen could reference Gabby more directly ("Inspired by Gabby Beckford" or similar) [More like the splash screen, below, at the bottom of that splash screen]
+- [ ] Add Gabby's social links to settings screen (Instagram, TikTok, Twitter, Website)
 
 ---
 

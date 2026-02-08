@@ -17,6 +17,12 @@ import 'package:url_launcher/url_launcher.dart';
 const _termsOfServiceUrl = 'https://aspire.sixtusagbo.dev/terms';
 const _privacyPolicyUrl = 'https://aspire.sixtusagbo.dev/privacy';
 
+// Gabby Beckford's social links
+const _gabbyInstagram = 'https://www.instagram.com/packslight/';
+const _gabbyTikTok = 'https://www.tiktok.com/@packslight';
+const _gabbyTwitter = 'https://x.com/packslight';
+const _gabbyWebsite = 'https://www.packslight.com/';
+
 Future<void> _launchUrl(String url) async {
   final uri = Uri.parse(url);
   if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
@@ -478,6 +484,43 @@ class SettingsScreen extends HookConsumerWidget {
           ),
           const Divider(),
 
+          // Follow Gabby section
+          ListTile(
+            leading: const Icon(Icons.favorite_outline),
+            title: const Text('Follow Gabby Beckford'),
+            subtitle: const Text('The inspiration behind Aspire'),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                const SizedBox(width: 40),
+                _SocialButton(
+                  icon: Icons.camera_alt_outlined,
+                  label: 'Instagram',
+                  onTap: () => _launchUrl(_gabbyInstagram),
+                ),
+                _SocialButton(
+                  icon: Icons.music_note_outlined,
+                  label: 'TikTok',
+                  onTap: () => _launchUrl(_gabbyTikTok),
+                ),
+                _SocialButton(
+                  icon: Icons.alternate_email,
+                  label: 'Twitter',
+                  onTap: () => _launchUrl(_gabbyTwitter),
+                ),
+                _SocialButton(
+                  icon: Icons.language,
+                  label: 'Website',
+                  onTap: () => _launchUrl(_gabbyWebsite),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Divider(),
+
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.red),
             title: const Text('Sign Out', style: TextStyle(color: Colors.red)),
@@ -810,6 +853,44 @@ class _CategoryTile extends StatelessWidget {
               visualDensity: VisualDensity.compact,
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SocialButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const _SocialButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Column(
+            children: [
+              Icon(icon, color: AppTheme.primaryPink),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: context.textSecondary,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
