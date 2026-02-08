@@ -36,6 +36,8 @@ class GoalSetupStep extends StatefulWidget {
 class _GoalSetupStepState extends State<GoalSetupStep> {
   late final TextEditingController _titleController;
   late final TextEditingController _descriptionController;
+  late final FocusNode _titleFocusNode;
+  bool _hasAppliedTemplate = false;
 
   @override
   void initState() {
@@ -44,19 +46,22 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
     _descriptionController = TextEditingController(
       text: widget.description.value,
     );
+    _titleFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
+    _titleFocusNode.dispose();
     super.dispose();
   }
 
   bool get _isValid => _titleController.text.trim().isNotEmpty;
 
   void _applyTemplate(GoalTemplate template) {
-    // Clear all focus when template is applied
+    // Clear all focus and mark template as applied to prevent autofocus
+    _hasAppliedTemplate = true;
     FocusScope.of(context).unfocus();
     setState(() {
       _titleController.text = template.title;
@@ -163,7 +168,8 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
           // Goal title
           TextField(
             controller: _titleController,
-            autofocus: true,
+            focusNode: _titleFocusNode,
+            autofocus: !_hasAppliedTemplate,
             textCapitalization: TextCapitalization.sentences,
             style: const TextStyle(fontSize: 18),
             decoration: InputDecoration(

@@ -113,7 +113,11 @@ class SettingsScreen extends HookConsumerWidget {
       if (granted) {
         ToastHelper.showSuccess('Notifications enabled!');
       } else {
-        ToastHelper.showWarning('Permission denied');
+        // Permission denied - open settings so user can enable manually
+        await notificationService.openSettings();
+        // Recheck after returning from settings
+        notificationsEnabled.value =
+            await notificationService.areNotificationsEnabled();
       }
     }
 

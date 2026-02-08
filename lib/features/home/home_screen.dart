@@ -37,6 +37,17 @@ class HomeScreen extends HookConsumerWidget {
     final bannerDismissed = useState(false);
     final promptShown = useState(false);
 
+    // Recheck notifications when app returns to foreground
+    final appLifecycleState = useAppLifecycleState();
+    useEffect(() {
+      if (appLifecycleState == AppLifecycleState.resumed) {
+        notificationService.areNotificationsEnabled().then((enabled) {
+          notificationsEnabled.value = enabled;
+        });
+      }
+      return null;
+    }, [appLifecycleState]);
+
     // Check notification permission and prompt user if not enabled
     useEffect(() {
       if (userId == null) return null;

@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class NotificationStep extends ConsumerStatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
-  final VoidCallback? onSkip;
+  final Future<void> Function()? onSkip;
   final bool isLoading;
 
   const NotificationStep({
@@ -64,8 +64,8 @@ class _NotificationStepState extends ConsumerState<NotificationStep> {
     }
   }
 
-  void _skipNotifications() {
-    widget.onSkip?.call();
+  Future<void> _skipNotifications() async {
+    await widget.onSkip?.call();
     widget.onNext();
   }
 
