@@ -30,3 +30,7 @@
 - [x] Verify goal is created with `reminderEnabled: false`
 - [x] Verify no notification is scheduled
 
+### 5. Splash Screen - Gabby Attribution
+- [ ] Launch the app (or log out to see splash)
+- [ ] Verify "Inspired by Gabby Beckford" appears at the bottom of the splash screen
+- [ ] Text should be subtle (lighter color, small font)
