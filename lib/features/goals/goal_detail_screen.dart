@@ -804,14 +804,8 @@ class _ActionTile extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final goalService = ref.read(goalServiceProvider);
 
-    final slidable = NotificationListener<ScrollNotification>(
-      onNotification: (notification) {
-        // Dismiss hint when user starts swiping
-        if (showSwipeHint && notification is ScrollStartNotification) {
-          onSwipeHintDismissed?.call();
-        }
-        return false;
-      },
+    final slidable = Listener(
+      onPointerMove: showSwipeHint ? (_) => onSwipeHintDismissed?.call() : null,
       child: Slidable(
         key: ValueKey('slidable_${action.id}'),
         endActionPane: ActionPane(
