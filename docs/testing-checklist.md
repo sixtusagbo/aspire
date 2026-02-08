@@ -4,8 +4,8 @@
 
 ## Pricing Card Redesign
 
-- [ ] Open paywall screen
-- [ ] Annual card shows "Only $X.XX/mo" subtitle
-- [ ] Annual card has "X% OFF" badge in top right
-- [ ] Monthly card shows "Billed monthly" subtitle
-- [ ] Prices display correctly with currency symbol
+- [x] Open paywall screen
+- [x] Annual card shows "Only $X.XX/mo" subtitle
+- [x] Annual card has "X% OFF" badge in top right
+- [x] Monthly card shows "Billed monthly" subtitle
+- [x] Prices display correctly with currency symbol

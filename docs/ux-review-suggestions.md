@@ -28,7 +28,6 @@ Based on the Shipyard judging criteria and Gabby's brief.
 
 ### Suggestions
 
-- [ ] Consider adding an "inspiration" or "dream board" view for completed goals (we could put it in the goals screen when you toggle, yk, design it better...)
 - [x] The welcome screen could reference Gabby more directly ("Inspired by Gabby Beckford" or similar) [More like the splash screen, below, at the bottom of that splash screen]
 - [x] Add Gabby's social links to settings screen (Instagram, TikTok, X, Website)
 
@@ -97,11 +96,10 @@ Based on the Shipyard judging criteria and Gabby's brief.
 - Custom reminders per goal (premium)
 - Custom categories (premium)
 
-### Suggestions from Design Direction (Not Yet Implemented) (what is this passport stamps all about?)
+### Suggestions from Design Direction (Not Yet Implemented)
 
 - [ ] **Passport Stamp Progress Ring**: Design direction mentions progress as "passport stamps" - currently using standard progress bars. Consider implementing stamp-style progress indicators for completed goals
 - [ ] **Goal Completion Stamp**: When a goal is complete, display it as a "passport stamp" with date and category icon
-- [ ] **Dream Board View**: A visual grid of goals styled like travel photos/vision board (I like this one, we could add it as the next bottom nav bar item, a vision board! but a digital one, a digital vision board...)
 
 ---
 

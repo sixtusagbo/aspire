@@ -333,6 +333,7 @@ Add before deadline after core MVP polish:
 - [ ] Full flow testing
 - [ ] Edge cases and bug fixes
 - [ ] Performance optimization
+- i18n/l10n???? is it possible or scope creep?
 
 **Day 12: Submission**
 
