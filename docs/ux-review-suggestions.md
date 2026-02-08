@@ -52,11 +52,11 @@ Based on the Shipyard judging criteria and Gabby's brief.
 #### Paywall Screen
 
 - [x] "Cancel anytime. Terms apply." should link to actual Terms of Service
-- [ ] Consider adding a comparison table (Free vs Premium) (perhaps?? I'll add it, if I don't like it, I'll remove it)
+- [x] Consider adding a comparison table (Free vs Premium) (perhaps?? I'll add it, if I don't like it, I'll remove it)
 
 #### Goal Detail Screen
 
-- [ ] The "Mark Goal as Complete" button could be more visually prominent (gold/celebratory)
+- [x] The "Mark Goal as Complete" button could be more visually prominent (pink gradient with trophy icon)
 - [ ] Swipe micro-action to reveal edit/delete buttons (instead of current interaction)
 
 #### Progress Screen
