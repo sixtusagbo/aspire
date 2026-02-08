@@ -56,6 +56,8 @@ class _GoalSetupStepState extends State<GoalSetupStep> {
   bool get _isValid => _titleController.text.trim().isNotEmpty;
 
   void _applyTemplate(GoalTemplate template) {
+    // Clear all focus when template is applied
+    FocusScope.of(context).unfocus();
     setState(() {
       _titleController.text = template.title;
       _descriptionController.text = template.description;

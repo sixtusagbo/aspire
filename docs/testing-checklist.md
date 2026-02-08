@@ -20,13 +20,13 @@
 
 ### Level Calculation
 
-- [ ] User at 40 XP (level 1), complete action → reaches 50 XP, levels up to 2
-- [ ] XP progress shows correct values (not negative, not exceeding max)
-- [ ] Progress bar shows correct percentage toward next level
+- [x] User at 40 XP (level 1), complete action → reaches 50 XP, levels up to 2
+- [x] XP progress shows correct values (not negative, not exceeding max)
+- [x] Progress bar shows correct percentage toward next level
 
 ### Level Up Celebration
 
-- [ ] Level up triggers confetti celebration
-- [ ] Level Up dialog appears with new level number and title
-- [ ] Tap "Awesome!" dismisses dialog
-- [ ] If level up + goal completion happen together, goal dialog shown (not level)
+- [x] Level up triggers confetti celebration
+- [x] Level Up dialog appears with new level number and title
+- [x] Tap "Awesome!" dismisses dialog
+- [x] If level up + goal completion happen together, goal dialog shown (not level)

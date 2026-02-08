@@ -142,8 +142,8 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
   }
 
   void _applyTemplate(GoalTemplate template) {
-    // Unfocus title field when template is applied
-    _titleFocusNode.unfocus();
+    // Clear all focus when template is applied
+    FocusScope.of(context).unfocus();
     setState(() {
       _selectedTemplate = template;
       _titleController.text = template.title;

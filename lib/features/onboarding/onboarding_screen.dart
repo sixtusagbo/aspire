@@ -11,6 +11,7 @@ import 'package:aspire/services/auth_service.dart';
 import 'package:aspire/services/goal_service.dart';
 import 'package:aspire/services/log_service.dart';
 import 'package:aspire/services/user_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -165,6 +166,15 @@ class OnboardingScreen extends HookConsumerWidget {
       NotificationStep(
         onNext: () => completeOnboarding(),
         onBack: previousPage,
+        onSkip: () async {
+          // Record that user skipped notifications so dialog doesn't show
+          if (user != null) {
+            final userService = ref.read(userServiceProvider);
+            await userService.updateUser(user.uid, {
+              'notificationPromptDeclinedAt': Timestamp.now(),
+            });
+          }
+        },
         isLoading: isLoading.value,
       ),
     ];

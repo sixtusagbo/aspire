@@ -83,15 +83,19 @@ class HomeScreen extends HookConsumerWidget {
     }
 
     Future<void> handleEnableNotifications() async {
+      // First try to request permission
       final granted = await notificationService.requestPermission();
       notificationsEnabled.value = granted;
+
       if (granted) {
         ToastHelper.showSuccess('Notifications enabled!');
       } else {
-        // User declined system permission, save the decline timestamp
-        await userService.updateUser(userId, {
-          'notificationPromptDeclinedAt': Timestamp.now(),
-        });
+        // Permission not granted - could be permanently denied
+        // Open settings so user can enable manually
+        await notificationService.openSettings();
+        // Recheck after returning from settings
+        notificationsEnabled.value =
+            await notificationService.areNotificationsEnabled();
       }
     }
 

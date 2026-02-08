@@ -9,12 +9,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 class NotificationStep extends ConsumerStatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
+  final VoidCallback? onSkip;
   final bool isLoading;
 
   const NotificationStep({
     super.key,
     required this.onNext,
     required this.onBack,
+    this.onSkip,
     this.isLoading = false,
   });
 
@@ -49,11 +51,21 @@ class _NotificationStepState extends ConsumerState<NotificationStep> {
 
         Log.i('Daily reminder scheduled for ${_reminderTime.hour}:${_reminderTime.minute.toString().padLeft(2, '0')}');
       }
+
+      if (!mounted) return;
+      setState(() => _isRequesting = false);
+      widget.onNext();
     } catch (e, stack) {
       Log.e('Error setting up notifications', error: e, stackTrace: stack);
+      if (!mounted) return;
+      setState(() => _isRequesting = false);
+      // Still proceed on error
+      widget.onNext();
     }
+  }
 
-    setState(() => _isRequesting = false);
+  void _skipNotifications() {
+    widget.onSkip?.call();
     widget.onNext();
   }
 
@@ -223,7 +235,7 @@ class _NotificationStepState extends ConsumerState<NotificationStep> {
           Center(
             child: TextButton(
               onPressed:
-                  _isRequesting || widget.isLoading ? null : widget.onNext,
+                  _isRequesting || widget.isLoading ? null : _skipNotifications,
               child: Text(
                 'Maybe later',
                 style: TextStyle(color: context.textSecondary),
