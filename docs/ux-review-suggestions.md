@@ -12,7 +12,7 @@ Based on the Shipyard judging criteria and Gabby's brief.
 | User Experience | 25% | Good (minor issues) |
 | Monetization Potential | 20% | Strong |
 | Innovation | 15% | Good |
-| Technical Quality | 10% | Good (1 bug) |
+| Technical Quality | 10% | Good |
 
 ---
 
@@ -47,13 +47,14 @@ Based on the Shipyard judging criteria and Gabby's brief.
 ### Issues Found
 
 #### Paywall Screen
-- [ ] "Cancel anytime. Terms apply." should link to actual Terms of Service
+- [x] "Cancel anytime. Terms apply." should link to actual Terms of Service
 - [ ] No social proof (testimonials, user count, ratings)
 - [ ] Consider adding a comparison table (Free vs Premium)
 
 #### Goal Detail Screen
 - [ ] The "Mark Goal as Complete" button could be more visually prominent (gold/celebratory)
 - [ ] Consider showing estimated time to complete based on action count
+- [ ] Swipe micro-action to reveal edit/delete buttons (instead of current interaction)
 
 #### Progress Screen
 - [ ] The streak milestones (7, 14, 30, 60, 100) are good but could show the next milestone more prominently
@@ -65,6 +66,8 @@ Based on the Shipyard judging criteria and Gabby's brief.
 
 #### Settings Screen
 - [ ] Premium features list could be more visually appealing (icons + descriptions like paywall)
+- [ ] Daily reminder toggle should be disabled when system notifications are off
+- [ ] Notification sync: turning off system notifications should auto-disable daily reminder; turning on should auto-enable (unless manually disabled)
 
 ---
 
@@ -104,15 +107,8 @@ Based on the Shipyard judging criteria and Gabby's brief.
 
 ## 5. Technical Quality (10%) - Good
 
-### Bug Found
-**File**: `lib/features/goals/goal_detail_screen.dart` (line 843)
-```dart
-trailing: ReorderableDragStartListener(
-  index: 0, // BUG: Should use actual index from list
-  child: const Icon(Icons.drag_handle, color: Colors.grey),
-),
-```
-This hardcoded `index: 0` means reordering won't work correctly. Should pass the actual list index.
+### Bug Fixed
+- [x] `ReorderableDragStartListener` index was hardcoded to 0 - now passes actual list index
 
 ### What's Working
 - Riverpod state management properly implemented
@@ -151,8 +147,7 @@ This hardcoded `index: 0` means reordering won't work correctly. Should pass the
 The app is in strong shape for submission. It directly addresses Gabby's brief ("mindset + micro-actions", "daily challenges", "gamification", "confetti"), has a cohesive design aligned with her brand, and monetization is well-integrated.
 
 The main areas for improvement are:
-1. Fix the one bug found
-2. Add social proof to paywall
-3. Consider implementing the "passport stamp" concept from design direction to increase innovation score
+1. Add social proof to paywall
+2. Consider implementing the "passport stamp" concept from design direction to increase innovation score
 
 The UX is polished with good empty states, loading states, celebrations, and accessibility support.
