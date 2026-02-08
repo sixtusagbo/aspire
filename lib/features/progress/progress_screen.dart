@@ -185,13 +185,24 @@ class _StreakSection extends StatelessWidget {
 
   const _StreakSection({required this.user});
 
-  static const _milestones = [7, 14, 30, 60, 100];
+  static const _milestones = [
+    7, 14, 30, 60, 100, 200, 365, 500, 730, 1000,
+    1500, 2000, 3000, 5000, 7500, 10000, 15000, 20000,
+  ];
 
   int? _getNextMilestone(int currentStreak) {
     for (final milestone in _milestones) {
       if (currentStreak < milestone) return milestone;
     }
     return null;
+  }
+
+  String _formatMilestone(int days) {
+    if (days >= 1000) {
+      final k = days / 1000;
+      return k == k.toInt() ? '${k.toInt()}k' : '${k.toStringAsFixed(1)}k';
+    }
+    return '$days';
   }
 
   @override
@@ -235,7 +246,9 @@ class _StreakSection extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '$currentStreak ${currentStreak == 1 ? 'day' : 'days'}',
+                    currentStreak == 0
+                        ? 'None'
+                        : '$currentStreak ${currentStreak == 1 ? 'day' : 'days'}',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: AppTheme.primaryPink,
@@ -245,7 +258,8 @@ class _StreakSection extends StatelessWidget {
               ),
             ],
           ),
-          if (nextMilestone != null) ...[
+          // Only show next milestone badge if user has started a streak
+          if (nextMilestone != null && currentStreak > 0) ...[
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -263,7 +277,7 @@ class _StreakSection extends StatelessWidget {
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    '$daysToNext ${daysToNext == 1 ? 'day' : 'days'} to $nextMilestone-day milestone',
+                    '$daysToNext ${daysToNext == 1 ? 'day' : 'days'} to ${_formatMilestone(nextMilestone)}-day milestone',
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
@@ -275,38 +289,24 @@ class _StreakSection extends StatelessWidget {
             ),
           ],
           const SizedBox(height: 16),
-          Row(
-            children: [
-              _StreakMilestone(
-                days: 7,
-                achieved: longestStreak >= 7,
-                isNext: nextMilestone == 7,
-              ),
-              _StreakMilestone(
-                days: 14,
-                achieved: longestStreak >= 14,
-                isNext: nextMilestone == 14,
-              ),
-              _StreakMilestone(
-                days: 30,
-                achieved: longestStreak >= 30,
-                isNext: nextMilestone == 30,
-              ),
-              _StreakMilestone(
-                days: 60,
-                achieved: longestStreak >= 60,
-                isNext: nextMilestone == 60,
-              ),
-              _StreakMilestone(
-                days: 100,
-                achieved: longestStreak >= 100,
-                isNext: nextMilestone == 100,
-              ),
-            ],
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: _milestones.map((days) {
+                return _StreakMilestone(
+                  days: days,
+                  label: _formatMilestone(days),
+                  achieved: longestStreak >= days,
+                  isNext: nextMilestone == days && currentStreak > 0,
+                );
+              }).toList(),
+            ),
           ),
           const SizedBox(height: 12),
           Text(
-            'Longest streak: $longestStreak days',
+            longestStreak == 0
+                ? 'Start your streak today!'
+                : 'Longest streak: $longestStreak days',
             style: TextStyle(
               color: context.textSecondary,
               fontSize: 13,
@@ -320,18 +320,21 @@ class _StreakSection extends StatelessWidget {
 
 class _StreakMilestone extends StatelessWidget {
   final int days;
+  final String label;
   final bool achieved;
   final bool isNext;
 
   const _StreakMilestone({
     required this.days,
+    required this.label,
     required this.achieved,
     this.isNext = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Column(
         children: [
           Container(
@@ -364,7 +367,7 @@ class _StreakMilestone extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            '$days',
+            label,
             style: TextStyle(
               fontSize: 11,
               fontWeight: achieved || isNext ? FontWeight.bold : FontWeight.normal,

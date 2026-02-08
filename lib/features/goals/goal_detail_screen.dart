@@ -781,21 +781,19 @@ class _ActionTile extends HookConsumerWidget {
       key: ValueKey('slidable_${action.id}'),
       endActionPane: ActionPane(
         motion: const DrawerMotion(),
-        extentRatio: 0.4,
+        extentRatio: 0.25,
         children: [
           SlidableAction(
             onPressed: (_) => _showEditDialog(context, goalService),
             backgroundColor: AppTheme.accentCyan,
             foregroundColor: Colors.white,
             icon: Icons.edit,
-            label: 'Edit',
           ),
           SlidableAction(
             onPressed: (_) => _confirmDelete(context, goalService),
             backgroundColor: Colors.red,
             foregroundColor: Colors.white,
             icon: Icons.delete,
-            label: 'Delete',
           ),
         ],
       ),
