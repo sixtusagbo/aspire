@@ -2,6 +2,21 @@
 
 All notable changes to Aspire will be documented in this file.
 
+## [0.1.6] - 2026-02-08
+
+### Added
+- Level up celebration with confetti and dialog
+- Terms of Service and Privacy Policy links in settings
+
+### Changed
+- Level titles now more aspirational: Dreamer, Go-Getter, Trailblazer, Maverick, Visionary, Legend
+
+### Fixed
+- XP level calculation now correctly shows progress
+- Notification prompt flow in onboarding and home screen
+- Settings notification toggle now opens system settings
+- Goal form keyboard dismisses after applying template
+
 ## [0.1.5] - 2026-01-30
 
 ### Added

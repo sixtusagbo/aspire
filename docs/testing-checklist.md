@@ -18,16 +18,8 @@
 
 ## Notification Flow Fixes
 
-### Onboarding Notification Step
-
-- [ ] Tap "Maybe later" to skip → home screen shows only banner (no dialog)
-
 ### Settings Notifications
 
 - [ ] After disabling in system settings and returning → toggle reflects new state
 
 Re: black screen when returning from settings - yes, test with APK. The iOS simulator/debug mode can have issues with app lifecycle when returning from system settings.
-
-## Goal Form Focus
-
-- [ ] Apply template in onboarding goal step → keyboard dismisses
