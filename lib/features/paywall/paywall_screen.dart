@@ -264,27 +264,8 @@ class _PaywallContent extends StatelessWidget {
 
               const SizedBox(height: 32),
 
-              // Features
-              _FeatureItem(
-                icon: Icons.all_inclusive,
-                title: 'Unlimited Goals',
-                description: 'Create as many dreams as you have',
-              ),
-              _FeatureItem(
-                icon: Icons.auto_awesome,
-                title: 'More AI Suggestions',
-                description: 'Get 10 micro-actions per goal (vs 5 free)',
-              ),
-              _FeatureItem(
-                icon: Icons.schedule,
-                title: 'Custom Reminders',
-                description: 'Set different reminder times per goal',
-              ),
-              _FeatureItem(
-                icon: Icons.category,
-                title: 'Custom Categories',
-                description: 'Create your own goal categories',
-              ),
+              // Comparison table
+              const _ComparisonTable(),
 
               const SizedBox(height: 32),
 
@@ -429,6 +410,136 @@ class _FeatureItem extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ComparisonTable extends StatelessWidget {
+  const _ComparisonTable();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: context.borderColor),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: [
+          // Header row
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            decoration: BoxDecoration(
+              color: AppTheme.primaryPink.withValues(alpha: 0.1),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(15),
+              ),
+            ),
+            child: Row(
+              children: [
+                const Expanded(
+                  flex: 2,
+                  child: Text(
+                    'Feature',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    'Free',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: context.textSecondary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const Expanded(
+                  child: Text(
+                    'Premium',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.primaryPink,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          _ComparisonRow(feature: 'Active Goals', free: '3', premium: 'Unlimited'),
+          _ComparisonRow(feature: 'AI Suggestions', free: '5', premium: '10'),
+          _ComparisonRow(
+            feature: 'Goal Reminders',
+            free: null,
+            premium: 'check',
+          ),
+          _ComparisonRow(
+            feature: 'Custom Categories',
+            free: null,
+            premium: 'check',
+            isLast: true,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ComparisonRow extends StatelessWidget {
+  final String feature;
+  final String? free;
+  final String? premium;
+  final bool isLast;
+
+  const _ComparisonRow({
+    required this.feature,
+    required this.free,
+    required this.premium,
+    this.isLast = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      decoration: BoxDecoration(
+        border: isLast
+            ? null
+            : Border(bottom: BorderSide(color: context.borderColor)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Text(feature, style: const TextStyle(fontSize: 14)),
+          ),
+          Expanded(child: _buildValue(free, false)),
+          Expanded(child: _buildValue(premium, true)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildValue(String? value, bool isPremium) {
+    if (value == null) {
+      return const Icon(Icons.close, color: Colors.grey, size: 20);
+    }
+    if (value == 'check') {
+      return Icon(
+        Icons.check_circle,
+        color: isPremium ? AppTheme.primaryPink : Colors.green,
+        size: 20,
+      );
+    }
+    return Text(
+      value,
+      style: TextStyle(
+        fontSize: 14,
+        fontWeight: isPremium ? FontWeight.bold : FontWeight.normal,
+        color: isPremium ? AppTheme.primaryPink : null,
+      ),
+      textAlign: TextAlign.center,
     );
   }
 }

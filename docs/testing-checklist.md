@@ -4,11 +4,8 @@
 
 ## Recent Changes (February 8, 2026)
 
-### 1. Follow Gabby - Social Links in Settings
-- [x] Open Settings screen
-- [x] Scroll to "Follow Gabby Beckford" section
-- [x] Verify 4 social buttons appear: Instagram, TikTok, Twitter, Website
-- [x] Tap Instagram - should open https://www.instagram.com/packslight/
-- [x] Tap TikTok - should open https://www.tiktok.com/@packslight
-- [x] Tap Twitter - should open https://x.com/packslight
-- [x] Tap Website - should open https://www.packslight.com/
+### 1. Free vs Premium Comparison Table on Paywall
+- [ ] Open the paywall screen
+- [ ] Verify comparison table shows with header row (Feature, Free, Premium)
+- [ ] Verify rows: Active Goals (3 vs Unlimited), AI Suggestions (5 vs 10), Goal Reminders (X vs check), Custom Categories (X vs check)
+- [ ] Table should have rounded corners and proper styling
