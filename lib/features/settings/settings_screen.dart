@@ -108,8 +108,17 @@ class SettingsScreen extends HookConsumerWidget {
         // Already enabled, open settings to disable
         await notificationService.openSettings();
         // Recheck after returning from settings
-        notificationsEnabled.value = await notificationService
-            .areNotificationsEnabled();
+        final stillEnabled = await notificationService.areNotificationsEnabled();
+        notificationsEnabled.value = stillEnabled;
+
+        // Auto-disable reminder if notifications were turned off
+        if (!stillEnabled && reminderEnabled.value) {
+          reminderEnabled.value = false;
+          await notificationService.cancelAll();
+          if (userId != null) {
+            await userService.updateUser(userId, {'dailyReminderEnabled': false});
+          }
+        }
         return;
       }
 
@@ -390,10 +399,16 @@ class SettingsScreen extends HookConsumerWidget {
           ListTile(
             leading: const SizedBox(width: 24), // Indent
             title: const Text('Daily Reminder'),
-            subtitle: const Text('Get a nudge to complete your actions'),
+            subtitle: Text(
+              notificationsEnabled.value != true
+                  ? 'Enable notifications first'
+                  : 'Get a nudge to complete your actions',
+            ),
             trailing: Switch(
               value: reminderEnabled.value,
-              onChanged: handleReminderToggle,
+              onChanged: notificationsEnabled.value == true
+                  ? handleReminderToggle
+                  : null,
             ),
           ),
 
