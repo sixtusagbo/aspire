@@ -15,3 +15,10 @@
 
 - [ ] As premium user, verify "Manage Subscription" option appears under Premium
 - [ ] Tap "Manage Subscription" and verify it opens App Store/Play Store subscription settings
+
+## UX Review Fixes
+
+- [x] Fix ReorderableDragStartListener index bug (reordering actions now works)
+- [x] Link "Terms" and "Privacy" on paywall to actual pages
+- [ ] Daily reminder should be enabled by default for all users
+- [ ] Goal-specific reminders should be enabled by default for premium users only

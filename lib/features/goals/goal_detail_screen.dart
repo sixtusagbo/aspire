@@ -724,6 +724,7 @@ class _ActionsList extends HookConsumerWidget {
           action: action,
           goalId: goalId,
           goalTitle: goalTitle,
+          index: index,
         );
       },
     );
@@ -734,12 +735,14 @@ class _ActionTile extends HookConsumerWidget {
   final MicroAction action;
   final String goalId;
   final String goalTitle;
+  final int index;
 
   const _ActionTile({
     super.key,
     required this.action,
     required this.goalId,
     required this.goalTitle,
+    required this.index,
   });
 
   @override
@@ -840,7 +843,7 @@ class _ActionTile extends HookConsumerWidget {
           ),
         ),
         trailing: ReorderableDragStartListener(
-          index: 0, // This will be set by parent
+          index: index,
           child: const Icon(Icons.drag_handle, color: Colors.grey),
         ),
         onTap: () => _showEditDialog(context, goalService),

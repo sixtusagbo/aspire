@@ -1,10 +1,22 @@
 import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
 import 'package:aspire/services/revenue_cat_service.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+const _termsUrl = 'https://aspire.sixtusagbo.dev/terms';
+const _privacyUrl = 'https://aspire.sixtusagbo.dev/privacy';
+
+Future<void> _launchUrl(String url) async {
+  final uri = Uri.parse(url);
+  if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+    ToastHelper.showError('Could not open link');
+  }
+}
 
 class PaywallScreen extends HookConsumerWidget {
   const PaywallScreen({super.key});
@@ -321,9 +333,37 @@ class _PaywallContent extends StatelessWidget {
 
               // Terms
               Center(
-                child: Text(
-                  'Cancel anytime. Terms apply.',
-                  style: TextStyle(color: context.textSecondary, fontSize: 12),
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: TextStyle(
+                      color: context.textSecondary,
+                      fontSize: 12,
+                    ),
+                    children: [
+                      const TextSpan(text: 'Cancel anytime. '),
+                      TextSpan(
+                        text: 'Terms',
+                        style: TextStyle(
+                          color: AppTheme.primaryPink,
+                          decoration: TextDecoration.underline,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => _launchUrl(_termsUrl),
+                      ),
+                      const TextSpan(text: ' & '),
+                      TextSpan(
+                        text: 'Privacy',
+                        style: TextStyle(
+                          color: AppTheme.primaryPink,
+                          decoration: TextDecoration.underline,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => _launchUrl(_privacyUrl),
+                      ),
+                      const TextSpan(text: ' apply.'),
+                    ],
+                  ),
                 ),
               ),
 
