@@ -33,6 +33,7 @@ class OnboardingScreen extends HookConsumerWidget {
     final pageController = usePageController();
     final currentPage = useState(0);
     final isLoading = useState(false);
+    final skippedNotifications = useState(false);
 
     // Form data - pre-fill name for OAuth users
     final name = useState(hasDisplayName ? user.displayName! : '');
@@ -60,12 +61,16 @@ class OnboardingScreen extends HookConsumerWidget {
         }
 
         // Update user profile and mark onboarding complete
-        await userService.updateUser(user.uid, {
+        final userData = <String, dynamic>{
           'name': name.value,
           'email': user.email ?? '',
           'createdAt': DateTime.now(),
           'onboardingComplete': true,
-        });
+        };
+        if (skippedNotifications.value) {
+          userData['notificationPromptDeclinedAt'] = Timestamp.now();
+        }
+        await userService.updateUser(user.uid, userData);
 
         // Create first goal if title provided
         if (goalTitle.value.isNotEmpty) {
@@ -166,15 +171,7 @@ class OnboardingScreen extends HookConsumerWidget {
       NotificationStep(
         onNext: () => completeOnboarding(),
         onBack: previousPage,
-        onSkip: () async {
-          // Record that user skipped notifications so dialog doesn't show
-          if (user != null) {
-            final userService = ref.read(userServiceProvider);
-            await userService.updateUser(user.uid, {
-              'notificationPromptDeclinedAt': Timestamp.now(),
-            });
-          }
-        },
+        onSkip: () async => skippedNotifications.value = true,
         isLoading: isLoading.value,
       ),
     ];
