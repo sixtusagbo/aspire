@@ -57,7 +57,7 @@ Based on the Shipyard judging criteria and Gabby's brief.
 #### Goal Detail Screen
 
 - [x] The "Mark Goal as Complete" button could be more visually prominent (pink gradient with trophy icon)
-- [ ] Swipe micro-action to reveal edit/delete buttons (instead of current interaction)
+- [x] Swipe micro-action to reveal edit/delete buttons (instead of current interaction)
 
 #### Progress Screen
 
