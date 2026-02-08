@@ -291,14 +291,14 @@ class _GoalDetailContent extends HookConsumerWidget {
               width: double.infinity,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [AppTheme.goldAchievement, AppTheme.goldLight],
+                  colors: [AppTheme.primaryPink, AppTheme.secondaryHotPink],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: AppTheme.goldAchievement.withValues(alpha: 0.4),
+                    color: AppTheme.primaryPink.withValues(alpha: 0.4),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
