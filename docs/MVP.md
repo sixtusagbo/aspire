@@ -432,30 +432,3 @@ Add before deadline after core MVP polish:
 | Morning   | Code core feature     |
 | Afternoon | Continue + test       |
 | Evening   | Review, plan tomorrow |
-
----
-
-## Possible Future Improvements
-
-Ideas to consider after hackathon submission:
-
-### Premium Enhancements
-
-- **Priority Support** - Direct support channel for premium users
-
-### Community Features
-
-- **Challenges** - Weekly community challenges
-- **Joint Goals** - Partner with a friend on shared goals
-
-### AI Features
-
-- **AI Coaching** - Motivational nudges and personalized advice
-- **Smart Scheduling** - AI suggests optimal times for actions
-
-### Platform Features
-
-- **Home Screen Widget** - Android widget showing goals at a glance
-- **Events** - Admin-posted events and announcements
-
----
