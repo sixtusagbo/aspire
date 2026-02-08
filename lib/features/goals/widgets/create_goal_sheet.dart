@@ -105,7 +105,7 @@ void _showUpgradeDialog(BuildContext context) {
   );
 }
 
-class _CreateGoalSheetContent extends StatefulWidget {
+class _CreateGoalSheetContent extends ConsumerStatefulWidget {
   final String userId;
   final GoalService goalService;
   final bool isPremium;
@@ -119,12 +119,12 @@ class _CreateGoalSheetContent extends StatefulWidget {
   });
 
   @override
-  State<_CreateGoalSheetContent> createState() =>
+  ConsumerState<_CreateGoalSheetContent> createState() =>
       _CreateGoalSheetContentState();
 }
 
-class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent>
-    with ConsumerStateMixin {
+class _CreateGoalSheetContentState
+    extends ConsumerState<_CreateGoalSheetContent> {
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
   final _titleFocusNode = FocusNode();
