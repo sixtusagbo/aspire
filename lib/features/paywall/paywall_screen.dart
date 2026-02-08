@@ -284,9 +284,10 @@ class _PaywallContent extends StatelessWidget {
                     package: annual,
                     isRecommended: true,
                     onTap: () => onPurchase(annual),
+                    monthlyPackage: monthly,
                   ),
 
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
 
                 // Monthly
                 if (monthly != null)
@@ -548,11 +549,13 @@ class _PricingCard extends StatelessWidget {
   final Package package;
   final bool isRecommended;
   final VoidCallback onTap;
+  final Package? monthlyPackage; // For calculating per-month price on annual
 
   const _PricingCard({
     required this.package,
     required this.isRecommended,
     required this.onTap,
+    this.monthlyPackage,
   });
 
   @override
@@ -560,27 +563,47 @@ class _PricingCard extends StatelessWidget {
     final product = package.storeProduct;
     final isAnnual = package.packageType == PackageType.annual;
 
+    // Calculate per-month price and savings for annual
+    String? perMonthPrice;
+    int? savingsPercent;
+    if (isAnnual && monthlyPackage != null) {
+      final monthlyPrice = monthlyPackage!.storeProduct.price;
+      final annualPrice = product.price;
+      final perMonth = annualPrice / 12;
+
+      // Format per-month price using currency code
+      final currencySymbol = _getCurrencySymbol(product.currencyCode);
+      perMonthPrice = '$currencySymbol${perMonth.toStringAsFixed(2)}';
+
+      // Calculate savings percentage
+      final yearlyIfMonthly = monthlyPrice * 12;
+      if (yearlyIfMonthly > 0) {
+        savingsPercent = (((yearlyIfMonthly - annualPrice) / yearlyIfMonthly) * 100).round();
+      }
+    }
+
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isRecommended
-              ? AppTheme.primaryPink.withValues(alpha: 0.05)
-              : null,
-          border: Border.all(
-            color: isRecommended ? AppTheme.primaryPink : context.borderColor,
-            width: isRecommended ? 2 : 1,
-          ),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: isRecommended
+                  ? AppTheme.primaryPink.withValues(alpha: 0.05)
+                  : null,
+              border: Border.all(
+                color: isRecommended ? AppTheme.primaryPink : context.borderColor,
+                width: isRecommended ? 2 : 1,
+              ),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         isAnnual ? 'Annual' : 'Monthly',
@@ -589,60 +612,76 @@ class _PricingCard extends StatelessWidget {
                           fontSize: 16,
                         ),
                       ),
-                      if (isRecommended) ...[
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppTheme.primaryPink,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Text(
-                            'BEST VALUE',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                      const SizedBox(height: 4),
+                      Text(
+                        isAnnual && perMonthPrice != null
+                            ? 'Only $perMonthPrice/mo'
+                            : 'Billed monthly',
+                        style: TextStyle(
+                          color: context.textSecondary,
+                          fontSize: 13,
                         ),
-                      ],
+                      ),
                     ],
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    isAnnual ? 'Save 50% vs monthly' : 'Billed monthly',
-                    style: TextStyle(
-                      color: context.textSecondary,
-                      fontSize: 13,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  product.priceString,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: isRecommended ? AppTheme.primaryPink : null,
-                  ),
                 ),
-                Text(
-                  isAnnual ? '/year' : '/month',
-                  style: TextStyle(color: context.textSecondary, fontSize: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      product.priceString,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: isRecommended ? AppTheme.primaryPink : null,
+                      ),
+                    ),
+                    Text(
+                      isAnnual ? '/year' : '/mo',
+                      style: TextStyle(color: context.textSecondary, fontSize: 12),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+          // Savings badge
+          if (isAnnual && savingsPercent != null && savingsPercent > 0)
+            Positioned(
+              top: -10,
+              right: 12,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryPink,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  '$savingsPercent% OFF',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
+  }
+
+  String _getCurrencySymbol(String currencyCode) {
+    const symbols = {
+      'USD': '\$',
+      'EUR': '€',
+      'GBP': '£',
+      'JPY': '¥',
+      'NGN': '₦',
+      'INR': '₹',
+      'CAD': '\$',
+      'AUD': '\$',
+    };
+    return symbols[currencyCode] ?? currencyCode;
   }
 }
