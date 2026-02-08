@@ -20,6 +20,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Action limits per goal
 const int freeActionLimit = 5;
@@ -725,6 +726,8 @@ class _ActionsList extends HookConsumerWidget {
   final String goalId;
   final String goalTitle;
 
+  static const _swipeHintKey = 'has_seen_swipe_hint';
+
   const _ActionsList({
     required this.actions,
     required this.goalId,
@@ -734,6 +737,24 @@ class _ActionsList extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final goalService = ref.read(goalServiceProvider);
+    final showSwipeHint = useState<bool>(false);
+
+    // Check if user has seen the swipe hint
+    useEffect(() {
+      SharedPreferences.getInstance().then((prefs) {
+        final hasSeen = prefs.getBool(_swipeHintKey) ?? false;
+        if (!hasSeen) {
+          showSwipeHint.value = true;
+        }
+      });
+      return null;
+    }, []);
+
+    void dismissHint() async {
+      showSwipeHint.value = false;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_swipeHintKey, true);
+    }
 
     return ReorderableListView.builder(
       padding: const EdgeInsets.only(bottom: 80),
@@ -753,6 +774,8 @@ class _ActionsList extends HookConsumerWidget {
           goalId: goalId,
           goalTitle: goalTitle,
           index: index,
+          showSwipeHint: index == 0 && showSwipeHint.value,
+          onSwipeHintDismissed: dismissHint,
         );
       },
     );
@@ -764,6 +787,8 @@ class _ActionTile extends HookConsumerWidget {
   final String goalId;
   final String goalTitle;
   final int index;
+  final bool showSwipeHint;
+  final VoidCallback? onSwipeHintDismissed;
 
   const _ActionTile({
     super.key,
@@ -771,26 +796,35 @@ class _ActionTile extends HookConsumerWidget {
     required this.goalId,
     required this.goalTitle,
     required this.index,
+    this.showSwipeHint = false,
+    this.onSwipeHintDismissed,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final goalService = ref.read(goalServiceProvider);
 
-    return Slidable(
+    final slidable = Slidable(
       key: ValueKey('slidable_${action.id}'),
       endActionPane: ActionPane(
         motion: const DrawerMotion(),
         extentRatio: 0.25,
+        dismissible: DismissiblePane(onDismissed: () {}),
         children: [
           SlidableAction(
-            onPressed: (_) => _showEditDialog(context, goalService),
+            onPressed: (_) {
+              onSwipeHintDismissed?.call();
+              _showEditDialog(context, goalService);
+            },
             backgroundColor: AppTheme.accentCyan,
             foregroundColor: Colors.white,
             icon: Icons.edit,
           ),
           SlidableAction(
-            onPressed: (_) => _confirmDelete(context, goalService),
+            onPressed: (_) {
+              onSwipeHintDismissed?.call();
+              _confirmDelete(context, goalService);
+            },
             backgroundColor: Colors.red,
             foregroundColor: Colors.white,
             icon: Icons.delete,
@@ -863,6 +897,45 @@ class _ActionTile extends HookConsumerWidget {
         ),
       ),
     );
+
+    if (showSwipeHint) {
+      return Column(
+        key: ValueKey(action.id),
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          slidable,
+          GestureDetector(
+            onTap: onSwipeHintDismissed,
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              color: AppTheme.primaryPink.withValues(alpha: 0.1),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.swipe_left,
+                    size: 16,
+                    color: AppTheme.primaryPink,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Swipe left for more options',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppTheme.primaryPink,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    return slidable;
   }
 
   Future<void> _confirmDelete(
