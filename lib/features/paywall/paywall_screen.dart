@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -571,9 +572,12 @@ class _PricingCard extends StatelessWidget {
       final annualPrice = product.price;
       final perMonth = annualPrice / 12;
 
-      // Format per-month price using currency code
-      final currencySymbol = _getCurrencySymbol(product.currencyCode);
-      perMonthPrice = '$currencySymbol${perMonth.toStringAsFixed(2)}';
+      // Format per-month price with proper currency formatting
+      final formatter = NumberFormat.currency(
+        symbol: _getCurrencySymbol(product.currencyCode),
+        decimalDigits: 2,
+      );
+      perMonthPrice = formatter.format(perMonth);
 
       // Calculate savings percentage
       final yearlyIfMonthly = monthlyPrice * 12;
