@@ -41,6 +41,7 @@ class GoalDetailScreen extends HookConsumerWidget {
 
     return CelebrationOverlay(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: const Text('Goal Details'),
           actions: [

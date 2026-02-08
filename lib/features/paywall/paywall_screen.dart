@@ -39,19 +39,19 @@ class PaywallScreen extends HookConsumerWidget {
         child: isLoading.value
             ? const Center(child: CircularProgressIndicator())
             : isPremium.value
-                ? const _PremiumActiveContent()
-                : _PaywallContent(
-                    offerings: offerings.value,
-                    isPurchasing: isPurchasing,
-                    onPurchase: (package) => _purchase(
-                      context,
-                      revenueCatService,
-                      package,
-                      isPurchasing,
-                    ),
-                    onRestore: () =>
-                        _restore(context, revenueCatService, isPurchasing),
-                  ),
+            ? const _PremiumActiveContent()
+            : _PaywallContent(
+                offerings: offerings.value,
+                isPurchasing: isPurchasing,
+                onPurchase: (package) => _purchase(
+                  context,
+                  revenueCatService,
+                  package,
+                  isPurchasing,
+                ),
+                onRestore: () =>
+                    _restore(context, revenueCatService, isPurchasing),
+              ),
       ),
     );
   }
@@ -145,19 +145,16 @@ class _PremiumActiveContent extends StatelessWidget {
 
           Text(
             "You're Premium!",
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
 
           Text(
             'You have access to all premium features.\n'
             'Thank you for your support!',
-            style: TextStyle(
-              color: context.textSecondary,
-              fontSize: 16,
-            ),
+            style: TextStyle(color: context.textSecondary, fontSize: 16),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
@@ -367,7 +364,7 @@ class _PaywallContent extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 80), // Space for loading overlay
+              const SizedBox(height: 40), // Space for loading overlay
             ],
           ),
         ),
@@ -507,7 +504,10 @@ class _PricingCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     isAnnual ? 'Save 50% vs monthly' : 'Billed monthly',
-                    style: TextStyle(color: context.textSecondary, fontSize: 13),
+                    style: TextStyle(
+                      color: context.textSecondary,
+                      fontSize: 13,
+                    ),
                   ),
                 ],
               ),
