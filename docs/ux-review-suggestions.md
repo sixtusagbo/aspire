@@ -66,8 +66,8 @@ Based on the Shipyard judging criteria and Gabby's brief.
 
 #### Settings Screen
 
-- [ ] Daily reminder toggle should be disabled when system notifications are off
-- [ ] Notification sync: turning off system notifications should auto-disable daily reminder; turning on should auto-enable (unless manually disabled)
+- [x] Daily reminder toggle should be disabled when system notifications are off
+- [x] Notification sync: turning off system notifications should auto-disable daily reminder; turning on should auto-enable (unless manually disabled)
 
 ---
 
