@@ -286,7 +286,7 @@ class _GoalDetailContent extends HookConsumerWidget {
               width: double.infinity,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [AppTheme.primaryPink, AppTheme.secondaryHotPink],
+                  colors: [AppTheme.primaryPink, AppTheme.coralSunset],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -452,10 +452,6 @@ class _GoalDetailContent extends HookConsumerWidget {
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.goldAchievement,
-              foregroundColor: Colors.white,
-            ),
             child: const Text('Complete'),
           ),
         ],
@@ -1631,7 +1627,7 @@ class _GoalReminderSection extends HookConsumerWidget {
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: AppTheme.goldAchievement.withValues(alpha: 0.2),
+                            color: AppTheme.primaryPink.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
@@ -1639,7 +1635,7 @@ class _GoalReminderSection extends HookConsumerWidget {
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w600,
-                              color: AppTheme.goldAchievement,
+                              color: AppTheme.primaryPink,
                             ),
                           ),
                         ),
