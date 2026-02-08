@@ -17,6 +17,7 @@ import 'package:aspire/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -776,39 +777,28 @@ class _ActionTile extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final goalService = ref.read(goalServiceProvider);
 
-    return Dismissible(
-      key: ValueKey('dismiss_${action.id}'),
-      direction: DismissDirection.endToStart,
-      background: Container(
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
-        color: Colors.red,
-        child: const Icon(Icons.delete, color: Colors.white),
-      ),
-      confirmDismiss: (direction) async {
-        return await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Delete Action'),
-            content: const Text('Delete this micro-action?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                style: TextButton.styleFrom(foregroundColor: Colors.red),
-                child: const Text('Delete'),
-              ),
-            ],
+    return Slidable(
+      key: ValueKey('slidable_${action.id}'),
+      endActionPane: ActionPane(
+        motion: const DrawerMotion(),
+        extentRatio: 0.4,
+        children: [
+          SlidableAction(
+            onPressed: (_) => _showEditDialog(context, goalService),
+            backgroundColor: AppTheme.accentCyan,
+            foregroundColor: Colors.white,
+            icon: Icons.edit,
+            label: 'Edit',
           ),
-        );
-      },
-      onDismissed: (direction) async {
-        await goalService.deleteMicroAction(action.id, goalId);
-        ToastHelper.showSuccess('Action deleted');
-      },
+          SlidableAction(
+            onPressed: (_) => _confirmDelete(context, goalService),
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+            icon: Icons.delete,
+            label: 'Delete',
+          ),
+        ],
+      ),
       child: ListTile(
         leading: Checkbox(
           value: action.isCompleted,
@@ -873,9 +863,37 @@ class _ActionTile extends HookConsumerWidget {
           index: index,
           child: const Icon(Icons.drag_handle, color: Colors.grey),
         ),
-        onTap: () => _showEditDialog(context, goalService),
       ),
     );
+  }
+
+  Future<void> _confirmDelete(
+    BuildContext context,
+    GoalService goalService,
+  ) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Action'),
+        content: const Text('Delete this micro-action?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      await goalService.deleteMicroAction(action.id, goalId);
+      ToastHelper.showSuccess('Action deleted');
+    }
   }
 
   Future<void> _showEditDialog(
