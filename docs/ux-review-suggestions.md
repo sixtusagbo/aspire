@@ -133,7 +133,7 @@ This hardcoded `index: 0` means reordering won't work correctly. Should pass the
 1. [x] Fix `ReorderableDragStartListener` index bug
 2. [x] Link "Terms apply" to actual Terms of Service on paywall
 3. [x] Daily reminder should be enabled by default for all users
-4. [ ] Goal-specific reminders should be enabled by default for premium users only
+4. [x] Goal-specific reminders should be enabled by default for premium users only
 
 ### Should Consider
 3. [ ] Add social proof to paywall (even just "Join 100+ ambitious women" or similar)

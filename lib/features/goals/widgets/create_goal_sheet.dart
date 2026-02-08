@@ -9,6 +9,7 @@ import 'package:aspire/models/goal_template.dart';
 import 'package:aspire/models/user.dart';
 import 'package:aspire/services/goal_service.dart';
 import 'package:aspire/services/goal_template_service.dart';
+import 'package:aspire/services/notification_service.dart';
 import 'package:aspire/services/revenue_cat_service.dart';
 import 'package:aspire/services/user_service.dart';
 import 'package:flutter/material.dart';
@@ -122,7 +123,8 @@ class _CreateGoalSheetContent extends StatefulWidget {
       _CreateGoalSheetContentState();
 }
 
-class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
+class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent>
+    with ConsumerStateMixin {
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
   final _titleFocusNode = FocusNode();
@@ -189,6 +191,10 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
     setState(() => _isCreating = true);
 
     try {
+      // Default reminder settings for premium users
+      const defaultReminderHour = 9;
+      const defaultReminderMinute = 0;
+
       final goal = await widget.goalService.createGoal(
         userId: widget.userId,
         title: _titleController.text.trim(),
@@ -198,7 +204,21 @@ class _CreateGoalSheetContentState extends State<_CreateGoalSheetContent> {
         targetDate: _targetDate,
         category: _selectedCategory.presetCategory ?? GoalCategory.personal,
         customCategoryName: _selectedCategory.customCategoryName,
+        reminderEnabled: widget.isPremium,
+        reminderHour: widget.isPremium ? defaultReminderHour : null,
+        reminderMinute: widget.isPremium ? defaultReminderMinute : null,
       );
+
+      // Schedule notification for premium users
+      if (widget.isPremium) {
+        final notificationService = ref.read(notificationServiceProvider);
+        await notificationService.scheduleGoalReminder(
+          goalId: goal.id,
+          goalTitle: goal.title,
+          hour: defaultReminderHour,
+          minute: defaultReminderMinute,
+        );
+      }
 
       // Create micro actions from template if available
       if (_suggestedActions.isNotEmpty) {

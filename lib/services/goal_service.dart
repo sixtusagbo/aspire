@@ -110,6 +110,9 @@ class GoalService {
     DateTime? targetDate,
     GoalCategory category = GoalCategory.personal,
     String? customCategoryName,
+    bool reminderEnabled = false,
+    int? reminderHour,
+    int? reminderMinute,
   }) async {
     final docRef = _goalsRef.doc();
     final goal = Goal(
@@ -121,6 +124,9 @@ class GoalService {
       createdAt: DateTime.now(),
       category: category,
       customCategoryName: customCategoryName,
+      reminderEnabled: reminderEnabled,
+      reminderHour: reminderHour,
+      reminderMinute: reminderMinute,
     );
 
     await docRef.set(goal.toMap()..remove('id'));
