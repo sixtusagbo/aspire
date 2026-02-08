@@ -20,5 +20,5 @@
 
 - [x] Fix ReorderableDragStartListener index bug (reordering actions now works)
 - [x] Link "Terms" and "Privacy" on paywall to actual pages
-- [ ] Daily reminder should be enabled by default for all users
+- [x] Daily reminder should be enabled by default for all users
 - [ ] Goal-specific reminders should be enabled by default for premium users only

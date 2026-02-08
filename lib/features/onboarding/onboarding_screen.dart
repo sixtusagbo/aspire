@@ -66,6 +66,9 @@ class OnboardingScreen extends HookConsumerWidget {
           'email': user.email ?? '',
           'createdAt': DateTime.now(),
           'onboardingComplete': true,
+          'dailyReminderEnabled': true,
+          'reminderHour': 9,
+          'reminderMinute': 0,
         };
         if (skippedNotifications.value) {
           userData['notificationPromptDeclinedAt'] = Timestamp.now();

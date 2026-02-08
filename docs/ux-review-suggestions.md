@@ -132,7 +132,7 @@ This hardcoded `index: 0` means reordering won't work correctly. Should pass the
 ### Must Fix (Before Submission)
 1. [x] Fix `ReorderableDragStartListener` index bug
 2. [x] Link "Terms apply" to actual Terms of Service on paywall
-3. [ ] Daily reminder should be enabled by default for all users
+3. [x] Daily reminder should be enabled by default for all users
 4. [ ] Goal-specific reminders should be enabled by default for premium users only
 
 ### Should Consider

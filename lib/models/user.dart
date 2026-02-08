@@ -60,7 +60,7 @@ class AppUser with AppUserMappable {
     this.notificationPromptDeclinedAt,
     this.isPremium = false,
     this.premiumExpiresAt,
-    this.dailyReminderEnabled = false,
+    this.dailyReminderEnabled = true,
     this.reminderHour = 9,
     this.reminderMinute = 0,
     this.customCategories = const [],
