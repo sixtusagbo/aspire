@@ -185,10 +185,21 @@ class _StreakSection extends StatelessWidget {
 
   const _StreakSection({required this.user});
 
+  static const _milestones = [7, 14, 30, 60, 100];
+
+  int? _getNextMilestone(int currentStreak) {
+    for (final milestone in _milestones) {
+      if (currentStreak < milestone) return milestone;
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentStreak = user?.currentStreak ?? 0;
     final longestStreak = user?.longestStreak ?? 0;
+    final nextMilestone = _getNextMilestone(currentStreak);
+    final daysToNext = nextMilestone != null ? nextMilestone - currentStreak : 0;
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -234,14 +245,63 @@ class _StreakSection extends StatelessWidget {
               ),
             ],
           ),
+          if (nextMilestone != null) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: AppTheme.primaryPink.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.flag,
+                    size: 16,
+                    color: AppTheme.primaryPink,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    '$daysToNext ${daysToNext == 1 ? 'day' : 'days'} to $nextMilestone-day milestone',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: AppTheme.primaryPink,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
           const SizedBox(height: 16),
           Row(
             children: [
-              _StreakMilestone(days: 7, achieved: longestStreak >= 7),
-              _StreakMilestone(days: 14, achieved: longestStreak >= 14),
-              _StreakMilestone(days: 30, achieved: longestStreak >= 30),
-              _StreakMilestone(days: 60, achieved: longestStreak >= 60),
-              _StreakMilestone(days: 100, achieved: longestStreak >= 100),
+              _StreakMilestone(
+                days: 7,
+                achieved: longestStreak >= 7,
+                isNext: nextMilestone == 7,
+              ),
+              _StreakMilestone(
+                days: 14,
+                achieved: longestStreak >= 14,
+                isNext: nextMilestone == 14,
+              ),
+              _StreakMilestone(
+                days: 30,
+                achieved: longestStreak >= 30,
+                isNext: nextMilestone == 30,
+              ),
+              _StreakMilestone(
+                days: 60,
+                achieved: longestStreak >= 60,
+                isNext: nextMilestone == 60,
+              ),
+              _StreakMilestone(
+                days: 100,
+                achieved: longestStreak >= 100,
+                isNext: nextMilestone == 100,
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -261,8 +321,13 @@ class _StreakSection extends StatelessWidget {
 class _StreakMilestone extends StatelessWidget {
   final int days;
   final bool achieved;
+  final bool isNext;
 
-  const _StreakMilestone({required this.days, required this.achieved});
+  const _StreakMilestone({
+    required this.days,
+    required this.achieved,
+    this.isNext = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -275,14 +340,25 @@ class _StreakMilestone extends StatelessWidget {
             decoration: BoxDecoration(
               color: achieved
                   ? AppTheme.primaryPink
-                  : context.borderColor.withValues(alpha: 0.5),
+                  : isNext
+                      ? AppTheme.primaryPink.withValues(alpha: 0.2)
+                      : context.borderColor.withValues(alpha: 0.5),
               shape: BoxShape.circle,
+              border: isNext && !achieved
+                  ? Border.all(color: AppTheme.primaryPink, width: 2)
+                  : null,
             ),
             child: Icon(
-              achieved ? Icons.check : Icons.lock_outline,
+              achieved
+                  ? Icons.check
+                  : isNext
+                      ? Icons.flag
+                      : Icons.lock_outline,
               color: achieved
                   ? Colors.white
-                  : context.textSecondary,
+                  : isNext
+                      ? AppTheme.primaryPink
+                      : context.textSecondary,
               size: 18,
             ),
           ),
@@ -291,9 +367,8 @@ class _StreakMilestone extends StatelessWidget {
             '$days',
             style: TextStyle(
               fontSize: 11,
-              fontWeight:
-                  achieved ? FontWeight.bold : FontWeight.normal,
-              color: achieved
+              fontWeight: achieved || isNext ? FontWeight.bold : FontWeight.normal,
+              color: achieved || isNext
                   ? AppTheme.primaryPink
                   : context.textSecondary,
             ),
