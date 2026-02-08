@@ -12,4 +12,4 @@
 
 ## Social Proof on Paywall
 
-- [ ] Paywall shows "Join 100+ ambitious women" badge below subtitle
+- [x] Paywall shows "Join 100+ ambitious women" badge below subtitle

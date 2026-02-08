@@ -329,11 +329,11 @@ Add before deadline after core MVP polish:
 
 **Day 11: Testing**
 
-- [ ] Review the app one more time based on the judging criteria esp UX
-- [ ] Full flow testing
-- [ ] Edge cases and bug fixes
-- [ ] Performance optimization
-- i18n/l10n???? is it possible or scope creep?
+- [x] Review the app one more time based on the judging criteria esp UX
+- [x] Full flow testing
+- [x] Edge cases and bug fixes
+- [x] Performance optimization
+- [ ] i18n/l10n???? is it possible or scope creep?
 
 **Day 12: Submission**
 
