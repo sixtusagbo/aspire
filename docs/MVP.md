@@ -333,6 +333,7 @@ Add before deadline after core MVP polish:
 - [x] Full flow testing
 - [x] Edge cases and bug fixes
 - [x] Performance optimization
+- [ ] Replace some of the loading states with skeleton loading  where we can?? (possible or scope screep?)
 - [ ] i18n/l10n???? is it possible or scope creep?
 
 **Day 12: Submission**
