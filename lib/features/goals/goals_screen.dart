@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 
 /// Free tier limit for active goals
 const int freeGoalLimit = 3;
@@ -141,23 +142,9 @@ class _GoalCard extends StatelessWidget {
                     ),
                   ),
 
-                  // Completion badge
+                  // Passport stamp for completed goals
                   if (goal.isCompleted)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.green.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        Icons.check_circle,
-                        color: Colors.green,
-                        size: 20,
-                      ),
-                    ),
+                    _PassportStamp(completedAt: goal.completedAt),
                 ],
               ),
               const SizedBox(height: 12),
@@ -232,6 +219,53 @@ class _EmptyGoalsState extends StatelessWidget {
             style: TextStyle(color: context.textSecondary),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Passport stamp visual for completed goals
+class _PassportStamp extends StatelessWidget {
+  final DateTime? completedAt;
+
+  const _PassportStamp({this.completedAt});
+
+  @override
+  Widget build(BuildContext context) {
+    final dateStr = completedAt != null
+        ? DateFormat('MMM d').format(completedAt!)
+        : 'Done';
+
+    return Transform.rotate(
+      angle: -0.1, // Slight tilt for stamp effect
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: AppTheme.primaryPink,
+            width: 2,
+          ),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.check,
+              color: AppTheme.primaryPink,
+              size: 14,
+            ),
+            Text(
+              dateStr.toUpperCase(),
+              style: const TextStyle(
+                color: AppTheme.primaryPink,
+                fontSize: 9,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
