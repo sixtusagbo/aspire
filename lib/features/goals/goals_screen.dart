@@ -22,9 +22,20 @@ class GoalsScreen extends HookConsumerWidget {
     final goalService = ref.read(goalServiceProvider);
     final user = authService.currentUser;
     final showCompleted = useState(false);
+    final isCreatingGoal = useState(false);
 
     if (user == null) {
       return const Scaffold(body: Center(child: Text('Please sign in')));
+    }
+
+    Future<void> handleNewGoal() async {
+      if (isCreatingGoal.value) return;
+      isCreatingGoal.value = true;
+      try {
+        await showCreateGoalSheet(context, ref, user.uid);
+      } finally {
+        isCreatingGoal.value = false;
+      }
     }
 
     return Scaffold(
@@ -69,9 +80,18 @@ class GoalsScreen extends HookConsumerWidget {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => showCreateGoalSheet(context, ref, user.uid),
-        icon: const Icon(Icons.add),
-        label: const Text('New Goal'),
+        onPressed: isCreatingGoal.value ? null : handleNewGoal,
+        icon: isCreatingGoal.value
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+            : const Icon(Icons.add),
+        label: Text(isCreatingGoal.value ? 'Loading...' : 'New Goal'),
         shape: const StadiumBorder(),
       ),
     );
