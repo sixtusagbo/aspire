@@ -5,14 +5,22 @@ All notable changes to Aspire will be documented in this file.
 ## [0.1.7] - 2026-02-09
 
 ### Added
+- Swipe-to-reveal edit/delete buttons for micro-actions
+- First-time swipe hint tooltip (stored locally, shows once)
+- Next milestone indicator in streak section with scrollable milestones up to 20,000 days
+- Social proof badge on paywall ("Join 450K+ ambitious women")
 - Passport stamp visual for completed goals
 - Loading state on "New Goal" button
-- Wider swipe-to-reveal actions on micro-actions
 - Accessibility tooltips on drag handles and password visibility toggle
 
+### Changed
+- Redesigned paywall pricing cards with per-month price display
+- Show "None" for 0-day streaks instead of "0 day"
+- Wider swipe-to-reveal actions (40% width for 2 buttons)
+- Better currency formatting using NumberFormat.simpleCurrency
+
 ### Fixed
-- Swipe hint now dismisses when swiping (not just on button click)
-- Notification banner close button touch target size
+- Daily reminder toggle disabled when system notifications are off
 
 ## [0.1.6] - 2026-02-08
 

@@ -804,9 +804,7 @@ class _ActionTile extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final goalService = ref.read(goalServiceProvider);
 
-    final slidable = Listener(
-      onPointerMove: showSwipeHint ? (_) => onSwipeHintDismissed?.call() : null,
-      child: Slidable(
+    final slidable = Slidable(
         key: ValueKey('slidable_${action.id}'),
         endActionPane: ActionPane(
           motion: const DrawerMotion(),
@@ -900,7 +898,6 @@ class _ActionTile extends HookConsumerWidget {
           ),
         ),
       ),
-      ),
     );
 
     if (showSwipeHint) {
@@ -909,31 +906,37 @@ class _ActionTile extends HookConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           slidable,
-          GestureDetector(
-            onTap: onSwipeHintDismissed,
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              color: AppTheme.primaryPink.withValues(alpha: 0.1),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.swipe_left,
-                    size: 16,
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            color: AppTheme.primaryPink.withValues(alpha: 0.1),
+            child: Row(
+              children: [
+                const Spacer(),
+                Icon(
+                  Icons.swipe_left,
+                  size: 16,
+                  color: AppTheme.primaryPink,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Swipe left for more options',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppTheme.primaryPink,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const Spacer(),
+                GestureDetector(
+                  onTap: onSwipeHintDismissed,
+                  child: Icon(
+                    Icons.close,
+                    size: 18,
                     color: AppTheme.primaryPink,
                   ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Swipe left for more options',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppTheme.primaryPink,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],
