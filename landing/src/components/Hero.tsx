@@ -1,12 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import {
   Target,
   Zap,
   Trophy,
   Plane,
   Download,
-  Github,
+  ChevronDown,
   ExternalLink,
 } from "lucide-react";
 import {
@@ -14,9 +15,12 @@ import {
   GITHUB_RELEASE_URL,
   GOOGLE_FORM_URL,
   PLAY_TESTING_URL,
+  PLAY_STORE_URL,
 } from "@/lib/links";
 
 export default function Hero() {
+  const [showTesting, setShowTesting] = useState(false);
+
   return (
     <section className="min-h-screen flex items-center justify-center pt-20 pb-16 px-4 overflow-hidden relative">
       <div className="max-w-4xl mx-auto w-full relative z-10 text-center">
@@ -34,51 +38,103 @@ export default function Hero() {
           gap between inspiration and action.
         </p>
 
-        {/* CTA - moved up, before features */}
-        <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-4">
-          <a
-            href={APK_DOWNLOAD_URL}
-            className="btn-primary px-8 py-4 rounded-xl text-white font-semibold flex items-center justify-center gap-2 min-w-50 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98] transition-all"
-          >
-            <Download className="w-5 h-5" />
-            Download for Android
-          </a>
+        {/* Primary CTA */}
+        <a
+          href={APK_DOWNLOAD_URL}
+          className="btn-primary px-8 py-4 rounded-xl text-white font-semibold inline-flex items-center gap-2 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98] transition-all"
+        >
+          <Download className="w-5 h-5" />
+          Download for Android
+        </a>
+
+        {/* Secondary link */}
+        <div className="mt-3 mb-4">
           <a
             href={GITHUB_RELEASE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-8 py-4 rounded-xl font-semibold flex items-center justify-center gap-2 min-w-50 border border-border text-foreground hover:border-primary/50 hover:text-primary active:scale-[0.98] transition-all"
+            className="text-sm text-muted hover:text-primary transition-colors inline-flex items-center gap-1.5"
           >
-            <Github className="w-5 h-5" />
-            GitHub Releases
+            or view all releases on GitHub
+            <ExternalLink className="w-3.5 h-3.5" />
           </a>
         </div>
 
-        {/* Secondary links */}
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 justify-center items-center mb-14">
-          <a
-            href={GOOGLE_FORM_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-muted hover:text-primary transition-colors flex items-center gap-1.5"
+        {/* Collapsible Google Play testing */}
+        <div className="max-w-md mx-auto mb-14">
+          <button
+            onClick={() => setShowTesting(!showTesting)}
+            className="text-sm text-primary hover:text-primary/80 transition-colors flex items-center gap-1.5 mx-auto"
           >
-            <ExternalLink className="w-3.5 h-3.5" />
-            Request Google Play testing access
-          </a>
-          <span className="hidden sm:inline text-border">|</span>
-          <a
-            href={PLAY_TESTING_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-muted hover:text-primary transition-colors flex items-center gap-1.5"
-          >
-            <ExternalLink className="w-3.5 h-3.5" />
-            Google Play internal testing
-          </a>
+            Join Google Play Internal Testing
+            <ChevronDown
+              className={`w-4 h-4 transition-transform ${showTesting ? "rotate-180" : ""}`}
+            />
+          </button>
+
+          {showTesting && (
+            <div className="mt-4 p-5 rounded-xl bg-card border border-border text-left space-y-4">
+              <div className="flex gap-3">
+                <span className="shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">
+                  1
+                </span>
+                <p className="text-sm text-foreground/80">
+                  <a
+                    href={GOOGLE_FORM_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline font-medium"
+                  >
+                    Request access
+                    <ExternalLink className="w-3 h-3 inline ml-1 -mt-0.5" />
+                  </a>{" "}
+                  by filling out a quick form with your Google Play email.
+                </p>
+              </div>
+
+              <div className="flex gap-3">
+                <span className="shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">
+                  2
+                </span>
+                <p className="text-sm text-foreground/80">
+                  Your request will be approved within a few hours. Once
+                  approved,{" "}
+                  <a
+                    href={PLAY_TESTING_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline font-medium"
+                  >
+                    join the internal test
+                    <ExternalLink className="w-3 h-3 inline ml-1 -mt-0.5" />
+                  </a>{" "}
+                  on Google Play.
+                </p>
+              </div>
+
+              <div className="flex gap-3">
+                <span className="shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">
+                  3
+                </span>
+                <p className="text-sm text-foreground/80">
+                  <a
+                    href={PLAY_STORE_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline font-medium"
+                  >
+                    Download Aspire
+                    <ExternalLink className="w-3 h-3 inline ml-1 -mt-0.5" />
+                  </a>{" "}
+                  from Google Play and start achieving your goals.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Features */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <FeatureCard
             icon={<Target className="w-6 h-6" />}
             title="Set Big Goals"
@@ -100,10 +156,6 @@ export default function Hero() {
             description="Make it happen"
           />
         </div>
-
-        <p className="text-muted text-sm">
-          Built for the RevenueCat Shipyard 2026 Hackathon
-        </p>
       </div>
     </section>
   );

@@ -3,12 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, Download, Github, ExternalLink } from "lucide-react";
+import { Menu, X, Download, ExternalLink } from "lucide-react";
 import {
   APK_DOWNLOAD_URL,
   GITHUB_RELEASE_URL,
   GOOGLE_FORM_URL,
   PLAY_TESTING_URL,
+  PLAY_STORE_URL,
 } from "@/lib/links";
 
 export default function Header() {
@@ -74,11 +75,11 @@ export default function Header() {
       {open && (
         <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-md">
           <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col gap-1">
-            {/* Download section */}
+            {/* Download */}
             <a
               href={APK_DOWNLOAD_URL}
               onClick={() => setOpen(false)}
-              className="btn-primary px-4 py-3 rounded-xl text-white font-semibold flex items-center justify-center gap-2 shadow-md mb-2"
+              className="btn-primary px-4 py-3 rounded-xl text-white font-semibold flex items-center justify-center gap-2 shadow-md mb-1"
             >
               <Download className="w-5 h-5" />
               Download for Android
@@ -88,15 +89,14 @@ export default function Header() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setOpen(false)}
-              className="px-4 py-3 rounded-xl font-medium flex items-center justify-center gap-2 border border-border text-foreground mb-3"
+              className="px-4 py-2 text-center text-sm text-muted hover:text-primary transition-colors mb-2"
             >
-              <Github className="w-5 h-5" />
-              GitHub Releases
+              or view all releases on GitHub
             </a>
 
             <div className="border-t border-border my-1" />
 
-            {/* Testing links */}
+            {/* Google Play testing */}
             <a
               href={GOOGLE_FORM_URL}
               target="_blank"
@@ -115,7 +115,17 @@ export default function Header() {
               className="px-4 py-3 rounded-lg text-sm text-foreground-secondary hover:text-primary flex items-center gap-2 transition-colors"
             >
               <ExternalLink className="w-4 h-4" />
-              Google Play internal testing
+              Join internal test
+            </a>
+            <a
+              href={PLAY_STORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setOpen(false)}
+              className="px-4 py-3 rounded-lg text-sm text-foreground-secondary hover:text-primary flex items-center gap-2 transition-colors"
+            >
+              <ExternalLink className="w-4 h-4" />
+              Google Play listing
             </a>
 
             <div className="border-t border-border my-1" />

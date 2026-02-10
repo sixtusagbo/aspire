@@ -1,8 +1,10 @@
 export const GITHUB_RELEASE_URL =
-  "https://github.com/sixtusagbo/aspire/releases/latest";
+  "https://github.com/sixtusagbo/aspire/releases/";
 export const APK_DOWNLOAD_URL =
-  "https://github.com/sixtusagbo/aspire/releases/latest/download/aspire.apk";
+  "https://github.com/sixtusagbo/aspire/releases/download/v0.1.10/aspire.apk";
 // TODO: Update Google Form URL
 export const GOOGLE_FORM_URL = "https://forms.gle/TODO";
-// TODO: Update Play testing URL
-export const PLAY_TESTING_URL = "https://play.google.com/apps/testing/TODO";
+export const PLAY_TESTING_URL =
+  "https://play.google.com/apps/internaltest/4701653012190778963";
+export const PLAY_STORE_URL =
+  "https://play.google.com/store/apps/details?id=dev.sixtusagbo.aspire";
