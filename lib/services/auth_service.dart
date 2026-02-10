@@ -99,6 +99,12 @@ class AuthService {
         rethrow;
       }
     }
+
+    // Sign out from Google OAuth and Firebase after deletion
+    await Future.wait([
+      _auth.signOut(),
+      _googleSignIn.disconnect(),
+    ]);
   }
 }
 
