@@ -2,13 +2,20 @@
 
 > NOTE: When cleaning this file, only clear unchecked/done tasks.
 
-## Swipe Actions Fix
-- [x] Swipe left on micro-action reveals wider edit/delete buttons
-- [ ] Swipe hint tooltip has X close button and dismisses on edit/delete click
+## Free Trial Paywall
 
-## New Goal Loading State
-- [x] Tapping "New Goal" FAB shows loading spinner while data loads
-- [x] FAB is disabled during loading to prevent double-taps
+- [x] Open paywall from Settings - trial banner and FREE TRIAL badges appear (if trial configured in Play Console)
+- [ ] Paywall subtitle reads "Start your free trial today" when trial exists
+- [ ] Monthly card subtitle shows green text like "7-Day free trial, then $4.99/mo"
+- [ ] Monthly card has FREE TRIAL badge on right
+- [ ] Annual card subtitle shows green text like "7-Day free trial, then $29.99/yr"
+- [ ] Annual card has FREE TRIAL badge on left, savings badge on right
+- [ ] Terms text reads "Free trial, then auto-renews. Cancel anytime."
+- [ ] Open paywall without trial configured - looks identical to previous behavior
+- [ ] Close button on paywall still works (pops back)
 
-## Version 0.1.7
-- [x] Verify version shows 0.1.7 in Settings > About
+## Paywall After Onboarding
+
+- [ ] Complete onboarding as new user - paywall appears on top of home
+- [ ] Dismiss paywall via close button - lands on home screen
+- [ ] Paywall shows trial info if trial is configured

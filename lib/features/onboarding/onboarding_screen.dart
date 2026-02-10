@@ -128,6 +128,7 @@ class OnboardingScreen extends HookConsumerWidget {
 
         if (context.mounted) {
           context.go(AppRoutes.home);
+          context.push(AppRoutes.paywall);
         }
       } catch (e, stackTrace) {
         Log.e('Error completing onboarding', error: e, stackTrace: stackTrace);

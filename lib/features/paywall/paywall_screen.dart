@@ -19,6 +19,40 @@ Future<void> _launchUrl(String url) async {
   }
 }
 
+/// Returns human-readable trial duration (e.g. "7-Day") or null.
+String? _getTrialDurationText(Package package) {
+  final product = package.storeProduct;
+
+  // Google Play: check defaultOption.freePhase
+  final freePhase = product.defaultOption?.freePhase;
+  if (freePhase != null &&
+      freePhase.offerPaymentMode == OfferPaymentMode.freeTrial) {
+    final period = freePhase.billingPeriod;
+    if (period != null) {
+      return _formatPeriod(period.value, period.unit);
+    }
+  }
+
+  // iOS fallback: check introductoryPrice with price == 0
+  final intro = product.introductoryPrice;
+  if (intro != null && intro.price == 0.0) {
+    return _formatPeriod(intro.periodNumberOfUnits, intro.periodUnit);
+  }
+
+  return null;
+}
+
+String _formatPeriod(int value, PeriodUnit unit) {
+  final label = switch (unit) {
+    PeriodUnit.day => 'Day',
+    PeriodUnit.week => 'Week',
+    PeriodUnit.month => 'Month',
+    PeriodUnit.year => 'Year',
+    PeriodUnit.unknown => 'Day',
+  };
+  return '$value-$label';
+}
+
 class PaywallScreen extends HookConsumerWidget {
   const PaywallScreen({super.key});
 
@@ -208,6 +242,13 @@ class _PaywallContent extends StatelessWidget {
     final monthly = currentOffering?.monthly;
     final annual = currentOffering?.annual;
 
+    // Detect trial availability per package
+    final annualTrial = annual != null ? _getTrialDurationText(annual) : null;
+    final monthlyTrial = monthly != null
+        ? _getTrialDurationText(monthly)
+        : null;
+    final hasAnyTrial = annualTrial != null || monthlyTrial != null;
+
     return Stack(
       children: [
         SingleChildScrollView(
@@ -252,7 +293,9 @@ class _PaywallContent extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Go premium to crush all your goals',
+                      hasAnyTrial
+                          ? 'Start your free trial today'
+                          : 'Go premium to crush all your goals',
                       style: TextStyle(
                         color: context.textSecondary,
                         fontSize: 16,
@@ -294,6 +337,42 @@ class _PaywallContent extends StatelessWidget {
                 ),
               ),
 
+              // Trial banner
+              if (hasAnyTrial) ...[
+                const SizedBox(height: 20),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.green.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.green.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.verified, color: Colors.green, size: 20),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Try premium free for '
+                        '${(annualTrial ?? monthlyTrial)!.split('-').first} '
+                        'days \u2013 cancel anytime!',
+                        style: const TextStyle(
+                          color: Colors.green,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+
               const SizedBox(height: 32),
 
               // Comparison table
@@ -317,6 +396,7 @@ class _PaywallContent extends StatelessWidget {
                     isRecommended: true,
                     onTap: () => onPurchase(annual),
                     monthlyPackage: monthly,
+                    trialDuration: annualTrial,
                   ),
 
                 const SizedBox(height: 16),
@@ -327,6 +407,7 @@ class _PaywallContent extends StatelessWidget {
                     package: monthly,
                     isRecommended: false,
                     onTap: () => onPurchase(monthly),
+                    trialDuration: monthlyTrial,
                   ),
               ],
 
@@ -352,7 +433,12 @@ class _PaywallContent extends StatelessWidget {
                       fontSize: 12,
                     ),
                     children: [
-                      const TextSpan(text: 'Cancel anytime. '),
+                      TextSpan(
+                        text: hasAnyTrial
+                            ? 'Free trial, then auto-renews. '
+                                  'Cancel anytime. '
+                            : 'Cancel anytime. ',
+                      ),
                       TextSpan(
                         text: 'Terms',
                         style: TextStyle(
@@ -500,7 +586,11 @@ class _ComparisonTable extends StatelessWidget {
               ],
             ),
           ),
-          _ComparisonRow(feature: 'Active Goals', free: '3', premium: 'Unlimited'),
+          _ComparisonRow(
+            feature: 'Active Goals',
+            free: '3',
+            premium: 'Unlimited',
+          ),
           _ComparisonRow(feature: 'AI Suggestions', free: '5', premium: '10'),
           _ComparisonRow(
             feature: 'Goal Reminders',
@@ -581,13 +671,15 @@ class _PricingCard extends StatelessWidget {
   final Package package;
   final bool isRecommended;
   final VoidCallback onTap;
-  final Package? monthlyPackage; // For calculating per-month price on annual
+  final Package? monthlyPackage;
+  final String? trialDuration;
 
   const _PricingCard({
     required this.package,
     required this.isRecommended,
     required this.onTap,
     this.monthlyPackage,
+    this.trialDuration,
   });
 
   @override
@@ -603,16 +695,34 @@ class _PricingCard extends StatelessWidget {
       final annualPrice = product.price;
       final perMonth = annualPrice / 12;
 
-      // Format per-month price with proper currency formatting
       final formatter = NumberFormat.simpleCurrency(name: product.currencyCode);
       perMonthPrice = formatter.format(perMonth);
 
-      // Calculate savings percentage
       final yearlyIfMonthly = monthlyPrice * 12;
       if (yearlyIfMonthly > 0) {
-        savingsPercent = (((yearlyIfMonthly - annualPrice) / yearlyIfMonthly) * 100).round();
+        savingsPercent =
+            (((yearlyIfMonthly - annualPrice) / yearlyIfMonthly) * 100).round();
       }
     }
+
+    // Build subtitle text
+    final String subtitle;
+    final Color? subtitleColor;
+    if (trialDuration != null) {
+      subtitle =
+          '$trialDuration free trial, '
+          'then ${product.priceString}/${isAnnual ? 'yr' : 'mo'}';
+      subtitleColor = Colors.green;
+    } else if (isAnnual && perMonthPrice != null) {
+      subtitle = 'Only $perMonthPrice/mo';
+      subtitleColor = null;
+    } else {
+      subtitle = 'Billed monthly';
+      subtitleColor = null;
+    }
+
+    final hasSavingsBadge =
+        isAnnual && savingsPercent != null && savingsPercent > 0;
 
     return GestureDetector(
       onTap: onTap,
@@ -626,7 +736,9 @@ class _PricingCard extends StatelessWidget {
                   ? AppTheme.primaryPink.withValues(alpha: 0.05)
                   : null,
               border: Border.all(
-                color: isRecommended ? AppTheme.primaryPink : context.borderColor,
+                color: isRecommended
+                    ? AppTheme.primaryPink
+                    : context.borderColor,
                 width: isRecommended ? 2 : 1,
               ),
               borderRadius: BorderRadius.circular(16),
@@ -646,12 +758,13 @@ class _PricingCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        isAnnual && perMonthPrice != null
-                            ? 'Only $perMonthPrice/mo'
-                            : 'Billed monthly',
+                        subtitle,
                         style: TextStyle(
-                          color: context.textSecondary,
+                          color: subtitleColor ?? context.textSecondary,
                           fontSize: 13,
+                          fontWeight: subtitleColor != null
+                              ? FontWeight.w600
+                              : null,
                         ),
                       ),
                     ],
@@ -670,7 +783,10 @@ class _PricingCard extends StatelessWidget {
                     ),
                     Text(
                       isAnnual ? '/year' : '/mo',
-                      style: TextStyle(color: context.textSecondary, fontSize: 12),
+                      style: TextStyle(
+                        color: context.textSecondary,
+                        fontSize: 12,
+                      ),
                     ),
                   ],
                 ),
@@ -678,12 +794,15 @@ class _PricingCard extends StatelessWidget {
             ),
           ),
           // Savings badge
-          if (isAnnual && savingsPercent != null && savingsPercent > 0)
+          if (hasSavingsBadge)
             Positioned(
               top: -10,
               right: 12,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: AppTheme.primaryPink,
                   borderRadius: BorderRadius.circular(8),
@@ -691,6 +810,33 @@ class _PricingCard extends StatelessWidget {
                 child: Text(
                   '$savingsPercent% OFF',
                   style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          // Free trial badge
+          if (trialDuration != null)
+            Positioned(
+              top: -10,
+              // Place on left for annual (savings badge on right),
+              // right for monthly
+              left: isAnnual && hasSavingsBadge ? 12 : null,
+              right: isAnnual && hasSavingsBadge ? null : 12,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Text(
+                  'FREE TRIAL',
+                  style: TextStyle(
                     color: Colors.white,
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
