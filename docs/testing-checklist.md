@@ -19,3 +19,9 @@
 - [ ] Complete onboarding as new user - paywall appears on top of home
 - [ ] Dismiss paywall via close button - lands on home screen
 - [ ] Paywall shows trial info if trial is configured
+
+## Share Messages
+
+- [ ] Share a streak - message includes "Download Aspire on Google Play today!"
+- [ ] Share a completed goal - message includes "Download Aspire on Google Play today!"
+- [ ] Both messages still include #Aspire #PacksLight hashtags

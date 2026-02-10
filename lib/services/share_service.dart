@@ -2,12 +2,17 @@ import 'package:share_plus/share_plus.dart';
 
 /// Service for sharing achievements to social media
 class ShareService {
+  // TODO: Replace with Play Store link once app is published.
+  static const _shareFooter =
+      '\n\nDownload Aspire on Google Play today!'
+      '\n#Aspire #PacksLight';
+
   /// Share a streak milestone achievement
   static Future<void> shareStreak(int streak) async {
     final message = _getStreakMessage(streak);
     await SharePlus.instance.share(
       ShareParams(
-        text: '$message\n\n#Aspire #PacksLight',
+        text: '$message$_shareFooter',
         subject: 'My Aspire Streak',
       ),
     );
@@ -20,8 +25,8 @@ class ShareService {
     await SharePlus.instance.share(
       ShareParams(
         text: "I just completed my goal: $title "
-            "From dreaming to doing, one micro-action at a time.\n\n"
-            "#Aspire #PacksLight",
+            "From dreaming to doing, one micro-action at a time."
+            "$_shareFooter",
         subject: 'Goal Completed!',
       ),
     );
