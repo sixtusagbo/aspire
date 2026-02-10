@@ -43,7 +43,7 @@ class CelebrationOverlayState extends State<CelebrationOverlay> {
   void initState() {
     super.initState();
     _centerController = ConfettiController(
-      duration: const Duration(seconds: 1),
+      duration: const Duration(seconds: 2),
     );
     _leftController = ConfettiController(duration: const Duration(seconds: 2));
     _rightController = ConfettiController(duration: const Duration(seconds: 2));
@@ -100,9 +100,9 @@ class CelebrationOverlayState extends State<CelebrationOverlay> {
               confettiController: _centerController,
               blastDirectionality: BlastDirectionality.explosive,
               emissionFrequency: 0.02,
-              numberOfParticles: 50,
-              maxBlastForce: 60,
-              minBlastForce: 30,
+              numberOfParticles: 70,
+              maxBlastForce: 70,
+              minBlastForce: 35,
               gravity: 0.2,
               minimumSize: const Size(15, 8),
               maximumSize: const Size(25, 15),
