@@ -79,6 +79,14 @@ body {
   filter: brightness(1.1);
 }
 
+/* Subdued foreground for secondary nav links */
+.text-foreground-secondary {
+  color: color-mix(in srgb, var(--foreground) 75%, transparent);
+}
+.hover\:text-primary:hover {
+  color: var(--primary);
+}
+
 /* Focus styles */
 .focus\:border-primary:focus {
   border-color: var(--primary);

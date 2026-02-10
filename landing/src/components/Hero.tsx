@@ -1,6 +1,20 @@
 "use client";
 
-import { Target, Zap, Trophy, Plane } from "lucide-react";
+import {
+  Target,
+  Zap,
+  Trophy,
+  Plane,
+  Download,
+  Github,
+  ExternalLink,
+} from "lucide-react";
+import {
+  APK_DOWNLOAD_URL,
+  GITHUB_RELEASE_URL,
+  GOOGLE_FORM_URL,
+  PLAY_TESTING_URL,
+} from "@/lib/links";
 
 export default function Hero() {
   return (
@@ -21,15 +35,58 @@ export default function Hero() {
         </h1>
 
         {/* Subheadline */}
-        <p className="text-lg sm:text-xl text-muted max-w-2xl mx-auto mb-12">
+        <p className="text-lg sm:text-xl text-muted max-w-2xl mx-auto mb-8">
           Turn your big dreams into daily micro-actions. Whether it&apos;s
           traveling the world, landing that six-figure salary, or achieving
           financial freedom — Aspire helps you close the gap between inspiration
           and action.
         </p>
 
+        {/* CTA - moved up, before features */}
+        <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-4">
+          <a
+            href={APK_DOWNLOAD_URL}
+            className="btn-primary px-8 py-4 rounded-xl text-white font-semibold flex items-center justify-center gap-2 min-w-50 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98] transition-all"
+          >
+            <Download className="w-5 h-5" />
+            Download for Android
+          </a>
+          <a
+            href={GITHUB_RELEASE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-8 py-4 rounded-xl font-semibold flex items-center justify-center gap-2 min-w-50 border border-border text-foreground hover:border-primary/50 hover:text-primary active:scale-[0.98] transition-all"
+          >
+            <Github className="w-5 h-5" />
+            GitHub Releases
+          </a>
+        </div>
+
+        {/* Secondary links */}
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 justify-center items-center mb-14">
+          <a
+            href={GOOGLE_FORM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-muted hover:text-primary transition-colors flex items-center gap-1.5"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            Request Google Play testing access
+          </a>
+          <span className="hidden sm:inline text-border">|</span>
+          <a
+            href={PLAY_TESTING_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-muted hover:text-primary transition-colors flex items-center gap-1.5"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            Google Play internal testing
+          </a>
+        </div>
+
         {/* Features */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <FeatureCard
             icon={<Target className="w-6 h-6" />}
             title="Set Big Goals"
@@ -52,16 +109,7 @@ export default function Hero() {
           />
         </div>
 
-        {/* CTA */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <a
-            href="#"
-            className="btn-primary px-8 py-4 rounded-xl text-white font-semibold flex items-center justify-center gap-2 min-w-50 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98] transition-all">
-            Coming Soon to Android
-          </a>
-        </div>
-
-        <p className="text-muted text-sm mt-4">
+        <p className="text-muted text-sm">
           Built for the RevenueCat Shipyard 2026 Hackathon
         </p>
       </div>
