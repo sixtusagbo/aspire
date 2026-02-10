@@ -72,7 +72,7 @@ class PaywallScreen extends HookConsumerWidget {
     return Scaffold(
       body: SafeArea(
         child: isLoading.value
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator.adaptive())
             : isPremium.value
             ? const _PremiumActiveContent()
             : _PaywallContent(
@@ -474,7 +474,11 @@ class _PaywallContent extends StatelessWidget {
           Container(
             color: Colors.black.withValues(alpha: 0.5),
             child: const Center(
-              child: CircularProgressIndicator(color: Colors.white),
+              child: CircularProgressIndicator.adaptive(
+                valueColor: AlwaysStoppedAnimation(
+                  Colors.white,
+                ),
+              ),
             ),
           ),
       ],

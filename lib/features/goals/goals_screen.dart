@@ -60,7 +60,7 @@ class GoalsScreen extends HookConsumerWidget {
             : goalService.watchActiveGoals(user.uid),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator.adaptive());
           }
 
           final goals = snapshot.data ?? [];
@@ -85,9 +85,11 @@ class GoalsScreen extends HookConsumerWidget {
             ? const SizedBox(
                 width: 20,
                 height: 20,
-                child: CircularProgressIndicator(
+                child: CircularProgressIndicator.adaptive(
                   strokeWidth: 2,
-                  color: Colors.white,
+                  valueColor: AlwaysStoppedAnimation(
+                    Colors.white,
+                  ),
                 ),
               )
             : const Icon(Icons.add),

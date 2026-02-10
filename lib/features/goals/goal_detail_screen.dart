@@ -63,7 +63,7 @@ class GoalDetailScreen extends HookConsumerWidget {
           stream: goalService.watchUserGoals(userId),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator.adaptive());
             }
 
             final goals = snapshot.data ?? [];
@@ -381,7 +381,7 @@ class _GoalDetailContent extends HookConsumerWidget {
                       ? const SizedBox(
                           width: 16,
                           height: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2),
+                          child: CircularProgressIndicator.adaptive(strokeWidth: 2),
                         )
                       : const Icon(Icons.auto_awesome, size: 18),
                   label: Text(
@@ -401,7 +401,7 @@ class _GoalDetailContent extends HookConsumerWidget {
             stream: goalService.watchGoalActions(goal.id, goal.userId),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator.adaptive());
               }
 
               final actions = snapshot.data ?? [];
@@ -468,7 +468,7 @@ class _GoalDetailContent extends HookConsumerWidget {
         builder: (context) => const AlertDialog(
           content: Row(
             children: [
-              CircularProgressIndicator(),
+              CircularProgressIndicator.adaptive(),
               SizedBox(width: 20),
               Text('Completing goal...'),
             ],
@@ -1059,9 +1059,11 @@ class _EmptyActionsState extends StatelessWidget {
                   ? const SizedBox(
                       width: 18,
                       height: 18,
-                      child: CircularProgressIndicator(
+                      child: CircularProgressIndicator.adaptive(
                         strokeWidth: 2,
-                        color: Colors.white,
+                        valueColor: AlwaysStoppedAnimation(
+                          Colors.white,
+                        ),
                       ),
                     )
                   : const Icon(Icons.auto_awesome),
@@ -1752,7 +1754,7 @@ class _GoalReminderSection extends HookConsumerWidget {
                 const SizedBox(
                   width: 24,
                   height: 24,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                  child: CircularProgressIndicator.adaptive(strokeWidth: 2),
                 )
               else
                 Switch.adaptive(
@@ -1923,7 +1925,7 @@ class _EditGoalSheetState extends ConsumerState<_EditGoalSheet> {
     if (_isLoading) {
       return const SizedBox(
         height: 300,
-        child: Center(child: CircularProgressIndicator()),
+        child: Center(child: CircularProgressIndicator.adaptive()),
       );
     }
 

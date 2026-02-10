@@ -111,7 +111,7 @@ class _LoadingTipCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       child: const Center(
-        child: CircularProgressIndicator(strokeWidth: 2),
+        child: CircularProgressIndicator.adaptive(strokeWidth: 2),
       ),
     );
   }

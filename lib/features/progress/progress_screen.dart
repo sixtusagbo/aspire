@@ -36,7 +36,7 @@ class ProgressScreen extends HookConsumerWidget {
 
               if (userSnapshot.connectionState == ConnectionState.waiting &&
                   user == null) {
-                return const Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator.adaptive());
               }
 
               return SingleChildScrollView(

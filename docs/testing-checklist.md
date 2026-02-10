@@ -37,7 +37,7 @@
 
 - [x] Appearance tile shows between Notifications and Premium sections
 - [x] Segmented control shows Light, Dark, Auto options inline
-- [ ] Selected option has primary color pill background with white text
+- [x] Selected option has primary color pill background with white text
 - [x] Select Light - app switches to light theme immediately
 - [x] Select Dark - app switches to dark theme immediately
 - [x] Select Auto - app follows device setting

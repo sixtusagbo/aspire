@@ -638,7 +638,7 @@ class _TemplateSelectorSheet extends HookConsumerWidget {
     final templatesAsync = ref.watch(goalTemplatesProvider);
 
     return templatesAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const Center(child: CircularProgressIndicator.adaptive()),
       error: (e, _) => Center(child: Text('Error loading templates: $e')),
       data: (templates) => _TemplateSelectorContent(templates: templates),
     );

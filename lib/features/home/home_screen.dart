@@ -192,7 +192,7 @@ class _ActionsList extends HookConsumerWidget {
       builder: (context, goalsSnapshot) {
         if (goalsSnapshot.connectionState == ConnectionState.waiting) {
           return const SliverFillRemaining(
-            child: Center(child: CircularProgressIndicator()),
+            child: Center(child: CircularProgressIndicator.adaptive()),
           );
         }
 

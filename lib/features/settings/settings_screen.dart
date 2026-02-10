@@ -273,8 +273,10 @@ class SettingsScreen extends HookConsumerWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    CircularProgressIndicator(
-                      color: Colors.white,
+                    CircularProgressIndicator.adaptive(
+                      valueColor: AlwaysStoppedAnimation(
+                        Colors.white,
+                      ),
                     ),
                     SizedBox(height: 24),
                     Text(
@@ -425,9 +427,9 @@ class SettingsScreen extends HookConsumerWidget {
                 ? const SizedBox(
                     width: 20,
                     height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    child: CircularProgressIndicator.adaptive(strokeWidth: 2),
                   )
-                : Switch(
+                : Switch.adaptive(
                     value: notificationsEnabled.value!,
                     onChanged: (_) => handleNotificationToggle(),
                   ),
@@ -443,7 +445,7 @@ class SettingsScreen extends HookConsumerWidget {
                   ? 'Enable notifications first'
                   : 'Get a nudge to complete your actions',
             ),
-            trailing: Switch(
+            trailing: Switch.adaptive(
               // Show as off when system notifications are off
               value:
                   notificationsEnabled.value == true && reminderEnabled.value,
@@ -605,7 +607,7 @@ class SettingsScreen extends HookConsumerWidget {
                 ? const SizedBox(
                     width: 20,
                     height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    child: CircularProgressIndicator.adaptive(strokeWidth: 2),
                   )
                 : null,
             onTap: isDeleting.value ? null : handleDeleteAccount,
@@ -953,7 +955,7 @@ class _ManageCategoriesSheetState extends State<_ManageCategoriesSheet> {
           if (_isLoading)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 24),
-              child: Center(child: CircularProgressIndicator()),
+              child: Center(child: CircularProgressIndicator.adaptive()),
             )
           else if (_categories.isEmpty)
             Padding(
