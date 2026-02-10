@@ -299,7 +299,7 @@ class DailyLog {
   - [x] Reminder time picker
   - [x] Sign out functionality
   - [x] Delete account
-  - [x] Manage subscription (link to app store or google play store)
+  - [x] Manage subscription (link to Play Store)
   - [x] About / Version info
 - [x] App update alerts (prompt user when new version available)
 - [x] Empty states with encouraging messages
@@ -338,11 +338,12 @@ Add before deadline after core MVP polish:
 
 - [x] Bump version and update changelog
 - [ ] Build and upload to Google Play Internal Testing
-- [ ] Write proposal (problem, solution, monetization, roadmap)
-- [ ] Technical documentation
-- [ ] Screenshots
-- [ ] Record 2-3 minute demo video
-- [ ] Submit on DevPost
+- [ ] Write proposal: 1-2 pages (problem statement, solution overview, monetization strategy, roadmap)
+- [ ] Technical documentation: architecture overview + RevenueCat integration details
+- [ ] Developer bio: background, experience, portfolio links, motivation
+- [ ] Write script for the demo video (see docs/demo_video_tips.md)
+- [ ] Record 2-3 minute demo video (product walkthrough, onboarding to monetization flow)
+- [ ] Submit on DevPost (revenuecat-shipyard-2026.devpost.com)
 
 **Deliverable:** App submitted to hackathon
 

@@ -108,7 +108,8 @@ class SettingsScreen extends HookConsumerWidget {
         // Already enabled, open settings to disable
         await notificationService.openSettings();
         // Recheck after returning from settings
-        final stillEnabled = await notificationService.areNotificationsEnabled();
+        final stillEnabled = await notificationService
+            .areNotificationsEnabled();
         notificationsEnabled.value = stillEnabled;
 
         // Auto-disable reminder if notifications were turned off
@@ -116,7 +117,9 @@ class SettingsScreen extends HookConsumerWidget {
           reminderEnabled.value = false;
           await notificationService.cancelAll();
           if (userId != null) {
-            await userService.updateUser(userId, {'dailyReminderEnabled': false});
+            await userService.updateUser(userId, {
+              'dailyReminderEnabled': false,
+            });
           }
         }
         return;
@@ -406,7 +409,8 @@ class SettingsScreen extends HookConsumerWidget {
             ),
             trailing: Switch(
               // Show as off when system notifications are off
-              value: notificationsEnabled.value == true && reminderEnabled.value,
+              value:
+                  notificationsEnabled.value == true && reminderEnabled.value,
               onChanged: notificationsEnabled.value == true
                   ? handleReminderToggle
                   : null,
@@ -448,7 +452,7 @@ class SettingsScreen extends HookConsumerWidget {
             ListTile(
               leading: const SizedBox(width: 24),
               title: const Text('Manage Subscription'),
-              subtitle: const Text('View or cancel in app store'),
+              subtitle: const Text('View or cancel in Play Store'),
               trailing: const Icon(Icons.chevron_right),
               onTap: handleManageSubscription,
             ),
