@@ -648,56 +648,121 @@ class _AppearanceTile extends StatelessWidget {
 
   const _AppearanceTile({required this.ref});
 
-  static const _modes = {
-    ThemeMode.system: ('Auto', Icons.brightness_auto),
-    ThemeMode.light: ('Light', Icons.light_mode),
-    ThemeMode.dark: ('Dark', Icons.dark_mode),
-  };
+  static const _modes = [
+    (ThemeMode.light, 'Light', Icons.light_mode_outlined),
+    (ThemeMode.dark, 'Dark', Icons.dark_mode_outlined),
+    (ThemeMode.system, 'Auto', Icons.brightness_auto),
+  ];
 
   @override
   Widget build(BuildContext context) {
     final currentMode = ref.watch(themeProvider);
-    final (label, _) = _modes[currentMode]!;
+    final primary = Theme.of(context).colorScheme.primary;
 
-    return ListTile(
-      leading: const Icon(Icons.palette_outlined),
-      title: const Text('Appearance'),
-      subtitle: Text(label),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () => _showThemePicker(context, currentMode),
-    );
-  }
-
-  void _showThemePicker(BuildContext context, ThemeMode current) {
-    showDialog<void>(
-      context: context,
-      builder: (context) => SimpleDialog(
-        title: const Text('Choose Theme'),
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 8,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          RadioGroup<ThemeMode>(
-            groupValue: current,
-            onChanged: (value) {
-              if (value != null) {
-                ref
-                    .read(themeProvider.notifier)
-                    .setThemeMode(value);
-                Navigator.pop(context);
-              }
-            },
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: _modes.entries.map((entry) {
-                final mode = entry.key;
-                final (label, icon) = entry.value;
-                return RadioListTile<ThemeMode>(
-                  value: mode,
-                  title: Text(label),
-                  secondary: Icon(icon),
+          Row(
+            children: [
+              Icon(
+                Icons.palette_outlined,
+                color: Theme.of(context).iconTheme.color,
+              ),
+              const SizedBox(width: 16),
+              const Text(
+                'App Theme',
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Container(
+            decoration: BoxDecoration(
+              color: context.surfaceSubtle,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: context.borderColor),
+            ),
+            padding: const EdgeInsets.all(4),
+            child: Row(
+              children: _modes.map((entry) {
+                final (mode, label, icon) = entry;
+                final isSelected = mode == currentMode;
+                return Expanded(
+                  child: _ThemeOption(
+                    label: label,
+                    icon: icon,
+                    isSelected: isSelected,
+                    color: primary,
+                    onTap: () => ref
+                        .read(themeProvider.notifier)
+                        .setThemeMode(mode),
+                  ),
                 );
               }).toList(),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ThemeOption extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool isSelected;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _ThemeOption({
+    required this.label,
+    required this.icon,
+    required this.isSelected,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected ? color : Colors.transparent,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 18,
+              color: isSelected
+                  ? Colors.white
+                  : context.textSecondary,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontWeight: isSelected
+                    ? FontWeight.w600
+                    : FontWeight.normal,
+                color: isSelected
+                    ? Colors.white
+                    : context.textSecondary,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

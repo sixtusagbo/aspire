@@ -35,13 +35,13 @@
 
 ## Theme Mode Selection (Settings)
 
-- [ ] Appearance tile shows between Notifications and Premium sections
-- [ ] Subtitle shows current mode (Auto, Light, or Dark)
-- [ ] Tap opens dialog with three radio options
-- [ ] Select Light - app switches to light theme immediately
-- [ ] Select Dark - app switches to dark theme immediately
-- [ ] Select Auto - app follows device setting
-- [ ] Kill and reopen app - selected theme persists
+- [x] Appearance tile shows between Notifications and Premium sections
+- [x] Segmented control shows Light, Dark, Auto options inline
+- [ ] Selected option has primary color pill background with white text
+- [x] Select Light - app switches to light theme immediately
+- [x] Select Dark - app switches to dark theme immediately
+- [x] Select Auto - app follows device setting
+- [x] Kill and reopen app - selected theme persists
 
 ## Social Links (Settings)
 
