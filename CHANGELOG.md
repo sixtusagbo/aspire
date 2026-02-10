@@ -2,6 +2,22 @@
 
 All notable changes to Aspire will be documented in this file.
 
+## [0.1.8] - 2026-02-10
+
+### Added
+- Theme mode selection in settings (Light, Dark, Auto) with inline segmented control
+- Free trial support on paywall with post-onboarding display
+- Google Play download CTA in share messages
+- Full-screen non-dismissible loading for account deletion
+
+### Changed
+- Redesigned settings screen with grouped card layout and profile header
+- All loading indicators and switches now use platform-adaptive variants
+- Reordered settings items for better UX flow
+
+### Fixed
+- X logo visibility in dark mode
+
 ## [0.1.7] - 2026-02-09
 
 ### Added
