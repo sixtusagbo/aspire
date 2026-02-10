@@ -666,7 +666,6 @@ class SettingsScreen extends HookConsumerWidget {
                 iconColor: AppTheme.errorRed,
                 title: 'Delete Account',
                 titleColor: AppTheme.errorRed,
-                subtitle: 'Permanently delete all data',
                 trailing: isDeleting.value
                     ? const SizedBox(
                         width: 20,
@@ -721,22 +720,31 @@ class _SettingsGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final radius = BorderRadius.circular(AppTheme.radiusLarge);
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+        borderRadius: radius,
         border: Border.all(color: context.borderColor),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (int i = 0; i < children.length; i++) ...[
-            children[i],
-            if (i < children.length - 1)
-              Divider(height: 1, indent: 52, color: context.borderColor),
+      child: Material(
+        color: context.surface,
+        borderRadius: radius,
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (int i = 0; i < children.length; i++) ...[
+              children[i],
+              if (i < children.length - 1)
+                Divider(
+                  height: 1,
+                  indent: 52,
+                  color: context.borderColor,
+                ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
