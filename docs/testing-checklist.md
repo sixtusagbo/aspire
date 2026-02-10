@@ -33,7 +33,17 @@
 - [x] On success, navigates to sign-in screen
 - [x] On error, loading overlay dismisses and error toast shows
 
+## Theme Mode Selection (Settings)
+
+- [ ] Appearance tile shows between Notifications and Premium sections
+- [ ] Subtitle shows current mode (Auto, Light, or Dark)
+- [ ] Tap opens dialog with three radio options
+- [ ] Select Light - app switches to light theme immediately
+- [ ] Select Dark - app switches to dark theme immediately
+- [ ] Select Auto - app follows device setting
+- [ ] Kill and reopen app - selected theme persists
+
 ## Social Links (Settings)
 
-- [ ] X logo is visible in dark mode (white circle background)
-- [ ] X logo looks normal in light mode (no background)
+- [x] X logo is visible in dark mode (white circle background)
+- [x] X logo looks normal in light mode (no background)

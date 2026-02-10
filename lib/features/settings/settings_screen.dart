@@ -1,5 +1,6 @@
 import 'package:aspire/core/theme/app_theme.dart';
 import 'package:aspire/core/theme/category_colors.dart';
+import 'package:aspire/core/theme/theme_provider.dart';
 import 'package:aspire/core/utils/app_router.dart';
 import 'package:aspire/core/utils/toast_helper.dart';
 import 'package:aspire/services/auth_service.dart';
@@ -463,6 +464,11 @@ class SettingsScreen extends HookConsumerWidget {
             ),
 
           const Divider(),
+
+          // Appearance section
+          _AppearanceTile(ref: ref),
+
+          const Divider(),
           ListTile(
             leading: Icon(
               isPremium.value == true
@@ -634,6 +640,66 @@ class SettingsScreen extends HookConsumerWidget {
         customCategories.value = user.customCategories;
       }
     }
+  }
+}
+
+class _AppearanceTile extends StatelessWidget {
+  final WidgetRef ref;
+
+  const _AppearanceTile({required this.ref});
+
+  static const _modes = {
+    ThemeMode.system: ('Auto', Icons.brightness_auto),
+    ThemeMode.light: ('Light', Icons.light_mode),
+    ThemeMode.dark: ('Dark', Icons.dark_mode),
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final currentMode = ref.watch(themeProvider);
+    final (label, _) = _modes[currentMode]!;
+
+    return ListTile(
+      leading: const Icon(Icons.palette_outlined),
+      title: const Text('Appearance'),
+      subtitle: Text(label),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () => _showThemePicker(context, currentMode),
+    );
+  }
+
+  void _showThemePicker(BuildContext context, ThemeMode current) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: const Text('Choose Theme'),
+        children: [
+          RadioGroup<ThemeMode>(
+            groupValue: current,
+            onChanged: (value) {
+              if (value != null) {
+                ref
+                    .read(themeProvider.notifier)
+                    .setThemeMode(value);
+                Navigator.pop(context);
+              }
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: _modes.entries.map((entry) {
+                final mode = entry.key;
+                final (label, icon) = entry.value;
+                return RadioListTile<ThemeMode>(
+                  value: mode,
+                  title: Text(label),
+                  secondary: Icon(icon),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
