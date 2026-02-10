@@ -399,6 +399,7 @@ class SettingsScreen extends HookConsumerWidget {
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
         children: [
+          // Account
           ListTile(
             leading: const Icon(Icons.person_outline),
             title: Text(
@@ -412,65 +413,7 @@ class SettingsScreen extends HookConsumerWidget {
           ),
           const Divider(),
 
-          // Notifications section
-          ListTile(
-            leading: const Icon(Icons.notifications_outlined),
-            title: const Text('Notifications'),
-            subtitle: Text(
-              notificationsEnabled.value == null
-                  ? 'Checking...'
-                  : notificationsEnabled.value!
-                  ? 'Enabled'
-                  : 'Tap to enable',
-            ),
-            trailing: notificationsEnabled.value == null
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator.adaptive(strokeWidth: 2),
-                  )
-                : Switch.adaptive(
-                    value: notificationsEnabled.value!,
-                    onChanged: (_) => handleNotificationToggle(),
-                  ),
-            onTap: handleNotificationToggle,
-          ),
-
-          // Daily reminder toggle
-          ListTile(
-            leading: const SizedBox(width: 24), // Indent
-            title: const Text('Daily Reminder'),
-            subtitle: Text(
-              notificationsEnabled.value != true
-                  ? 'Enable notifications first'
-                  : 'Get a nudge to complete your actions',
-            ),
-            trailing: Switch.adaptive(
-              // Show as off when system notifications are off
-              value:
-                  notificationsEnabled.value == true && reminderEnabled.value,
-              onChanged: notificationsEnabled.value == true
-                  ? handleReminderToggle
-                  : null,
-            ),
-          ),
-
-          // Reminder time (only show if reminder enabled)
-          if (reminderEnabled.value)
-            ListTile(
-              leading: const SizedBox(width: 24), // Indent
-              title: const Text('Reminder Time'),
-              subtitle: Text(formatTime(reminderTime.value)),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: handleTimeChange,
-            ),
-
-          const Divider(),
-
-          // Appearance section
-          _AppearanceTile(ref: ref),
-
-          const Divider(),
+          // Premium
           ListTile(
             leading: Icon(
               isPremium.value == true
@@ -499,9 +442,9 @@ class SettingsScreen extends HookConsumerWidget {
               trailing: const Icon(Icons.chevron_right),
               onTap: handleManageSubscription,
             ),
-          const Divider(),
+          if (isPremium.value == true) const Divider(),
 
-          // Custom Categories section (premium only)
+          // Custom Categories (premium only)
           if (isPremium.value == true)
             ListTile(
               leading: Icon(
@@ -521,33 +464,62 @@ class SettingsScreen extends HookConsumerWidget {
                   ? null
                   : handleManageCategories,
             ),
-          if (isPremium.value == true) const Divider(),
+          if (isPremium.value != true) const Divider(),
 
-          // About section
-          ListTile(
-            leading: const Icon(Icons.info_outline),
-            title: const Text('About'),
-            subtitle: Text(
-              appVersion.value.isEmpty
-                  ? 'Loading...'
-                  : 'Version ${appVersion.value}',
-            ),
-          ),
-          ListTile(
-            leading: const SizedBox(width: 24),
-            title: const Text('Terms of Service'),
-            trailing: const Icon(Icons.open_in_new, size: 18),
-            onTap: () => _launchUrl(_termsOfServiceUrl),
-          ),
-          ListTile(
-            leading: const SizedBox(width: 24),
-            title: const Text('Privacy Policy'),
-            trailing: const Icon(Icons.open_in_new, size: 18),
-            onTap: () => _launchUrl(_privacyPolicyUrl),
-          ),
+          // Appearance
+          _AppearanceTile(ref: ref),
           const Divider(),
 
-          // Follow Gabby section
+          // Notifications
+          ListTile(
+            leading: const Icon(Icons.notifications_outlined),
+            title: const Text('Notifications'),
+            subtitle: Text(
+              notificationsEnabled.value == null
+                  ? 'Checking...'
+                  : notificationsEnabled.value!
+                  ? 'Enabled'
+                  : 'Tap to enable',
+            ),
+            trailing: notificationsEnabled.value == null
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator.adaptive(strokeWidth: 2),
+                  )
+                : Switch.adaptive(
+                    value: notificationsEnabled.value!,
+                    onChanged: (_) => handleNotificationToggle(),
+                  ),
+            onTap: handleNotificationToggle,
+          ),
+          ListTile(
+            leading: const SizedBox(width: 24),
+            title: const Text('Daily Reminder'),
+            subtitle: Text(
+              notificationsEnabled.value != true
+                  ? 'Enable notifications first'
+                  : 'Get a nudge to complete your actions',
+            ),
+            trailing: Switch.adaptive(
+              value:
+                  notificationsEnabled.value == true && reminderEnabled.value,
+              onChanged: notificationsEnabled.value == true
+                  ? handleReminderToggle
+                  : null,
+            ),
+          ),
+          if (reminderEnabled.value)
+            ListTile(
+              leading: const SizedBox(width: 24),
+              title: const Text('Reminder Time'),
+              subtitle: Text(formatTime(reminderTime.value)),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: handleTimeChange,
+            ),
+          const Divider(),
+
+          // Follow Gabby
           ListTile(
             leading: const Icon(Icons.favorite_outline),
             title: const Text('Follow Gabby Beckford'),
@@ -590,12 +562,39 @@ class SettingsScreen extends HookConsumerWidget {
           const SizedBox(height: 8),
           const Divider(),
 
+          // About
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: const Text('About'),
+            subtitle: Text(
+              appVersion.value.isEmpty
+                  ? 'Loading...'
+                  : 'Version ${appVersion.value}',
+            ),
+          ),
+          ListTile(
+            leading: const SizedBox(width: 24),
+            title: const Text('Terms of Service'),
+            trailing: const Icon(Icons.open_in_new, size: 18),
+            onTap: () => _launchUrl(_termsOfServiceUrl),
+          ),
+          ListTile(
+            leading: const SizedBox(width: 24),
+            title: const Text('Privacy Policy'),
+            trailing: const Icon(Icons.open_in_new, size: 18),
+            onTap: () => _launchUrl(_privacyPolicyUrl),
+          ),
+          const Divider(),
+
+          // Sign Out
           ListTile(
             leading: const Icon(Icons.logout),
             title: const Text('Sign Out'),
             onTap: handleSignOut,
           ),
           const Divider(),
+
+          // Delete Account
           ListTile(
             leading: const Icon(Icons.delete_forever, color: Colors.red),
             title: const Text(
