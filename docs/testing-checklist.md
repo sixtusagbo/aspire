@@ -22,13 +22,18 @@
 
 ## Share Messages
 
-- [ ] Share a streak - message includes "Download Aspire on Google Play today!"
-- [ ] Share a completed goal - message includes "Download Aspire on Google Play today!"
-- [ ] Both messages still include #Aspire #PacksLight hashtags
+- [x] Share a streak - message includes "Download Aspire on Google Play today!"
+- [x] Share a completed goal - message includes "Download Aspire on Google Play today!"
+- [x] Both messages still include #Aspire #PacksLight hashtags
 
 ## Delete Account
 
-- [ ] Tap Delete Account > Confirm - full-screen loading overlay appears
-- [ ] Back button / swipe back does not dismiss the loading overlay
-- [ ] On success, navigates to sign-in screen
-- [ ] On error, loading overlay dismisses and error toast shows
+- [x] Tap Delete Account > Confirm - full-screen loading overlay appears
+- [x] Back button / swipe back does not dismiss the loading overlay
+- [x] On success, navigates to sign-in screen
+- [x] On error, loading overlay dismisses and error toast shows
+
+## Social Links (Settings)
+
+- [ ] X logo is visible in dark mode (white circle background)
+- [ ] X logo looks normal in light mode (no background)

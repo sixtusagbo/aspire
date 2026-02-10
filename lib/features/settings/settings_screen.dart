@@ -559,10 +559,17 @@ class SettingsScreen extends HookConsumerWidget {
                   label: 'TikTok',
                   onTap: () => _launchUrl(_gabbyTikTok),
                 ),
-                _SocialButton(
-                  assetPath: 'assets/images/twitterX.png',
-                  label: 'X',
-                  onTap: () => _launchUrl(_gabbyTwitter),
+                Builder(
+                  builder: (context) {
+                    final isDark = Theme.of(context).brightness ==
+                        Brightness.dark;
+                    return _SocialButton(
+                      assetPath: 'assets/images/twitterX.png',
+                      label: 'X',
+                      onTap: () => _launchUrl(_gabbyTwitter),
+                      assetBackground: isDark ? Colors.white : null,
+                    );
+                  },
                 ),
                 _SocialButton(
                   icon: Icons.language,
@@ -919,12 +926,14 @@ class _SocialButton extends StatelessWidget {
   final String? assetPath;
   final String label;
   final VoidCallback onTap;
+  final Color? assetBackground;
 
   const _SocialButton({
     this.icon,
     this.assetPath,
     required this.label,
     required this.onTap,
+    this.assetBackground,
   });
 
   @override
@@ -937,7 +946,22 @@ class _SocialButton extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Column(
             children: [
-              if (assetPath != null)
+              if (assetPath != null && assetBackground != null)
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: assetBackground,
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: Image.asset(
+                    assetPath!,
+                    width: 24,
+                    height: 24,
+                  ),
+                )
+              else if (assetPath != null)
                 Image.asset(assetPath!, width: 24, height: 24)
               else
                 Icon(icon, color: AppTheme.primaryPink),
@@ -952,4 +976,5 @@ class _SocialButton extends StatelessWidget {
       ),
     );
   }
+
 }
