@@ -75,7 +75,7 @@ const sampleTips = [
   },
   {
     'text':
-        "Start small, think big. Today's micro-action builds tomorrow's major achievement.",
+        "Start small, think big. Today's action builds tomorrow's major achievement.",
     'isActive': true,
   },
   {

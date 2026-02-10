@@ -25,7 +25,7 @@ class ShareService {
     await SharePlus.instance.share(
       ShareParams(
         text: "I just completed my goal: $title "
-            "From dreaming to doing, one micro-action at a time."
+            "From dreaming to doing, one step at a time."
             "$_shareFooter",
         subject: 'Goal Completed!',
       ),

@@ -12,10 +12,10 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Aspire - From Dreaming to Doing",
   description:
-    "Turn your big dreams into daily micro-actions. The app for ambitious women who want to travel, build careers, and achieve financial freedom.",
+    "Close the gap between inspiration and action. AI-powered goal planning with streaks and celebrations for ambitious women.",
   keywords: [
     "goal setting",
-    "micro-actions",
+    "action planning",
     "women empowerment",
     "travel goals",
     "career goals",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     siteName: "Aspire",
     title: "Aspire - From Dreaming to Doing",
     description:
-      "Turn your big dreams into daily micro-actions. For ambitious women who want it all.",
+      "Close the gap between inspiration and action. For ambitious women who want it all.",
     images: [
       {
         url: "/og-image.png",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Aspire - From Dreaming to Doing",
     description:
-      "Turn your big dreams into daily micro-actions. For ambitious women who want it all.",
+      "Close the gap between inspiration and action. For ambitious women who want it all.",
     images: ["/og-image.png"],
   },
   icons: [
@@ -70,7 +70,7 @@ export default function RootLayout({
     applicationCategory: "LifestyleApplication",
     operatingSystem: "Android",
     description:
-      "Turn your big dreams into daily micro-actions with gamified tracking and celebration.",
+      "AI-powered goal planning with gamified tracking and celebrations for ambitious women.",
     offers: {
       "@type": "Offer",
       price: "0",

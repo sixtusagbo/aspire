@@ -28,8 +28,8 @@ export default function Footer() {
               <span className="text-lg font-bold text-foreground">Aspire</span>
             </Link>
             <p className="text-sm text-muted leading-relaxed">
-              From dreaming to doing. AI-powered micro-actions for ambitious
-              women ready to close the gap between inspiration and action.
+              From dreaming to doing. AI-powered goal planning with streaks
+              and celebrations for ambitious women ready to take action.
             </p>
           </div>
 

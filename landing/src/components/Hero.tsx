@@ -20,13 +20,6 @@ export default function Hero() {
   return (
     <section className="min-h-screen flex items-center justify-center pt-20 pb-16 px-4 overflow-hidden relative">
       <div className="max-w-4xl mx-auto w-full relative z-10 text-center">
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8">
-          <span className="text-sm font-medium text-primary">
-            For ambitious women who want it all
-          </span>
-        </div>
-
         {/* Headline */}
         <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-foreground leading-tight mb-6 tracking-tight">
           From Dreaming
@@ -36,10 +29,9 @@ export default function Hero() {
 
         {/* Subheadline */}
         <p className="text-lg sm:text-xl text-muted max-w-2xl mx-auto mb-8">
-          Turn your big dreams into daily micro-actions. Whether it&apos;s
-          traveling the world, landing that six-figure salary, or achieving
-          financial freedom — Aspire helps you close the gap between inspiration
-          and action.
+          Whether it&apos;s traveling the world, landing that six-figure
+          salary, or achieving financial freedom — Aspire helps you close the
+          gap between inspiration and action.
         </p>
 
         {/* CTA - moved up, before features */}

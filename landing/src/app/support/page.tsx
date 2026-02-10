@@ -60,7 +60,7 @@ export default function Support() {
                     <p className="text-foreground/80 text-sm mt-1">
                       Tap the &quot;+&quot; button on the home screen, enter
                       your dream or goal, set a target date, and we&apos;ll help
-                      you break it down into daily micro-actions.
+                      AI creates a personalized action plan for you.
                     </p>
                   </div>
                   <div>

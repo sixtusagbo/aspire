@@ -36,7 +36,7 @@ export default function TermsOfService() {
             </h2>
             <p className="leading-relaxed">
               Aspire is a mobile application designed to help users turn their
-              big dreams into daily micro-actions through goal setting, progress
+              big dreams into action through AI-powered goal planning, progress
               tracking, and gamification. The App is provided &quot;as is&quot;
               and we reserve the right to modify or discontinue features at any
               time.

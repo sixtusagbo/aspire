@@ -1,13 +1,13 @@
 # Aspire
 
-From dreaming to doing - a goal achievement app for ambitious women.
+From dreaming to doing. Aspire helps ambitious women close the gap between inspiration and action with AI-powered goal planning, streaks, and celebrations.
 
 Built for [Gabby Beckford](https://packslight.com) (@PacksLight) as part of the [RevenueCat Shipyard 2026](https://www.revenuecat.com/shipyard/) hackathon.
 
 ## Features
 
 - **Smart Goal Setting** - Create meaningful goals with clear outcomes
-- **AI-Powered Micro-Actions** - Break down goals into small, achievable daily actions
+- **AI Action Plans** - AI breaks any goal into personalized daily steps
 - **Streak Tracking** - Build momentum with daily progress tracking
 - **Celebrations** - Confetti and haptic feedback to celebrate wins
 
