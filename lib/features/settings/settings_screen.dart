@@ -258,6 +258,39 @@ class SettingsScreen extends HookConsumerWidget {
       if (confirmed != true) return;
 
       isDeleting.value = true;
+
+      // Show non-dismissible full-screen loading overlay
+      if (context.mounted) {
+        showDialog<void>(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => const PopScope(
+            canPop: false,
+            child: Scaffold(
+              backgroundColor: Colors.black87,
+              body: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                    SizedBox(height: 24),
+                    Text(
+                      'Deleting account...',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+
       try {
         final authService = ref.read(authServiceProvider);
         final goalService = ref.read(goalServiceProvider);
@@ -283,6 +316,8 @@ class SettingsScreen extends HookConsumerWidget {
         }
         ToastHelper.showSuccess('Account deleted');
       } catch (e) {
+        // Dismiss loading overlay on error
+        if (context.mounted) Navigator.of(context).pop();
         ToastHelper.showError('Failed to delete account: $e');
       } finally {
         isDeleting.value = false;

@@ -25,3 +25,10 @@
 - [ ] Share a streak - message includes "Download Aspire on Google Play today!"
 - [ ] Share a completed goal - message includes "Download Aspire on Google Play today!"
 - [ ] Both messages still include #Aspire #PacksLight hashtags
+
+## Delete Account
+
+- [ ] Tap Delete Account > Confirm - full-screen loading overlay appears
+- [ ] Back button / swipe back does not dismiss the loading overlay
+- [ ] On success, navigates to sign-in screen
+- [ ] On error, loading overlay dismisses and error toast shows
