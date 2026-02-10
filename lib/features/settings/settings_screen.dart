@@ -274,17 +274,12 @@ class SettingsScreen extends HookConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     CircularProgressIndicator.adaptive(
-                      valueColor: AlwaysStoppedAnimation(
-                        Colors.white,
-                      ),
+                      valueColor: AlwaysStoppedAnimation(Colors.white),
                     ),
                     SizedBox(height: 24),
                     Text(
                       'Deleting account...',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
+                      style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ],
                 ),
@@ -395,222 +390,297 @@ class SettingsScreen extends HookConsumerWidget {
       }
     }
 
+    final initial = displayName.value.isNotEmpty
+        ? displayName.value[0].toUpperCase()
+        : (user?.email?.isNotEmpty == true
+              ? user!.email![0].toUpperCase()
+              : '?');
+
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         children: [
-          // Account
-          ListTile(
-            leading: const Icon(Icons.person_outline),
-            title: Text(
-              displayName.value.isNotEmpty
-                  ? displayName.value
-                  : 'Add your name',
-            ),
-            subtitle: Text(user?.email ?? 'Manage your account'),
-            trailing: const Icon(Icons.chevron_right),
+          const SizedBox(height: 8),
+
+          // Profile header
+          GestureDetector(
             onTap: handleEditAccount,
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: context.surface,
+                borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+                border: Border.all(color: context.borderColor),
+              ),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 24,
+                    backgroundColor: AppTheme.primaryPink.withValues(
+                      alpha: 0.15,
+                    ),
+                    child: Text(
+                      initial,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: AppTheme.primaryPink,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          displayName.value.isNotEmpty
+                              ? displayName.value
+                              : 'Add your name',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          user?.email ?? '',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: context.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(Icons.chevron_right, color: context.textSecondary),
+                ],
+              ),
+            ),
           ),
-          const Divider(),
+          const SizedBox(height: 20),
 
           // Premium
-          ListTile(
-            leading: Icon(
-              isPremium.value == true
-                  ? Icons.workspace_premium
-                  : Icons.workspace_premium_outlined,
-              color: isPremium.value == true
-                  ? Theme.of(context).colorScheme.primary
-                  : null,
-            ),
-            title: const Text('Premium'),
-            subtitle: Text(
-              isPremium.value == null
-                  ? 'Checking...'
-                  : isPremium.value!
-                  ? 'You have premium access'
-                  : 'Upgrade to unlock unlimited goals',
-            ),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push(AppRoutes.paywall),
+          _SettingsGroup(
+            children: [
+              _SettingsTile(
+                icon: isPremium.value == true
+                    ? Icons.workspace_premium
+                    : Icons.workspace_premium_outlined,
+                iconColor: isPremium.value == true
+                    ? AppTheme.primaryPink
+                    : null,
+                title: 'Premium',
+                subtitle: isPremium.value == null
+                    ? 'Checking...'
+                    : isPremium.value!
+                    ? 'You have premium access'
+                    : 'Upgrade to unlock unlimited goals',
+                trailing: const Icon(Icons.chevron_right, size: 20),
+                onTap: () => context.push(AppRoutes.paywall),
+              ),
+              if (isPremium.value == true) ...[
+                _SettingsTile(
+                  icon: Icons.credit_card_outlined,
+                  title: 'Manage Subscription',
+                  subtitle: 'View or cancel in Play Store',
+                  trailing: const Icon(Icons.chevron_right, size: 20),
+                  onTap: handleManageSubscription,
+                ),
+              ],
+              if (isPremium.value == true)
+                _SettingsTile(
+                  icon: CustomCategoryStyle.defaultIcon,
+                  iconColor: CustomCategoryStyle.defaultColor,
+                  title: 'Custom Categories',
+                  subtitle: customCategories.value.isEmpty
+                      ? 'Create categories when adding goals'
+                      : '${customCategories.value.length} '
+                            '${customCategories.value.length == 1 ? 'category' : 'categories'}',
+                  trailing: customCategories.value.isEmpty
+                      ? null
+                      : const Icon(Icons.chevron_right, size: 20),
+                  onTap: customCategories.value.isEmpty
+                      ? null
+                      : handleManageCategories,
+                ),
+            ],
           ),
-          if (isPremium.value == true)
-            ListTile(
-              leading: const SizedBox(width: 24),
-              title: const Text('Manage Subscription'),
-              subtitle: const Text('View or cancel in Play Store'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: handleManageSubscription,
-            ),
-          if (isPremium.value == true) const Divider(),
-
-          // Custom Categories (premium only)
-          if (isPremium.value == true)
-            ListTile(
-              leading: Icon(
-                CustomCategoryStyle.defaultIcon,
-                color: CustomCategoryStyle.defaultColor,
-              ),
-              title: const Text('Custom Categories'),
-              subtitle: Text(
-                customCategories.value.isEmpty
-                    ? 'Create categories when adding goals'
-                    : '${customCategories.value.length} ${customCategories.value.length == 1 ? 'category' : 'categories'}',
-              ),
-              trailing: customCategories.value.isEmpty
-                  ? null
-                  : const Icon(Icons.chevron_right),
-              onTap: customCategories.value.isEmpty
-                  ? null
-                  : handleManageCategories,
-            ),
-          if (isPremium.value != true) const Divider(),
+          const SizedBox(height: 20),
 
           // Appearance
           _AppearanceTile(ref: ref),
-          const Divider(),
+          const SizedBox(height: 20),
 
           // Notifications
-          ListTile(
-            leading: const Icon(Icons.notifications_outlined),
-            title: const Text('Notifications'),
-            subtitle: Text(
-              notificationsEnabled.value == null
-                  ? 'Checking...'
-                  : notificationsEnabled.value!
-                  ? 'Enabled'
-                  : 'Tap to enable',
-            ),
-            trailing: notificationsEnabled.value == null
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator.adaptive(strokeWidth: 2),
-                  )
-                : Switch.adaptive(
-                    value: notificationsEnabled.value!,
-                    onChanged: (_) => handleNotificationToggle(),
-                  ),
-            onTap: handleNotificationToggle,
+          _SettingsGroup(
+            children: [
+              _SettingsTile(
+                icon: Icons.notifications_outlined,
+                title: 'Notifications',
+                subtitle: notificationsEnabled.value == null
+                    ? 'Checking...'
+                    : notificationsEnabled.value!
+                    ? 'Enabled'
+                    : 'Tap to enable',
+                trailing: notificationsEnabled.value == null
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator.adaptive(
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : Switch.adaptive(
+                        value: notificationsEnabled.value!,
+                        onChanged: (_) => handleNotificationToggle(),
+                      ),
+                onTap: handleNotificationToggle,
+              ),
+              _SettingsTile(
+                icon: Icons.alarm_outlined,
+                title: 'Daily Reminder',
+                subtitle: notificationsEnabled.value != true
+                    ? 'Enable notifications first'
+                    : 'Get a nudge to complete your actions',
+                trailing: Switch.adaptive(
+                  value:
+                      notificationsEnabled.value == true &&
+                      reminderEnabled.value,
+                  onChanged: notificationsEnabled.value == true
+                      ? handleReminderToggle
+                      : null,
+                ),
+              ),
+              if (reminderEnabled.value)
+                _SettingsTile(
+                  icon: Icons.schedule_outlined,
+                  title: 'Reminder Time',
+                  subtitle: formatTime(reminderTime.value),
+                  trailing: const Icon(Icons.chevron_right, size: 20),
+                  onTap: handleTimeChange,
+                ),
+            ],
           ),
-          ListTile(
-            leading: const SizedBox(width: 24),
-            title: const Text('Daily Reminder'),
-            subtitle: Text(
-              notificationsEnabled.value != true
-                  ? 'Enable notifications first'
-                  : 'Get a nudge to complete your actions',
-            ),
-            trailing: Switch.adaptive(
-              value:
-                  notificationsEnabled.value == true && reminderEnabled.value,
-              onChanged: notificationsEnabled.value == true
-                  ? handleReminderToggle
-                  : null,
-            ),
-          ),
-          if (reminderEnabled.value)
-            ListTile(
-              leading: const SizedBox(width: 24),
-              title: const Text('Reminder Time'),
-              subtitle: Text(formatTime(reminderTime.value)),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: handleTimeChange,
-            ),
-          const Divider(),
+          const SizedBox(height: 20),
 
           // Follow Gabby
-          ListTile(
-            leading: const Icon(Icons.favorite_outline),
-            title: const Text('Follow Gabby Beckford'),
+          _SettingsGroup(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.favorite_outline,
+                      size: 20,
+                      color: context.textSecondary,
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Follow Gabby Beckford',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: context.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
+                child: Row(
+                  children: [
+                    _SocialButton(
+                      assetPath: 'assets/images/instagram.png',
+                      label: 'Instagram',
+                      onTap: () => _launchUrl(_gabbyInstagram),
+                    ),
+                    _SocialButton(
+                      assetPath: 'assets/images/tiktok.png',
+                      label: 'TikTok',
+                      onTap: () => _launchUrl(_gabbyTikTok),
+                    ),
+                    Builder(
+                      builder: (context) {
+                        final isDark =
+                            Theme.of(context).brightness == Brightness.dark;
+                        return _SocialButton(
+                          assetPath: 'assets/images/twitterX.png',
+                          label: 'X',
+                          onTap: () => _launchUrl(_gabbyTwitter),
+                          assetBackground: isDark ? Colors.white : null,
+                        );
+                      },
+                    ),
+                    _SocialButton(
+                      icon: Icons.language,
+                      label: 'Website',
+                      onTap: () => _launchUrl(_gabbyWebsite),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              children: [
-                const SizedBox(width: 40),
-                _SocialButton(
-                  assetPath: 'assets/images/instagram.png',
-                  label: 'Instagram',
-                  onTap: () => _launchUrl(_gabbyInstagram),
-                ),
-                _SocialButton(
-                  assetPath: 'assets/images/tiktok.png',
-                  label: 'TikTok',
-                  onTap: () => _launchUrl(_gabbyTikTok),
-                ),
-                Builder(
-                  builder: (context) {
-                    final isDark = Theme.of(context).brightness ==
-                        Brightness.dark;
-                    return _SocialButton(
-                      assetPath: 'assets/images/twitterX.png',
-                      label: 'X',
-                      onTap: () => _launchUrl(_gabbyTwitter),
-                      assetBackground: isDark ? Colors.white : null,
-                    );
-                  },
-                ),
-                _SocialButton(
-                  icon: Icons.language,
-                  label: 'Website',
-                  onTap: () => _launchUrl(_gabbyWebsite),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Divider(),
+          const SizedBox(height: 20),
 
           // About
-          ListTile(
-            leading: const Icon(Icons.info_outline),
-            title: const Text('About'),
-            subtitle: Text(
-              appVersion.value.isEmpty
-                  ? 'Loading...'
-                  : 'Version ${appVersion.value}',
-            ),
+          _SettingsGroup(
+            children: [
+              _SettingsTile(
+                icon: Icons.description_outlined,
+                title: 'Terms of Service',
+                trailing: const Icon(Icons.open_in_new, size: 16),
+                onTap: () => _launchUrl(_termsOfServiceUrl),
+              ),
+              _SettingsTile(
+                icon: Icons.shield_outlined,
+                title: 'Privacy Policy',
+                trailing: const Icon(Icons.open_in_new, size: 16),
+                onTap: () => _launchUrl(_privacyPolicyUrl),
+              ),
+              _SettingsTile(
+                icon: Icons.info_outline,
+                title: 'Version',
+                subtitle: appVersion.value.isEmpty
+                    ? 'Loading...'
+                    : appVersion.value,
+              ),
+            ],
           ),
-          ListTile(
-            leading: const SizedBox(width: 24),
-            title: const Text('Terms of Service'),
-            trailing: const Icon(Icons.open_in_new, size: 18),
-            onTap: () => _launchUrl(_termsOfServiceUrl),
-          ),
-          ListTile(
-            leading: const SizedBox(width: 24),
-            title: const Text('Privacy Policy'),
-            trailing: const Icon(Icons.open_in_new, size: 18),
-            onTap: () => _launchUrl(_privacyPolicyUrl),
-          ),
-          const Divider(),
+          const SizedBox(height: 20),
 
-          // Sign Out
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Sign Out'),
-            onTap: handleSignOut,
+          // Account actions
+          _SettingsGroup(
+            children: [
+              _SettingsTile(
+                icon: Icons.logout,
+                title: 'Sign Out',
+                onTap: handleSignOut,
+              ),
+              _SettingsTile(
+                icon: Icons.delete_forever,
+                iconColor: AppTheme.errorRed,
+                title: 'Delete Account',
+                titleColor: AppTheme.errorRed,
+                subtitle: 'Permanently delete all data',
+                trailing: isDeleting.value
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator.adaptive(
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : null,
+                onTap: isDeleting.value ? null : handleDeleteAccount,
+              ),
+            ],
           ),
-          const Divider(),
-
-          // Delete Account
-          ListTile(
-            leading: const Icon(Icons.delete_forever, color: Colors.red),
-            title: const Text(
-              'Delete Account',
-              style: TextStyle(color: Colors.red),
-            ),
-            subtitle: const Text('Permanently delete all data'),
-            trailing: isDeleting.value
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator.adaptive(strokeWidth: 2),
-                  )
-                : null,
-            onTap: isDeleting.value ? null : handleDeleteAccount,
-          ),
+          const SizedBox(height: 32),
         ],
       ),
     );
@@ -644,6 +714,97 @@ class SettingsScreen extends HookConsumerWidget {
   }
 }
 
+class _SettingsGroup extends StatelessWidget {
+  final List<Widget> children;
+
+  const _SettingsGroup({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: context.surface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+        border: Border.all(color: context.borderColor),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (int i = 0; i < children.length; i++) ...[
+            children[i],
+            if (i < children.length - 1)
+              Divider(height: 1, indent: 52, color: context.borderColor),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _SettingsTile extends StatelessWidget {
+  final IconData icon;
+  final Color? iconColor;
+  final String title;
+  final Color? titleColor;
+  final String? subtitle;
+  final Widget? trailing;
+  final VoidCallback? onTap;
+
+  const _SettingsTile({
+    required this.icon,
+    this.iconColor,
+    required this.title,
+    this.titleColor,
+    this.subtitle,
+    this.trailing,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            Icon(icon, size: 22, color: iconColor ?? context.textSecondary),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: titleColor,
+                    ),
+                  ),
+                  if (subtitle != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Text(
+                        subtitle!,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: context.textSecondary,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            if (trailing != null) ...[const SizedBox(width: 8), trailing!],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _AppearanceTile extends StatelessWidget {
   final WidgetRef ref;
 
@@ -660,10 +821,12 @@ class _AppearanceTile extends StatelessWidget {
     final currentMode = ref.watch(themeProvider);
     final primary = Theme.of(context).colorScheme.primary;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 8,
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: context.surface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+        border: Border.all(color: context.borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -672,16 +835,17 @@ class _AppearanceTile extends StatelessWidget {
             children: [
               Icon(
                 Icons.palette_outlined,
-                color: Theme.of(context).iconTheme.color,
+                size: 22,
+                color: context.textSecondary,
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 14),
               const Text(
                 'App Theme',
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
           Container(
             decoration: BoxDecoration(
               color: context.surfaceSubtle,
@@ -699,9 +863,8 @@ class _AppearanceTile extends StatelessWidget {
                     icon: icon,
                     isSelected: isSelected,
                     color: primary,
-                    onTap: () => ref
-                        .read(themeProvider.notifier)
-                        .setThemeMode(mode),
+                    onTap: () =>
+                        ref.read(themeProvider.notifier).setThemeMode(mode),
                   ),
                 );
               }).toList(),
@@ -746,20 +909,14 @@ class _ThemeOption extends StatelessWidget {
             Icon(
               icon,
               size: 18,
-              color: isSelected
-                  ? Colors.white
-                  : context.textSecondary,
+              color: isSelected ? Colors.white : context.textSecondary,
             ),
             const SizedBox(width: 6),
             Text(
               label,
               style: TextStyle(
-                fontWeight: isSelected
-                    ? FontWeight.w600
-                    : FontWeight.normal,
-                color: isSelected
-                    ? Colors.white
-                    : context.textSecondary,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                color: isSelected ? Colors.white : context.textSecondary,
               ),
             ),
           ],
@@ -1087,11 +1244,7 @@ class _SocialButton extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   alignment: Alignment.center,
-                  child: Image.asset(
-                    assetPath!,
-                    width: 24,
-                    height: 24,
-                  ),
+                  child: Image.asset(assetPath!, width: 24, height: 24),
                 )
               else if (assetPath != null)
                 Image.asset(assetPath!, width: 24, height: 24)
@@ -1108,5 +1261,4 @@ class _SocialButton extends StatelessWidget {
       ),
     );
   }
-
 }
