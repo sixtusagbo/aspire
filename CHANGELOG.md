@@ -2,6 +2,11 @@
 
 All notable changes to Aspire will be documented in this file.
 
+## [0.1.10] - 2026-02-10
+
+### Changed
+- Tuned celebration confetti intensity for better visual balance
+
 ## [0.1.9] - 2026-02-10
 
 ### Fixed
