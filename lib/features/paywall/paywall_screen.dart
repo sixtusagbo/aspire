@@ -243,10 +243,10 @@ class _PaywallContent extends StatelessWidget {
     final annual = currentOffering?.annual;
 
     // Detect trial availability per package
-    final annualTrial = annual != null ? _getTrialDurationText(annual) : null;
-    final monthlyTrial = monthly != null
-        ? _getTrialDurationText(monthly)
-        : null;
+    final annualTrial =
+        annual != null ? _getTrialDurationText(annual) : null;
+    final monthlyTrial =
+        monthly != null ? _getTrialDurationText(monthly) : null;
     final hasAnyTrial = annualTrial != null || monthlyTrial != null;
 
     return Stack(
@@ -336,42 +336,6 @@ class _PaywallContent extends StatelessWidget {
                   ],
                 ),
               ),
-
-              // Trial banner
-              if (hasAnyTrial) ...[
-                const SizedBox(height: 20),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: Colors.green.withValues(alpha: 0.3),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.verified, color: Colors.green, size: 20),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Try premium free for '
-                        '${(annualTrial ?? monthlyTrial)!.split('-').first} '
-                        'days \u2013 cancel anytime!',
-                        style: const TextStyle(
-                          color: Colors.green,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
 
               const SizedBox(height: 32),
 
@@ -475,9 +439,7 @@ class _PaywallContent extends StatelessWidget {
             color: Colors.black.withValues(alpha: 0.5),
             child: const Center(
               child: CircularProgressIndicator.adaptive(
-                valueColor: AlwaysStoppedAnimation(
-                  Colors.white,
-                ),
+                valueColor: AlwaysStoppedAnimation(Colors.white),
               ),
             ),
           ),
