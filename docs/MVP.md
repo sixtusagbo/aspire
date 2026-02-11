@@ -337,11 +337,11 @@ Add before deadline after core MVP polish:
 **Day 12: Submission**
 
 - [x] Bump version and update changelog
-- [ ] Build and upload to Google Play Internal Testing
-- [ ] Write proposal: 1-2 pages (problem statement, solution overview, monetization strategy, roadmap)
-- [ ] Technical documentation: architecture overview + RevenueCat integration details
-- [ ] Developer bio: background, experience, portfolio links, motivation
-- [ ] Write script for the demo video (see docs/demo_video_tips.md)
+- [x] Build and upload to Google Play Internal Testing
+- [x] Write proposal: 1-2 pages (problem statement, solution overview, monetization strategy, roadmap)
+- [x] Technical documentation: architecture overview + RevenueCat integration details
+- [x] Developer bio: background, experience, portfolio links, motivation
+- [x] Write script for the demo video (see docs/demo_video_tips.md)
 - [ ] Record 2-3 minute demo video (product walkthrough, onboarding to monetization flow)
 - [ ] Submit on DevPost (revenuecat-shipyard-2026.devpost.com)
 
@@ -383,7 +383,7 @@ Add before deadline after core MVP polish:
 - Progress tracking
 - Daily reminders
 
-### Premium ($2.99/month or $17.99/year)
+### Premium ($2.99/month or $28.99/year)
 
 - Unlimited goals
 - 10 micro-actions per goal
@@ -408,11 +408,28 @@ Add before deadline after core MVP polish:
 
 ## Submission Requirements
 
-1. **App Distribution:** Google Play Internal Testing
-2. **Demo Video:** 2-3 minutes showcasing core features and user flow
-3. **Written Proposal:** Problem statement, solution overview, monetization strategy, roadmap
-4. **Technical Documentation:** Architecture and RevenueCat integration details
-5. **Developer Bio:** Background and relevant experience
+All submission content has been finalized and submitted via Devpost and Google Docs.
+
+### Project Details (Public Page)
+
+| Field | Status | Notes |
+|-------|--------|-------|
+| About the project (Project Story) | [x] | Pasted into Devpost |
+| Built with | [x] | Done |
+| "Try it out" links | [x] | Landing page + GitHub repo |
+| Image gallery | [x] | 3:2 composites uploaded |
+| Video demo link | [ ] | Record and upload to YouTube |
+
+### Additional Info (For Judges)
+
+| Field | Status | Notes |
+|-------|--------|-------|
+| Creator Selection | [x] | Gabby Beckford (@PacksLight) |
+| App Access (Test Link) | [x] | Landing page with APK download |
+| Demo Video (2-3 min) | [ ] | YouTube link - in progress |
+| Written Proposal (1-2 pages) | [x] | Google Docs link submitted |
+| Technical Documentation | [x] | Google Docs link submitted |
+| Developer Biography | [x] | Done |
 
 ---
 

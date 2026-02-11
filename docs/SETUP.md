@@ -123,7 +123,7 @@
   - Add base plan with ID: `yearly`
   - Type: Auto-renewing
   - Billing period: Yearly
-  - Set price: $17.99 USD (select all countries)
+  - Set price: $28.99 USD (select all countries)
   - Save and activate
 
 ### Add License Testers
