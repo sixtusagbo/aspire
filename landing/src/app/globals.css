@@ -52,9 +52,9 @@
   --card-foreground: #ededed;
   --popover: #0a0a0a;
   --popover-foreground: #ededed;
-  --primary: #9d4edd; /* Electric Violet */
+  --primary: #DB4291; /* Primary Pink */
   --primary-foreground: #ffffff;
-  --secondary: #00b4d8; /* Cyan */
+  --secondary: #6EC1E4; /* Cyan */
   --secondary-foreground: #0a0a0a;
   --muted: #262626;
   --muted-foreground: #a3a3a3;
@@ -64,7 +64,7 @@
   --destructive-foreground: #ffffff;
   --border: #262626;
   --input: #262626;
-  --ring: #9d4edd;
+  --ring: #DB4291;
   --radius: 0.5rem;
 }
 
@@ -92,7 +92,7 @@ body {
 
 /* Gradient Text */
 .text-gradient {
-  background: linear-gradient(to right, #9d4edd, #00b4d8);
+  background: linear-gradient(to right, #FF6D99, #6EC1E4);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -101,10 +101,20 @@ body {
 
 /* Glow Effects */
 .glow {
-  box-shadow: 0 0 20px rgba(157, 78, 221, 0.5);
+  box-shadow: 0 0 20px rgba(219, 66, 145, 0.5);
 }
 
 .glow-text {
-  text-shadow: 0 0 10px rgba(157, 78, 221, 0.5);
+  text-shadow: 0 0 10px rgba(219, 66, 145, 0.5);
+}
+
+/* Button */
+.btn-primary {
+  background: linear-gradient(135deg, #DB4291, #FF6D99);
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #c93a82, #f05e8a);
 }
 
