@@ -1,30 +1,64 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Users, CheckCircle, Download } from "lucide-react";
-import { GOOGLE_FORM_URL, APK_DOWNLOAD_URL, PLAY_TESTING_URL } from "@/lib/links";
+import { ExternalLink } from "lucide-react";
+import { GOOGLE_FORM_URL, PLAY_TESTING_URL, PLAY_STORE_URL } from "@/lib/links";
 
 const steps = [
   {
-    icon: <Users className="w-6 h-6" />,
-    title: "Join the Testers Group",
-    description: "Your gateway to early access. Join our Google Group to get approved.",
-    action: "Join Group",
-    href: GOOGLE_FORM_URL,
+    step: "1",
+    title: "Request Access",
+    description: (
+      <>
+        <a
+          href={GOOGLE_FORM_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary hover:underline font-medium"
+        >
+          Request access
+          <ExternalLink className="w-3 h-3 inline ml-1 -mt-0.5" />
+        </a>{" "}
+        by filling out a quick form with your Google Play email.
+      </>
+    ),
   },
   {
-    icon: <CheckCircle className="w-6 h-6" />,
-    title: "Opt-in to Testing",
-    description: "Once joined, become a tester on the web to unlock the app.",
-    action: "Become a Tester",
-    href: PLAY_TESTING_URL,
+    step: "2",
+    title: "Join Internal Test",
+    description: (
+      <>
+        Your request will be approved in 10 minutes or less. Once approved,{" "}
+        <a
+          href={PLAY_TESTING_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary hover:underline font-medium"
+        >
+          join the internal test
+          <ExternalLink className="w-3 h-3 inline ml-1 -mt-0.5" />
+        </a>{" "}
+        on Google Play.
+      </>
+    ),
   },
   {
-    icon: <Download className="w-6 h-6" />,
-    title: "Download App",
-    description: "Get the app from the Play Store and start your journey.",
-    action: "Download Details",
-    href: APK_DOWNLOAD_URL,
+    step: "3",
+    title: "Download Aspire",
+    description: (
+      <>
+        <a
+          href={PLAY_STORE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary hover:underline font-medium"
+        >
+          Download Aspire
+          <ExternalLink className="w-3 h-3 inline ml-1 -mt-0.5" />
+        </a>{" "}
+        from Google Play and start achieving your goals.
+      </>
+    ),
   },
 ];
 
@@ -44,7 +78,7 @@ export default function HowItWorks() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
-            How to Join <span className="text-gradient">Internal Testing</span>
+            How to Join <span className="text-primary">Internal Testing</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Three simple steps to start your journey with Aspire.
@@ -67,21 +101,13 @@ export default function HowItWorks() {
               )}
 
               <div className="relative z-10 flex flex-col items-center text-center p-8 rounded-3xl glass-card border border-white/5 hover:border-primary/20 transition-all group">
-                <div className="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_rgba(219,66,145,0.3)]">
-                  {step.icon}
+                <div className="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center text-primary text-2xl font-bold mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_rgba(219,66,145,0.3)]">
+                  {step.step}
                 </div>
                 <h3 className="text-xl font-bold mb-3">{step.title}</h3>
-                <p className="text-muted-foreground mb-6 text-sm">
+                <p className="text-muted-foreground text-sm">
                   {step.description}
                 </p>
-                <a
-                  href={step.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
-                >
-                  {step.action} &rarr;
-                </a>
               </div>
             </motion.div>
           ))}
