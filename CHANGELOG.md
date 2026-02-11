@@ -2,6 +2,11 @@
 
 All notable changes to Aspire will be documented in this file.
 
+## [0.1.11] - 2026-02-11
+
+### Changed
+- Update social proof to reflect creator's actual community size (1M+)
+
 ## [0.1.10] - 2026-02-10
 
 ### Changed
@@ -34,7 +39,7 @@ All notable changes to Aspire will be documented in this file.
 - Swipe-to-reveal edit/delete buttons for micro-actions
 - First-time swipe hint tooltip (stored locally, shows once)
 - Next milestone indicator in streak section with scrollable milestones up to 20,000 days
-- Social proof badge on paywall ("Join 450K+ ambitious women")
+- Social proof badge on paywall
 - Passport stamp visual for completed goals
 - Loading state on "New Goal" button
 - Accessibility tooltips on drag handles and password visibility toggle

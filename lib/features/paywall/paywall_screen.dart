@@ -323,7 +323,7 @@ class _PaywallContent extends StatelessWidget {
                           ),
                           SizedBox(width: 8),
                           Text(
-                            'Join 450K+ ambitious women',
+                            'Join 1M+ ambitious women',
                             style: TextStyle(
                               color: AppTheme.primaryPink,
                               fontWeight: FontWeight.w500,

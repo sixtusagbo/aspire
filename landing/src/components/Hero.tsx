@@ -97,7 +97,7 @@ export default function Hero() {
                   2
                 </span>
                 <p className="text-sm text-foreground/80">
-                  Your request will be approved within a few hours. Once
+                  Your request will be approved in 10 minutes or less. Once
                   approved,{" "}
                   <a
                     href={PLAY_TESTING_URL}
