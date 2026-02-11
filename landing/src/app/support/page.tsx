@@ -15,7 +15,7 @@ export default function Support() {
 
       <main className="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-12 pt-28">
         <h1 className="text-3xl font-bold text-foreground mb-2">Support</h1>
-        <p className="text-muted mb-10">
+        <p className="text-muted-foreground mb-10">
           We&apos;re here to help you achieve your dreams.
         </p>
 

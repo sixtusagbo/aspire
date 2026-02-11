@@ -90,13 +90,9 @@ body {
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
-/* Gradient Text */
+/* Accent Text */
 .text-gradient {
-  background: linear-gradient(to right, #FF6D99, #6EC1E4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-fill-color: transparent;
+  color: #DB4291;
 }
 
 /* Glow Effects */
@@ -110,11 +106,11 @@ body {
 
 /* Button */
 .btn-primary {
-  background: linear-gradient(135deg, #DB4291, #FF6D99);
+  background-color: #DB4291;
   transition: all 0.2s ease;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #c93a82, #f05e8a);
+  background-color: #c93a82;
 }
 
