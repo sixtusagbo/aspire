@@ -128,7 +128,7 @@ All notable changes to Aspire will be documented in this file.
 
 ### Added
 - RevenueCat integration for premium subscriptions
-- Paywall screen with monthly ($2.99) and yearly ($17.99) options
+- Paywall screen with monthly ($2.99) and yearly ($28.99) options
 
 ## [0.1.0] - 2025-01-26
 
