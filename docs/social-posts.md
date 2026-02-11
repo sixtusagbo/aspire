@@ -210,3 +210,47 @@ Quoted Day 9 post:
 > I'm on submission prep now. ...docs, screenshots and more.
 >
 > More update as soon as I get to the finish line.
+
+---
+
+## Day 11 - Submitted
+
+### LinkedIn
+
+Aspire is officially submitted to RevenueCat's #Shipyard2026 Hackathon.
+
+Solo build. From idea to a fully working app.
+
+What I built: an app that helps ambitious women turn big goals into daily micro-actions. AI plans your path, gamification keeps you going, and every win gets celebrated.
+
+What's in the app:
+- AI-powered action planning
+- Streaks, XP, levels
+- Confetti and sound effects on every milestone
+- Premium subscriptions via RevenueCat
+- Light and dark mode
+- Social sharing
+
+I learned a ton building this. RevenueCat setup, prompt engineering for the right tone, generating sound effects with ElevenLabs, and most importantly - when to stop adding features and ship.
+
+Thanks to everyone who tested the app and gave feedback. You made it better.
+
+Now we wait.
+
+#buildinpublic #flutter #hackathon #revenuecat
+
+---
+
+### Twitter/X
+
+Aspire is officially submitted to #Shipyard2026.
+
+Solo build. From idea to a fully-working app.
+
+An app that helps ambitious women turn big goals into daily micro-actions. AI plans your path, gamification keeps you going, every win gets celebrated.
+
+Thanks to everyone who tested and gave feedback.
+
+Now we wait.
+
+#buildinpublic
