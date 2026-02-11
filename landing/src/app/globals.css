@@ -1,96 +1,110 @@
 @import "tailwindcss";
 
-:root {
-  /* Aspire brand colors - inspired by packslight.com */
-  --primary: #db4291;
-  --primary-light: #ff6d99;
-  --secondary: #6ec1e4;
-  --secondary-dark: #00c1cf;
-  --gold: #bfa35a;
-  --gold-light: #ddc995;
+@theme {
+  --font-sans: var(--font-inter);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
 
-  /* Light theme */
-  --background: #fafafa;
-  --foreground: #333333;
-  --card: #ffffff;
-  --card-foreground: #333333;
-  --muted: #7a7a7a;
-  --border: #e5e5e5;
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
 }
 
-[data-theme="dark"] {
-  --background: #121212;
-  --foreground: #e0e0e0;
-  --card: #1e1e1e;
-  --card-foreground: #e0e0e0;
-  --muted: #9ca3af;
-  --border: #374151;
+:root {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --card: #171717;
+  --card-foreground: #ededed;
+  --popover: #0a0a0a;
+  --popover-foreground: #ededed;
+  --primary: #9d4edd; /* Electric Violet */
+  --primary-foreground: #ffffff;
+  --secondary: #00b4d8; /* Cyan */
+  --secondary-foreground: #0a0a0a;
+  --muted: #262626;
+  --muted-foreground: #a3a3a3;
+  --accent: #262626;
+  --accent-foreground: #ededed;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #262626;
+  --input: #262626;
+  --ring: #9d4edd;
+  --radius: 0.5rem;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter), system-ui, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Utility classes */
-.bg-background {
-  background-color: var(--background);
-}
-.bg-card {
-  background-color: var(--card);
-}
-.bg-primary {
-  background-color: var(--primary);
-}
-.bg-primary\/10 {
-  background-color: color-mix(in srgb, var(--primary) 10%, transparent);
-}
-.bg-primary\/20 {
-  background-color: color-mix(in srgb, var(--primary) 20%, transparent);
+/* Glassmorphism Utilities */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.text-foreground {
-  color: var(--foreground);
-}
-.text-muted {
-  color: var(--muted);
-}
-.text-primary {
-  color: var(--primary);
+.glass-card {
+  background: rgba(23, 23, 23, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
-.border-border {
-  border-color: var(--border);
-}
-.border-primary {
-  border-color: var(--primary);
-}
-.border-primary\/20 {
-  border-color: color-mix(in srgb, var(--primary) 20%, transparent);
-}
-
-/* Primary button */
-.btn-primary {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-  transition: all 0.2s ease;
-}
-.btn-primary:hover {
-  filter: brightness(1.1);
+/* Gradient Text */
+.text-gradient {
+  background: linear-gradient(to right, #9d4edd, #00b4d8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
 }
 
-/* Subdued foreground for secondary nav links */
-.text-foreground-secondary {
-  color: color-mix(in srgb, var(--foreground) 75%, transparent);
-}
-.hover\:text-primary:hover {
-  color: var(--primary);
+/* Glow Effects */
+.glow {
+  box-shadow: 0 0 20px rgba(157, 78, 221, 0.5);
 }
 
-/* Focus styles */
-.focus\:border-primary:focus {
-  border-color: var(--primary);
+.glow-text {
+  text-shadow: 0 0 10px rgba(157, 78, 221, 0.5);
 }
-.focus\:ring-primary:focus {
-  --tw-ring-color: var(--primary);
-}
+

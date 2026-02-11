@@ -1,182 +1,84 @@
 "use client";
 
-import { useState } from "react";
-import {
-  Target,
-  Zap,
-  Trophy,
-  Plane,
-  Download,
-  ChevronDown,
-  ExternalLink,
-} from "lucide-react";
-import {
-  APK_DOWNLOAD_URL,
-  GITHUB_RELEASE_URL,
-  GOOGLE_FORM_URL,
-  PLAY_TESTING_URL,
-  PLAY_STORE_URL,
-} from "@/lib/links";
+import { motion } from "framer-motion";
+import { Download, ExternalLink, Play } from "lucide-react";
+import { APK_DOWNLOAD_URL, GITHUB_RELEASE_URL, GOOGLE_FORM_URL } from "@/lib/links";
 
 export default function Hero() {
-  const [showTesting, setShowTesting] = useState(false);
-
   return (
-    <section className="min-h-screen flex items-center justify-center pt-20 pb-16 px-4 overflow-hidden relative">
-      <div className="max-w-4xl mx-auto w-full relative z-10 text-center">
-        {/* Headline */}
-        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-foreground leading-tight mb-6 tracking-tight">
-          From Dreaming
-          <br />
-          <span className="text-primary">to Doing.</span>
-        </h1>
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-16">
+      {/* Background Elements */}
+      <div className="absolute inset-0 z-0 select-none pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[128px] animate-pulse" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-[128px] animate-pulse delay-1000" />
+      </div>
 
-        {/* Subheadline */}
-        <p className="text-lg sm:text-xl text-muted max-w-2xl mx-auto mb-8">
-          Whether it&apos;s traveling the world, landing that six-figure
-          salary, or achieving financial freedom — Aspire helps you close the
-          gap between inspiration and action.
-        </p>
-
-        {/* Primary CTA */}
-        <a
-          href={APK_DOWNLOAD_URL}
-          className="btn-primary px-8 py-4 rounded-xl text-white font-semibold inline-flex items-center gap-2 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98] transition-all"
+      <div className="container relative z-10 px-4 mx-auto text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="max-w-4xl mx-auto space-y-8"
         >
-          <Download className="w-5 h-5" />
-          Download for Android
-        </a>
-
-        {/* Secondary link */}
-        <div className="mt-3 mb-4">
-          <a
-            href={GITHUB_RELEASE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-muted hover:text-primary transition-colors inline-flex items-center gap-1.5"
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer"
           >
-            or view all releases on GitHub
-            <ExternalLink className="w-3.5 h-3.5" />
-          </a>
-        </div>
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+            <span className="text-sm font-medium text-primary">v1.2 Now Available</span>
+          </motion.div>
 
-        {/* Collapsible Google Play testing */}
-        <div className="max-w-md mx-auto mb-14">
-          <button
-            onClick={() => setShowTesting(!showTesting)}
-            className="text-sm text-primary hover:text-primary/80 transition-colors flex items-center gap-1.5 mx-auto"
-          >
-            Join Google Play Internal Testing
-            <ChevronDown
-              className={`w-4 h-4 transition-transform ${showTesting ? "rotate-180" : ""}`}
-            />
-          </button>
+          {/* Headline */}
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
+            Turn Ambition <br />
+            <span className="text-gradient">Into Action</span>
+          </h1>
 
-          {showTesting && (
-            <div className="mt-4 p-5 rounded-xl bg-card border border-border text-left space-y-4">
-              <div className="flex gap-3">
-                <span className="shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">
-                  1
-                </span>
-                <p className="text-sm text-foreground/80">
-                  <a
-                    href={GOOGLE_FORM_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline font-medium"
-                  >
-                    Request access
-                    <ExternalLink className="w-3 h-3 inline ml-1 -mt-0.5" />
-                  </a>{" "}
-                  by filling out a quick form with your Google Play email.
-                </p>
-              </div>
+          {/* Subheadline */}
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Close the gap between dreaming and doing. AI-powered goal planning designed for ambitious women who want it all.
+          </p>
 
-              <div className="flex gap-3">
-                <span className="shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">
-                  2
-                </span>
-                <p className="text-sm text-foreground/80">
-                  Your request will be approved in 10 minutes or less. Once
-                  approved,{" "}
-                  <a
-                    href={PLAY_TESTING_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline font-medium"
-                  >
-                    join the internal test
-                    <ExternalLink className="w-3 h-3 inline ml-1 -mt-0.5" />
-                  </a>{" "}
-                  on Google Play.
-                </p>
-              </div>
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+            <motion.a
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              href={APK_DOWNLOAD_URL}
+              className="btn-primary px-8 py-4 rounded-xl text-white font-semibold flex items-center gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all w-full sm:w-auto justify-center"
+            >
+              <Download className="w-5 h-5" />
+              Download APK
+            </motion.a>
+            <motion.a
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              href={GOOGLE_FORM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-8 py-4 rounded-xl glass border border-white/10 hover:bg-white/5 transition-all w-full sm:w-auto flex items-center justify-center gap-2 font-medium"
+            >
+              <Play className="w-5 h-5 fill-current" />
+              Join Beta
+            </motion.a>
+          </div>
 
-              <div className="flex gap-3">
-                <span className="shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">
-                  3
-                </span>
-                <p className="text-sm text-foreground/80">
-                  <a
-                    href={PLAY_STORE_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline font-medium"
-                  >
-                    Download Aspire
-                    <ExternalLink className="w-3 h-3 inline ml-1 -mt-0.5" />
-                  </a>{" "}
-                  from Google Play and start achieving your goals.
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Features */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <FeatureCard
-            icon={<Target className="w-6 h-6" />}
-            title="Set Big Goals"
-            description="Dream big and break it down"
-          />
-          <FeatureCard
-            icon={<Zap className="w-6 h-6" />}
-            title="Daily Actions"
-            description="Small steps, big results"
-          />
-          <FeatureCard
-            icon={<Trophy className="w-6 h-6" />}
-            title="Celebrate Wins"
-            description="Confetti and rewards await"
-          />
-          <FeatureCard
-            icon={<Plane className="w-6 h-6" />}
-            title="Live Your Dream"
-            description="Make it happen"
-          />
-        </div>
+          {/* Secondary Links */}
+          <div className="pt-8 flex items-center justify-center gap-6 text-sm text-muted-foreground">
+            <a href={GITHUB_RELEASE_URL} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors flex items-center gap-1">
+              View on GitHub <ExternalLink className="w-3 h-3" />
+            </a>
+            <span>•</span>
+            <span>Free & Open Source</span>
+          </div>
+        </motion.div>
       </div>
     </section>
-  );
-}
-
-function FeatureCard({
-  icon,
-  title,
-  description,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="p-6 rounded-2xl bg-card border border-border hover:border-primary/30 transition-colors">
-      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-4 mx-auto">
-        {icon}
-      </div>
-      <h3 className="font-semibold text-foreground mb-1">{title}</h3>
-      <p className="text-sm text-muted">{description}</p>
-    </div>
   );
 }
