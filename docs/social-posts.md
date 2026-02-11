@@ -198,3 +198,15 @@ Fixed 2 bugs from user feedback yesterday.
 Considering dropping a feature due to performance issues. Sometimes you have to cut scope to ship something polished. Problem is, I like that feature.
 
 #buildinpublic
+
+---
+
+## Day 10 (Quote of Day 9 post)
+
+### LinkedIn & Twitter/X
+
+Quoted Day 9 post:
+
+> I'm on submission prep now. ...docs, screenshots and more.
+>
+> More update as soon as I get to the finish line.
