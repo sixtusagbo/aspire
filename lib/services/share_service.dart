@@ -4,7 +4,7 @@ import 'package:share_plus/share_plus.dart';
 class ShareService {
   // TODO: Replace with Play Store link once app is published.
   static const _shareFooter =
-      '\n\nDownload Aspire on Google Play today!'
+      '\n\nDownload Aspire: https://aspire.sixtusagbo.dev'
       '\n#Aspire #PacksLight';
 
   /// Share a streak milestone achievement

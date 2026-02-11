@@ -2,6 +2,11 @@
 
 All notable changes to Aspire will be documented in this file.
 
+## [0.1.12] - 2026-02-11
+
+### Changed
+- Add landing page download link to share messages
+
 ## [0.1.11] - 2026-02-11
 
 ### Changed
