@@ -2,12 +2,12 @@
 
 import { motion } from "framer-motion";
 import { Users, CheckCircle, Download } from "lucide-react";
-import { GOOGLE_FORM_URL, APK_DOWNLOAD_URL } from "@/lib/links";
+import { GOOGLE_FORM_URL, APK_DOWNLOAD_URL, PLAY_TESTING_URL } from "@/lib/links";
 
 const steps = [
   {
     icon: <Users className="w-6 h-6" />,
-    title: "Join the Beta Group",
+    title: "Join the Testers Group",
     description: "Your gateway to early access. Join our Google Group to get approved.",
     action: "Join Group",
     href: GOOGLE_FORM_URL,
@@ -17,7 +17,7 @@ const steps = [
     title: "Opt-in to Testing",
     description: "Once joined, become a tester on the web to unlock the app.",
     action: "Become a Tester",
-    href: "https://play.google.com/apps/testing/com.sixtusagbo.aspire", // Assuming this from context or generic
+    href: PLAY_TESTING_URL,
   },
   {
     icon: <Download className="w-6 h-6" />,
@@ -30,7 +30,7 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section className="py-24 relative overflow-hidden">
+    <section id="join-internal-testing" className="py-24 relative overflow-hidden scroll-mt-20">
       {/* Background Decor */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[128px]" />
@@ -44,7 +44,7 @@ export default function HowItWorks() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
-            How to <span className="text-gradient">Join Beta</span>
+            How to Join <span className="text-gradient">Internal Testing</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Three simple steps to start your journey with Aspire.
@@ -65,9 +65,9 @@ export default function HowItWorks() {
               {index < steps.length - 1 && (
                 <div className="hidden md:block absolute top-12 left-1/2 w-full h-0.5 bg-gradient-to-r from-primary/50 to-primary/0 z-0" />
               )}
-              
+
               <div className="relative z-10 flex flex-col items-center text-center p-8 rounded-3xl glass-card border border-white/5 hover:border-primary/20 transition-all group">
-                <div className="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_rgba(157,78,221,0.3)]">
+                <div className="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_rgba(219,66,145,0.3)]">
                   {step.icon}
                 </div>
                 <h3 className="text-xl font-bold mb-3">{step.title}</h3>

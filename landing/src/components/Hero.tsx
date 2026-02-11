@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Download, ExternalLink, Play } from "lucide-react";
-import { APK_DOWNLOAD_URL, GITHUB_RELEASE_URL, GOOGLE_FORM_URL } from "@/lib/links";
+import { APK_DOWNLOAD_URL, GITHUB_RELEASE_URL } from "@/lib/links";
 
 export default function Hero() {
   return (
@@ -59,13 +59,11 @@ export default function Hero() {
             <motion.a
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              href={GOOGLE_FORM_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#join-internal-testing"
               className="px-8 py-4 rounded-xl glass border border-white/10 hover:bg-white/5 transition-all w-full sm:w-auto flex items-center justify-center gap-2 font-medium"
             >
               <Play className="w-5 h-5 fill-current" />
-              Join Beta
+              Join Internal Testing
             </motion.a>
           </div>
 
