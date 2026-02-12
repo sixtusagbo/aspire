@@ -28,7 +28,7 @@ const steps = [
     title: "Join Internal Test",
     description: (
       <>
-        Your request will be approved in 10 minutes or less. Once approved,{" "}
+        Your request will be approved in 5-10 minutes or less, sometimes longer. Once approved,{" "}
         <a
           href={PLAY_TESTING_URL}
           target="_blank"
@@ -78,7 +78,7 @@ export default function HowItWorks() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
-            How to Join <span className="text-primary">Internal Testing</span>
+            Join <span className="text-primary">Internal Testing</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Three simple steps to start your journey with Aspire.
