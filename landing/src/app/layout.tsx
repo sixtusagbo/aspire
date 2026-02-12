@@ -10,23 +10,43 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Aspire - From Dreaming to Doing",
+  metadataBase: new URL("https://aspire.sixtusagbo.dev"),
+  title: {
+    default: "Aspire - From Dreaming to Doing",
+    template: "%s | Aspire",
+  },
   description:
     "Close the gap between inspiration and action. AI-powered goal planning with streaks and celebrations for ambitious women.",
   keywords: [
-    "goal setting",
+    "goal setting app",
     "action planning",
     "women empowerment",
     "travel goals",
     "career goals",
     "financial freedom",
     "habit tracking",
+    "goal tracker",
     "aspire app",
+    "AI goal planning",
+    "daily streaks",
   ],
-  authors: [{ name: "Aspire" }],
-  creator: "Aspire",
+  authors: [{ name: "Sixtus Agbo" }],
+  creator: "Sixtus Agbo",
   publisher: "Aspire",
-  robots: "index, follow",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -34,7 +54,7 @@ export const metadata: Metadata = {
     siteName: "Aspire",
     title: "Aspire - From Dreaming to Doing",
     description:
-      "Close the gap between inspiration and action. For ambitious women who want it all.",
+      "Close the gap between inspiration and action. AI-powered goal planning with streaks and celebrations for ambitious women.",
     images: [
       {
         url: "/og-image.png",
@@ -48,14 +68,13 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Aspire - From Dreaming to Doing",
     description:
-      "Close the gap between inspiration and action. For ambitious women who want it all.",
+      "Close the gap between inspiration and action. AI-powered goal planning with streaks and celebrations for ambitious women.",
     images: ["/og-image.png"],
   },
   icons: [
     { url: "/favicon.ico", sizes: "16x16 32x32", type: "image/x-icon" },
     { url: "/apple-touch-icon.png", rel: "apple-touch-icon" },
   ],
-  metadataBase: new URL("https://aspire.sixtusagbo.dev"),
 };
 
 export default function RootLayout({
@@ -67,21 +86,28 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     name: "Aspire",
+    url: "https://aspire.sixtusagbo.dev",
     applicationCategory: "LifestyleApplication",
     operatingSystem: "Android",
     description:
       "AI-powered goal planning with gamified tracking and celebrations for ambitious women.",
+    author: {
+      "@type": "Person",
+      name: "Sixtus Agbo",
+    },
     offers: {
       "@type": "Offer",
       price: "0",
       priceCurrency: "USD",
     },
+    downloadUrl:
+      "https://play.google.com/store/apps/details?id=dev.sixtusagbo.aspire",
+    screenshot: "https://aspire.sixtusagbo.dev/og-image.png",
   };
 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="canonical" href="https://aspire.sixtusagbo.dev" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

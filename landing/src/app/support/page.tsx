@@ -4,8 +4,12 @@ import Footer from "@/components/Footer";
 import { Mail, MessageCircle } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Support - Aspire",
-  description: "Get help with Aspire - From Dreaming to Doing",
+  title: "Support",
+  description:
+    "Get help with Aspire. Contact us via email or find answers to common questions about goal setting, subscriptions, and account management.",
+  alternates: {
+    canonical: "/support",
+  },
 };
 
 export default function Support() {

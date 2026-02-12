@@ -3,8 +3,12 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy - Aspire",
-  description: "Privacy Policy for Aspire - From Dreaming to Doing",
+  title: "Privacy Policy",
+  description:
+    "Learn how Aspire collects, uses, and protects your personal information including goals, progress data, and account details.",
+  alternates: {
+    canonical: "/privacy",
+  },
 };
 
 export default function PrivacyPolicy() {
