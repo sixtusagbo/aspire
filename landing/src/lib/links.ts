@@ -1,3 +1,4 @@
+export const GITHUB_REPO_URL = "https://github.com/sixtusagbo/aspire";
 export const GITHUB_RELEASE_URL =
   "https://github.com/sixtusagbo/aspire/releases/";
 export const APK_DOWNLOAD_URL =
