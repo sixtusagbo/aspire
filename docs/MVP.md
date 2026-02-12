@@ -342,7 +342,7 @@ Add before deadline after core MVP polish:
 - [x] Technical documentation: architecture overview + RevenueCat integration details
 - [x] Developer bio: background, experience, portfolio links, motivation
 - [x] Write script for the demo video (see docs/demo_video_tips.md)
-- [ ] Record 2-3 minute demo video (product walkthrough, onboarding to monetization flow)
+- [x] Record 2-3 minute demo video (product walkthrough, onboarding to monetization flow)
 - [ ] Submit on DevPost (revenuecat-shipyard-2026.devpost.com)
 
 **Deliverable:** App submitted to hackathon
@@ -426,7 +426,7 @@ All submission content has been finalized and submitted via Devpost and Google D
 |-------|--------|-------|
 | Creator Selection | [x] | Gabby Beckford (@PacksLight) |
 | App Access (Test Link) | [x] | Landing page with APK download |
-| Demo Video (2-3 min) | [ ] | YouTube link - in progress |
+| Demo Video (2-3 min) | [x] | YouTube link submitted |
 | Written Proposal (1-2 pages) | [x] | Google Docs link submitted |
 | Technical Documentation | [x] | Google Docs link submitted |
 | Developer Biography | [x] | Done |
