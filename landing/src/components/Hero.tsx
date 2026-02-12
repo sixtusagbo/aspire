@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Download, ExternalLink, Play } from "lucide-react";
-import { APK_DOWNLOAD_URL, GITHUB_RELEASE_URL } from "@/lib/links";
+import { APK_DOWNLOAD_URL, GITHUB_REPO_URL } from "@/lib/links";
 
 export default function Hero() {
   return (
@@ -68,12 +68,10 @@ export default function Hero() {
           </div>
 
           {/* Secondary Links */}
-          <div className="pt-8 flex items-center justify-center gap-6 text-sm text-muted-foreground">
-            <a href={GITHUB_RELEASE_URL} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors flex items-center gap-1">
+          <div className="pt-8 flex items-center justify-center text-sm text-muted-foreground">
+            <a href={GITHUB_REPO_URL} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors flex items-center gap-1">
               View on GitHub <ExternalLink className="w-3 h-3" />
             </a>
-            <span>•</span>
-            <span>Free & Open Source</span>
           </div>
         </motion.div>
       </div>
