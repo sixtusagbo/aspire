@@ -1,8 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Download, Github, ExternalLink, Heart } from "lucide-react";
+import { Download, Github, ChevronRight, Heart } from "lucide-react";
 import {
   APK_DOWNLOAD_URL,
+  GITHUB_REPO_URL,
   GITHUB_RELEASE_URL,
 } from "@/lib/links";
 
@@ -47,7 +48,12 @@ export default function Footer() {
               </li>
               <li>
                 <a href="/#join-internal-testing" className="hover:text-primary transition-colors flex items-center gap-2">
-                   Join Internal Testing
+                  <ChevronRight className="w-4 h-4" /> Join Internal Testing
+                </a>
+              </li>
+              <li>
+                <a href={GITHUB_REPO_URL} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors flex items-center gap-2">
+                  <Github className="w-4 h-4" /> GitHub
                 </a>
               </li>
             </ul>
@@ -82,12 +88,12 @@ export default function Footer() {
               Built for the RevenueCat Shipyard 2026 Hackathon.
             </p>
             <p className="text-sm text-muted-foreground">
-              Designed for audience at{" "}
+              Designed for Gabby Beckford&apos;s audience at{" "}
               <a
                 href="https://packslight.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary hover:text-primary-light transition-colors"
+                className="text-primary hover:underline transition-colors"
               >
                 PacksLight
               </a>
@@ -99,7 +105,7 @@ export default function Footer() {
         <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
           <p>&copy; {currentYear} Aspire. All rights reserved.</p>
           <div className="flex items-center gap-1">
-             Made with <Heart className="w-3 h-3 text-red-500 fill-red-500" /> by Sixtus Agbo
+             Made with <Heart className="w-3 h-3 text-red-500 fill-red-500" /> by <a href="https://sixtusagbo.dev" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline transition-colors">Sixtus Agbo</a>
           </div>
         </div>
       </div>
