@@ -7,7 +7,7 @@ import { Menu, X, Download, ExternalLink } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   APK_DOWNLOAD_URL,
-  GITHUB_RELEASE_URL,
+  GITHUB_REPO_URL,
 } from "@/lib/links";
 
 export default function Header() {
@@ -127,7 +127,7 @@ export default function Header() {
                <div className="border-t border-white/5 my-2" />
 
               <a
-                href={GITHUB_RELEASE_URL}
+                href={GITHUB_REPO_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setOpen(false)}
