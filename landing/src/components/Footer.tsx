@@ -4,8 +4,6 @@ import { Download, Github, ExternalLink, Heart } from "lucide-react";
 import {
   APK_DOWNLOAD_URL,
   GITHUB_RELEASE_URL,
-  GOOGLE_FORM_URL,
-  PLAY_TESTING_URL,
 } from "@/lib/links";
 
 export default function Footer() {
@@ -48,13 +46,8 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href={GOOGLE_FORM_URL} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors flex items-center gap-2">
-                   Request Access
-                </a>
-              </li>
-               <li>
-                <a href={PLAY_TESTING_URL} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors flex items-center gap-2">
-                   Internal Testing
+                <a href="/#join-internal-testing" className="hover:text-primary transition-colors flex items-center gap-2">
+                   Join Internal Testing
                 </a>
               </li>
             </ul>
