@@ -31,7 +31,7 @@ export default function Hero() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
             </span>
-            <span className="text-sm font-medium text-primary">v1.2 Now Available</span>
+            <span className="text-sm font-medium text-primary">v0.1.12 Now Available</span>
           </motion.div>
 
           {/* Headline */}
