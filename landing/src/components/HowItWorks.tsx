@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 import { GOOGLE_FORM_URL, PLAY_TESTING_URL, PLAY_STORE_URL } from "@/lib/links";
 
@@ -71,30 +68,18 @@ export default function HowItWorks() {
       </div>
 
       <div className="container relative z-10 mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
             Join <span className="text-primary">Internal Testing</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Three simple steps to start your journey with Aspire.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {steps.map((step, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.2 }}
-              className="relative"
-            >
+            <div key={index} className="relative">
               {/* Connector Line (Desktop) */}
               {index < steps.length - 1 && (
                 <div className="hidden md:block absolute top-12 left-1/2 w-full h-0.5 bg-gradient-to-r from-primary/50 to-primary/0 z-0" />
@@ -109,7 +94,7 @@ export default function HowItWorks() {
                   {step.description}
                 </p>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

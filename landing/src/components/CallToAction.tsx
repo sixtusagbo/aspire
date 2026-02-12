@@ -1,7 +1,4 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { Download, ArrowRight } from "lucide-react";
+import { Download } from "lucide-react";
 import { APK_DOWNLOAD_URL } from "@/lib/links";
 
 export default function CallToAction() {
@@ -14,32 +11,15 @@ export default function CallToAction() {
 
       <div className="container relative z-10 mx-auto px-4">
         <div className="max-w-4xl mx-auto text-center space-y-8">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl md:text-6xl font-bold tracking-tight"
-          >
+          <h2 className="text-4xl md:text-6xl font-bold tracking-tight">
             Ready to Start <span className="text-gradient">Doing?</span>
-          </motion.h2>
-          
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-xl text-muted-foreground max-w-2xl mx-auto"
-          >
-            Join thousands of ambitious women who are turning their dreams into reality with Aspire.
-          </motion.p>
+          </h2>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="pt-4"
-          >
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Join thousands of ambitious women who are turning their dreams into reality with Aspire.
+          </p>
+
+          <div className="pt-4">
             <a
               href={APK_DOWNLOAD_URL}
               className="btn-primary inline-flex items-center gap-2 px-8 py-4 rounded-xl text-white font-bold text-lg shadow-xl shadow-primary/20 hover:shadow-primary/40 hover:scale-105 transition-all"
@@ -47,7 +27,7 @@ export default function CallToAction() {
               <Download className="w-5 h-5" />
               Download Now
             </a>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X, Download, ExternalLink } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   APK_DOWNLOAD_URL,
   GITHUB_REPO_URL,
@@ -84,70 +83,65 @@ export default function Header() {
       </nav>
 
       {/* Mobile menu */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-white/10 bg-background/95 backdrop-blur-xl overflow-hidden"
+      <div
+        className={`md:hidden border-t border-white/10 bg-background/95 backdrop-blur-xl overflow-hidden transition-all duration-300 ${
+          open ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col gap-2">
+          <a
+            href={APK_DOWNLOAD_URL}
+            onClick={() => setOpen(false)}
+            className="btn-primary w-full py-3 rounded-xl text-white font-semibold flex items-center justify-center gap-2 shadow-lg mb-4"
           >
-            <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col gap-2">
-              <a
-                href={APK_DOWNLOAD_URL}
-                onClick={() => setOpen(false)}
-                className="btn-primary w-full py-3 rounded-xl text-white font-semibold flex items-center justify-center gap-2 shadow-lg mb-4"
-              >
-                <Download className="w-5 h-5" />
-                Download for Android
-              </a>
+            <Download className="w-5 h-5" />
+            Download for Android
+          </a>
 
-              <Link
-                href="/privacy"
-                onClick={() => setOpen(false)}
-                className="px-4 py-3 rounded-lg text-sm text-muted-foreground hover:text-white hover:bg-white/5 transition-colors"
-              >
-                Privacy Policy
-              </Link>
-              <Link
-                href="/terms"
-                onClick={() => setOpen(false)}
-                className="px-4 py-3 rounded-lg text-sm text-muted-foreground hover:text-white hover:bg-white/5 transition-colors"
-              >
-                Terms of Service
-              </Link>
-              <Link
-                href="/support"
-                onClick={() => setOpen(false)}
-                className="px-4 py-3 rounded-lg text-sm text-muted-foreground hover:text-white hover:bg-white/5 transition-colors"
-              >
-                Support
-              </Link>
+          <Link
+            href="/privacy"
+            onClick={() => setOpen(false)}
+            className="px-4 py-3 rounded-lg text-sm text-muted-foreground hover:text-white hover:bg-white/5 transition-colors"
+          >
+            Privacy Policy
+          </Link>
+          <Link
+            href="/terms"
+            onClick={() => setOpen(false)}
+            className="px-4 py-3 rounded-lg text-sm text-muted-foreground hover:text-white hover:bg-white/5 transition-colors"
+          >
+            Terms of Service
+          </Link>
+          <Link
+            href="/support"
+            onClick={() => setOpen(false)}
+            className="px-4 py-3 rounded-lg text-sm text-muted-foreground hover:text-white hover:bg-white/5 transition-colors"
+          >
+            Support
+          </Link>
 
-              <a
-                href="/#join-internal-testing"
-                onClick={() => setOpen(false)}
-                className="px-4 py-3 rounded-lg text-sm text-muted-foreground hover:text-white hover:bg-white/5 transition-colors"
-              >
-                Join Internal Testing
-              </a>
+          <a
+            href="/#join-internal-testing"
+            onClick={() => setOpen(false)}
+            className="px-4 py-3 rounded-lg text-sm text-muted-foreground hover:text-white hover:bg-white/5 transition-colors"
+          >
+            Join Internal Testing
+          </a>
 
-               <div className="border-t border-white/5 my-2" />
+           <div className="border-t border-white/5 my-2" />
 
-              <a
-                href={GITHUB_REPO_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setOpen(false)}
-                className="px-4 py-3 text-sm text-muted-foreground hover:text-white flex items-center gap-2 hover:bg-white/5 rounded-lg transition-colors"
-              >
-                 <ExternalLink className="w-4 h-4" />
-                View on GitHub
-              </a>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          <a
+            href={GITHUB_REPO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setOpen(false)}
+            className="px-4 py-3 text-sm text-muted-foreground hover:text-white flex items-center gap-2 hover:bg-white/5 rounded-lg transition-colors"
+          >
+             <ExternalLink className="w-4 h-4" />
+            View on GitHub
+          </a>
+        </div>
+      </div>
     </header>
   );
 }

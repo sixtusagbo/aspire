@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { Target, Zap, Trophy, Map, BarChart3 } from "lucide-react";
 
 const features = [
@@ -36,31 +33,19 @@ export default function Features() {
     <section className="py-24 relative overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <h2 className="text-3xl md:text-5xl font-bold mb-6">
-              Empower Your <span className="text-gradient">Journey</span>
-            </h2>
-            <p className="text-muted-foreground text-lg">
-              Everything you need to turn your aspirations into achievements.
-            </p>
-          </motion.div>
+          <h2 className="text-3xl md:text-5xl font-bold mb-6">
+            Empower Your <span className="text-gradient">Journey</span>
+          </h2>
+          <p className="text-muted-foreground text-lg">
+            Everything you need to turn your aspirations into achievements.
+          </p>
         </div>
 
         <div className="flex flex-wrap justify-center gap-6 max-w-5xl mx-auto">
           {features.map((feature, index) => (
-            <motion.div
+            <div
               key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ y: -5 }}
-              className="relative p-8 rounded-3xl glass-card border border-white/10 hover:border-primary/50 transition-all group overflow-hidden w-full md:w-[calc(33.333%-1rem)]"
+              className="relative p-8 rounded-3xl glass-card border border-white/10 hover:border-primary/50 hover:-translate-y-1 transition-all group overflow-hidden w-full md:w-[calc(33.333%-1rem)]"
             >
               {/* Glow effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -74,7 +59,7 @@ export default function Features() {
                   {feature.description}
                 </p>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
