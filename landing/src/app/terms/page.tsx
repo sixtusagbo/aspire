@@ -3,8 +3,12 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Terms of Service - Aspire",
-  description: "Terms of Service for Aspire - From Dreaming to Doing",
+  title: "Terms of Service",
+  description:
+    "Terms of Service for Aspire, the AI-powered goal planning app. Covers account usage, subscriptions, and acceptable use.",
+  alternates: {
+    canonical: "/terms",
+  },
 };
 
 export default function TermsOfService() {
