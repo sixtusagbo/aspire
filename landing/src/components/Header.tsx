@@ -124,6 +124,14 @@ export default function Header() {
                 Support
               </Link>
 
+              <a
+                href="/#join-internal-testing"
+                onClick={() => setOpen(false)}
+                className="px-4 py-3 rounded-lg text-sm text-muted-foreground hover:text-white hover:bg-white/5 transition-colors"
+              >
+                Join Internal Testing
+              </a>
+
                <div className="border-t border-white/5 my-2" />
 
               <a
