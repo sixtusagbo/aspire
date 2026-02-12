@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import DemoVideo from "@/components/DemoVideo";
 import Features from "@/components/Features";
 import HowItWorks from "@/components/HowItWorks";
 import CallToAction from "@/components/CallToAction";
@@ -11,6 +12,7 @@ export default function Home() {
       <Header />
       <main className="flex flex-col min-h-screen">
         <Hero />
+        <DemoVideo />
         <Features />
         <HowItWorks />
         <CallToAction />
